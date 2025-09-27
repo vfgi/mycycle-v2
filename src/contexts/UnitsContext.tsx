@@ -28,6 +28,10 @@ interface UnitsContextType {
     measurementType: "height" | "body"
   ) => number;
   getUnitForMeasurement: (measurementType: "height" | "body") => string;
+  // Macronutrients functions
+  convertMacronutrient: (grams: number) => { value: number; unit: string };
+  formatMacronutrient: (grams: number) => string;
+  getMacroUnit: () => string;
 }
 
 const UnitsContext = createContext<UnitsContextType | undefined>(undefined);
@@ -206,6 +210,26 @@ export const UnitsProvider: React.FC<UnitsProviderProps> = ({ children }) => {
     return "cm";
   };
 
+  // Macronutrients conversion functions
+  const convertMacronutrient = (
+    grams: number
+  ): { value: number; unit: string } => {
+    if (unitSystem === "imperial") {
+      // Convert grams to ounces (1 gram = 0.035274 ounces)
+      return { value: Math.round(grams * 0.035274 * 10) / 10, unit: "oz" };
+    }
+    return { value: grams, unit: "g" };
+  };
+
+  const formatMacronutrient = (grams: number): string => {
+    const converted = convertMacronutrient(grams);
+    return `${converted.value}${converted.unit}`;
+  };
+
+  const getMacroUnit = (): string => {
+    return unitSystem === "imperial" ? "oz" : "g";
+  };
+
   const contextValue: UnitsContextType = {
     unitSystem,
     setUnitSystem,
@@ -222,6 +246,9 @@ export const UnitsProvider: React.FC<UnitsProviderProps> = ({ children }) => {
     formatBodyMeasurement,
     convertInputToMetric,
     getUnitForMeasurement,
+    convertMacronutrient,
+    formatMacronutrient,
+    getMacroUnit,
   };
 
   return (

@@ -44,8 +44,6 @@ export const MeasurementsScreen: React.FC = () => {
   );
   const [isSaving, setIsSaving] = useState(false);
 
-  console.log(user?.measurements);
-
   useEffect(() => {
     const loadUserData = async () => {
       try {
@@ -119,7 +117,6 @@ export const MeasurementsScreen: React.FC = () => {
       setUser(updatedUser);
 
       // Aqui futuramente adicionaremos a chamada para a API
-      console.log("Medidas salvas no storage:", measurements);
 
       showSuccess(t("measurements.updated"));
     } catch (error) {
@@ -158,9 +155,9 @@ export const MeasurementsScreen: React.FC = () => {
                 width: "120%",
                 height: "100%",
                 zIndex: 0,
+                opacity: 0.4,
               }}
               resizeMode="contain"
-              opacity={0.4}
             />
 
             <VStack pb="$4" space="sm">

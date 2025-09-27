@@ -188,7 +188,6 @@ export const Menu: React.FC<MenuProps> = ({
               <Pressable
                 key={item.key}
                 onPress={() => {
-                  console.log("Menu item pressed:", item.key);
                   if (item.key === "home") {
                     onClose();
                     setTimeout(() => {
@@ -263,6 +262,7 @@ export const Menu: React.FC<MenuProps> = ({
               borderColor={FIXED_COLORS.error[500]}
               borderRadius="$md"
               p="$2"
+              mb={Platform.OS === "android" ? "$8" : "$0"}
             >
               <FontAwesome
                 name="sign-out"

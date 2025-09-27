@@ -8,6 +8,8 @@ export { CustomButton } from "./CustomButton";
 export { Header } from "./Header";
 export { HeaderLogo } from "./HeaderLogo";
 export { MeasurementCard } from "./MeasurementCard";
+export { StatsCard } from "./StatsCard";
+export { CircularChart } from "./CircularChart";
 export { Menu } from "./Menu";
 export { HelpDrawer } from "./HelpDrawer";
 export { AboutDrawer } from "./AboutDrawer";

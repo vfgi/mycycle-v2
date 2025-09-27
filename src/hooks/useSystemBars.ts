@@ -7,8 +7,6 @@ export const useSystemBars = () => {
     const configureSystemBars = async () => {
       if (Platform.OS === "android") {
         try {
-          console.log("🔧 [SystemBars] Configuring navigation bar...");
-
           // Configurar a barra de navegação com fundo escuro e ícones brancos
           await NavigationBar.setBackgroundColorAsync("#161616");
           await NavigationBar.setButtonStyleAsync("light");
@@ -18,8 +16,6 @@ export const useSystemBars = () => {
 
           // Usar comportamento normal (não overlay)
           await NavigationBar.setBehaviorAsync("inset-swipe");
-
-          console.log("✅ [SystemBars] Navigation bar configured successfully");
         } catch (error) {
           console.warn(
             "❌ [SystemBars] Failed to configure navigation bar:",
@@ -35,7 +31,6 @@ export const useSystemBars = () => {
     // Reconfigurar quando o app volta ao foco
     const handleAppStateChange = (nextAppState: string) => {
       if (nextAppState === "active") {
-        console.log("📱 [SystemBars] App became active, reconfiguring...");
         // Pequeno delay para garantir que o sistema está pronto
         setTimeout(configureSystemBars, 100);
       }

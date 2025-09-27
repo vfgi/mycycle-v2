@@ -218,5 +218,20 @@
     "tdeeTitle": "Gasto Energético Total Diário (TDEE)",
     "tdeeDescription": "Baseado nos factores de actividade do Institute of Medicine",
     "tdeeReference": "Dietary Reference Intakes for Energy - National Academy Press"
+  },
+  "macros": {
+    "title": "Macronutrientes",
+    "protein": {
+      "label": "Proteína",
+      "short": "P"
+    },
+    "carbs": {
+      "label": "Carboidratos",
+      "short": "C"
+    },
+    "fat": {
+      "label": "Gordura",
+      "short": "G"
+    }
   }
 }
