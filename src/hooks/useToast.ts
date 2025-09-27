@@ -25,6 +25,9 @@ export const useToast = () => {
             action: "error",
             variant: "solid",
             bg: FIXED_COLORS.error[600],
+            style: {
+              marginTop: 10, // Adiciona margem superior para ficar abaixo do header
+            },
           },
           React.createElement(VStack, { space: "xs" }, [
             React.createElement(
@@ -58,6 +61,9 @@ export const useToast = () => {
             action: "success",
             variant: "solid",
             bg: FIXED_COLORS.success[600],
+            style: {
+              marginTop: 30, // Adiciona margem superior para ficar abaixo do header
+            },
           },
           React.createElement(VStack, { space: "xs" }, [
             React.createElement(

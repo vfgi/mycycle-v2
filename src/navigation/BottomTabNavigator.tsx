@@ -1,6 +1,8 @@
 import React from "react";
 import { Platform } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { HomeScreen } from "../screens/home/HomeScreen";
 import { WorkoutsScreen } from "../screens/workouts/WorkoutsScreen";
 import { NutritionScreen } from "../screens/nutrition/NutritionScreen";
@@ -8,6 +10,7 @@ import { CalendarScreen } from "../screens/calendar/CalendarScreen";
 import { FIXED_COLORS } from "../theme/colors";
 import { useTranslation } from "../hooks/useTranslation";
 import { Header, Menu } from "../components";
+import { RootStackParamList } from "./AppNavigator";
 import {
   FontAwesome5,
   Ionicons,
@@ -24,9 +27,12 @@ export type BottomTabParamList = {
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
+type NavigationProp = StackNavigationProp<RootStackParamList>;
+
 export const BottomTabNavigator: React.FC = () => {
   const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const navigation = useNavigation<NavigationProp>();
 
   const handleNotificationPress = () => {
     // TODO: Implementar navegação para notificações
@@ -35,7 +41,11 @@ export const BottomTabNavigator: React.FC = () => {
 
   const handleMenuItemPress = (item: string) => {
     console.log("Menu item pressed:", item);
-    // TODO: Implementar navegação para cada item do menu
+
+    if (item === "settings") {
+      navigation.navigate("Settings");
+    }
+    // TODO: Implementar navegação para outros itens do menu
   };
 
   return (

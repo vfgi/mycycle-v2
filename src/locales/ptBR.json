@@ -103,5 +103,33 @@
     "menu": "Menu",
     "help": "Ajuda",
     "about": "Sobre"
+  },
+  "settings": {
+    "title": "Configurações",
+    "account": "Conta",
+    "preferences": "Preferências",
+    "app": "Aplicativo",
+    "editProfile": "Editar Perfil",
+    "privacy": "Privacidade",
+    "security": "Segurança",
+    "notifications": "Notificações",
+    "darkMode": "Modo Escuro",
+    "language": "Idioma",
+    "selectLanguage": "Selecionar Idioma",
+    "biometric": "Biometria",
+    "dataSync": "Sincronização de Dados",
+    "about": "Sobre o App",
+    "changePassword": "Alterar Senha",
+    "changePasswordInstructions": "Digite sua senha atual e a nova senha",
+    "currentPassword": "Senha Atual",
+    "currentPasswordPlaceholder": "Digite sua senha atual",
+    "newPassword": "Nova Senha",
+    "newPasswordPlaceholder": "Digite sua nova senha",
+    "confirmNewPassword": "Confirmar Nova Senha",
+    "confirmNewPasswordPlaceholder": "Confirme sua nova senha",
+    "changePasswordButton": "Alterar Senha",
+    "passwordRequirements": "A senha deve ter pelo menos 6 caracteres",
+    "passwordChangedSuccess": "Senha alterada com sucesso!",
+    "passwordChangedMessage": "Sua senha foi atualizada com segurança"
   }
 }

@@ -1,0 +1,135 @@
+{
+  "auth": {
+    "login": {
+      "title": "Entrar",
+      "email": "E-mail",
+      "password": "Palavra-passe",
+      "loginButton": "Entrar",
+      "forgotPassword": "Esqueceu-se da palavra-passe?",
+      "createAccount": "Criar conta",
+      "emailPlaceholder": "Digite o seu e-mail",
+      "passwordPlaceholder": "Digite a sua palavra-passe",
+      "emailRequired": "E-mail é obrigatório",
+      "passwordRequired": "Palavra-passe é obrigatória",
+      "emailInvalid": "E-mail inválido",
+      "passwordMinLength": "Palavra-passe deve ter pelo menos 6 caracteres",
+      "loginError": "Erro ao fazer login",
+      "loginSuccess": "Login realizado com sucesso",
+      "invalidCredentials": "E-mail ou palavra-passe incorrectos",
+      "genericError": "Ocorreu um erro inesperado. Tente novamente."
+    },
+    "signup": {
+      "title": "Criar Conta",
+      "name": "Nome",
+      "email": "E-mail",
+      "password": "Palavra-passe",
+      "confirmPassword": "Confirmar Palavra-passe",
+      "signupButton": "Criar Conta",
+      "namePlaceholder": "Digite o seu nome",
+      "emailPlaceholder": "Digite o seu e-mail",
+      "passwordPlaceholder": "Digite a sua palavra-passe",
+      "confirmPasswordPlaceholder": "Confirme a sua palavra-passe",
+      "nameRequired": "Nome é obrigatório",
+      "nameMinLength": "Nome deve ter pelo menos 2 caracteres",
+      "emailRequired": "E-mail é obrigatório",
+      "passwordRequired": "Palavra-passe é obrigatória",
+      "confirmPasswordRequired": "Confirmação de palavra-passe é obrigatória",
+      "emailInvalid": "E-mail inválido",
+      "passwordMinLength": "Palavra-passe deve ter pelo menos 6 caracteres",
+      "passwordsDoNotMatch": "As palavras-passe não coincidem",
+      "signupError": "Erro ao criar conta",
+      "signupSuccess": "Conta criada com sucesso",
+      "genericError": "Ocorreu um erro inesperado. Tente novamente."
+    },
+    "common": {
+      "dontHaveAccount": "Não tem uma conta?",
+      "alreadyHaveAccount": "Já tem uma conta?",
+      "signup": "Registe-se",
+      "signin": "Entrar"
+    },
+    "forgotPassword": {
+      "instructions": "Digite o seu e-mail para receber as instruções de recuperação de palavra-passe",
+      "sendEmailButton": "Enviar E-mail",
+      "emailSentInfo": "Enviaremos um e-mail com os passos para recuperar a sua palavra-passe",
+      "emailRequired": "E-mail é obrigatório",
+      "emailInvalid": "E-mail inválido",
+      "emailSentSuccess": "E-mail de recuperação enviado com sucesso",
+      "emailSentMessage": "Um e-mail será enviado para o endereço solicitado se existir na nossa base de dados.",
+      "genericError": "Ocorreu um erro inesperado. Tente novamente."
+    },
+    "error": {
+      "invalid-credentials": "E-mail ou palavra-passe incorrectos",
+      "user-not-found": "Utilizador não encontrado",
+      "wrong-password": "Palavra-passe incorrecta",
+      "email-not-found": "E-mail não encontrado",
+      "account-disabled": "Conta desactivada",
+      "email-already-exists": "E-mail já registado",
+      "weak-password": "Palavra-passe muito fraca",
+      "invalid-email": "E-mail inválido",
+      "network-error": "Erro de ligação",
+      "server-error": "Erro do servidor"
+    }
+  },
+  "user": {
+    "error": {
+      "email-already-exists": "Este e-mail já está registado"
+    }
+  },
+  "common": {
+    "loading": "A carregar...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Guardar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "back": "Voltar",
+    "next": "Seguinte",
+    "previous": "Anterior"
+  },
+  "home": {
+    "welcome": "Bem-vindo ao MyCycle",
+    "hello": "Olá",
+    "logout": "Sair"
+  },
+  "navigation": {
+    "home": "Início",
+    "profile": "Perfil",
+    "settings": "Configurações",
+    "workouts": "Treinos",
+    "nutrition": "Nutrição",
+    "calendar": "Calendário",
+    "menu": "Menu",
+    "help": "Ajuda",
+    "about": "Sobre"
+  },
+  "settings": {
+    "title": "Configurações",
+    "account": "Conta",
+    "preferences": "Preferências",
+    "app": "Aplicação",
+    "editProfile": "Editar Perfil",
+    "privacy": "Privacidade",
+    "security": "Segurança",
+    "notifications": "Notificações",
+    "darkMode": "Modo Escuro",
+    "language": "Idioma",
+    "selectLanguage": "Seleccionar Idioma",
+    "biometric": "Biometria",
+    "dataSync": "Sincronização de Dados",
+    "about": "Sobre a Aplicação",
+    "changePassword": "Alterar Palavra-passe",
+    "changePasswordInstructions": "Digite a sua palavra-passe actual e a nova palavra-passe",
+    "currentPassword": "Palavra-passe Actual",
+    "currentPasswordPlaceholder": "Digite a sua palavra-passe actual",
+    "newPassword": "Nova Palavra-passe",
+    "newPasswordPlaceholder": "Digite a sua nova palavra-passe",
+    "confirmNewPassword": "Confirmar Nova Palavra-passe",
+    "confirmNewPasswordPlaceholder": "Confirme a sua nova palavra-passe",
+    "changePasswordButton": "Alterar Palavra-passe",
+    "passwordRequirements": "A palavra-passe deve ter pelo menos 6 caracteres",
+    "passwordChangedSuccess": "Palavra-passe alterada com sucesso!",
+    "passwordChangedMessage": "A sua palavra-passe foi actualizada com segurança"
+  }
+}

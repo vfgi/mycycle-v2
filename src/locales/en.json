@@ -103,5 +103,33 @@
     "menu": "Menu",
     "help": "Help",
     "about": "About"
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account",
+    "preferences": "Preferences",
+    "app": "App",
+    "editProfile": "Edit Profile",
+    "privacy": "Privacy",
+    "security": "Security",
+    "notifications": "Notifications",
+    "darkMode": "Dark Mode",
+    "language": "Language",
+    "selectLanguage": "Select Language",
+    "biometric": "Biometric",
+    "dataSync": "Data Sync",
+    "about": "About App",
+    "changePassword": "Change Password",
+    "changePasswordInstructions": "Enter your current password and new password",
+    "currentPassword": "Current Password",
+    "currentPasswordPlaceholder": "Enter your current password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Enter your new password",
+    "confirmNewPassword": "Confirm New Password",
+    "confirmNewPasswordPlaceholder": "Confirm your new password",
+    "changePasswordButton": "Change Password",
+    "passwordRequirements": "Password must be at least 6 characters",
+    "passwordChangedSuccess": "Password changed successfully!",
+    "passwordChangedMessage": "Your password has been updated securely"
   }
 }

@@ -103,5 +103,33 @@
     "menu": "Menú",
     "help": "Ayuda",
     "about": "Acerca de"
+  },
+  "settings": {
+    "title": "Configuración",
+    "account": "Cuenta",
+    "preferences": "Preferencias",
+    "app": "Aplicación",
+    "editProfile": "Editar Perfil",
+    "privacy": "Privacidad",
+    "security": "Seguridad",
+    "notifications": "Notificaciones",
+    "darkMode": "Modo Oscuro",
+    "language": "Idioma",
+    "selectLanguage": "Seleccionar Idioma",
+    "biometric": "Biometría",
+    "dataSync": "Sincronización de Datos",
+    "about": "Acerca de la App",
+    "changePassword": "Cambiar Contraseña",
+    "changePasswordInstructions": "Ingresa tu contraseña actual y la nueva contraseña",
+    "currentPassword": "Contraseña Actual",
+    "currentPasswordPlaceholder": "Ingresa tu contraseña actual",
+    "newPassword": "Nueva Contraseña",
+    "newPasswordPlaceholder": "Ingresa tu nueva contraseña",
+    "confirmNewPassword": "Confirmar Nueva Contraseña",
+    "confirmNewPasswordPlaceholder": "Confirma tu nueva contraseña",
+    "changePasswordButton": "Cambiar Contraseña",
+    "passwordRequirements": "La contraseña debe tener al menos 6 caracteres",
+    "passwordChangedSuccess": "¡Contraseña cambiada con éxito!",
+    "passwordChangedMessage": "Tu contraseña ha sido actualizada de forma segura"
   }
 }

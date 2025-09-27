@@ -4,17 +4,22 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { LoginScreen } from "../screens/auth/LoginScreen";
 import { SignupScreen } from "../screens/auth/SignupScreen";
 import { BottomTabNavigator } from "./BottomTabNavigator";
+import { SettingsScreen } from "../screens/settings/SettingsScreen";
+import { ChangePasswordScreen } from "../screens/settings/ChangePasswordScreen";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../hooks/useToast";
 import { useTranslation } from "../hooks/useTranslation";
 import { getErrorMessage } from "../utils/errorHandler";
 import { LoginFormData } from "../schemas/authSchema";
 import { SignupFormData } from "../schemas/signupSchema";
+import { FIXED_COLORS } from "../theme/colors";
 
 export type RootStackParamList = {
   Login: undefined;
   Signup: undefined;
   Home: undefined;
+  Settings: undefined;
+  ChangePassword: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -71,7 +76,31 @@ export const AppNavigator: React.FC = () => {
         }}
       >
         {isAuthenticated ? (
-          <Stack.Screen name="Home" component={BottomTabNavigator} />
+          <>
+            <Stack.Screen name="Home" component={BottomTabNavigator} />
+            <Stack.Screen
+              name="Settings"
+              component={SettingsScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                title: t("settings.title"),
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+                headerTitleStyle: {
+                  fontWeight: "bold",
+                },
+              })}
+            />
+            <Stack.Screen
+              name="ChangePassword"
+              component={ChangePasswordScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+          </>
         ) : (
           <>
             <Stack.Screen name="Login">
