@@ -1,0 +1,64 @@
+{
+  "auth": {
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "loginButton": "Login",
+      "forgotPassword": "Forgot password?",
+      "createAccount": "Create account",
+      "emailPlaceholder": "Enter your email",
+      "passwordPlaceholder": "Enter your password",
+      "emailRequired": "Email is required",
+      "passwordRequired": "Password is required",
+      "emailInvalid": "Invalid email",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "loginError": "Login error",
+      "loginSuccess": "Login successful"
+    },
+    "signup": {
+      "title": "Create Account",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "signupButton": "Create Account",
+      "emailPlaceholder": "Enter your email",
+      "passwordPlaceholder": "Enter your password",
+      "confirmPasswordPlaceholder": "Confirm your password",
+      "emailRequired": "Email is required",
+      "passwordRequired": "Password is required",
+      "confirmPasswordRequired": "Password confirmation is required",
+      "emailInvalid": "Invalid email",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "passwordsDoNotMatch": "Passwords do not match",
+      "signupError": "Error creating account",
+      "signupSuccess": "Account created successfully"
+    },
+    "common": {
+      "dontHaveAccount": "Don't have an account?",
+      "alreadyHaveAccount": "Already have an account?",
+      "signup": "Sign up",
+      "signin": "Sign in"
+    },
+    "forgotPassword": {
+      "instructions": "Enter your email to receive password recovery instructions",
+      "sendEmailButton": "Send Email",
+      "emailSentInfo": "We will send an email with steps to recover your password",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "auth": {
+    "login": {
+      "title": "Entrar",
+      "email": "E-mail",
+      "password": "Senha",
+      "loginButton": "Entrar",
+      "forgotPassword": "Esqueceu a senha?",
+      "createAccount": "Criar conta",
+      "emailPlaceholder": "Digite seu e-mail",
+      "passwordPlaceholder": "Digite sua senha",
+      "emailRequired": "E-mail é obrigatório",
+      "passwordRequired": "Senha é obrigatória",
+      "emailInvalid": "E-mail inválido",
+      "passwordMinLength": "Senha deve ter pelo menos 6 caracteres",
+      "loginError": "Erro ao fazer login",
+      "loginSuccess": "Login realizado com sucesso"
+    },
+    "signup": {
+      "title": "Criar Conta",
+      "email": "E-mail",
+      "password": "Senha",
+      "confirmPassword": "Confirmar Senha",
+      "signupButton": "Criar Conta",
+      "emailPlaceholder": "Digite seu e-mail",
+      "passwordPlaceholder": "Digite sua senha",
+      "confirmPasswordPlaceholder": "Confirme sua senha",
+      "emailRequired": "E-mail é obrigatório",
+      "passwordRequired": "Senha é obrigatória",
+      "confirmPasswordRequired": "Confirmação de senha é obrigatória",
+      "emailInvalid": "E-mail inválido",
+      "passwordMinLength": "Senha deve ter pelo menos 6 caracteres",
+      "passwordsDoNotMatch": "As senhas não coincidem",
+      "signupError": "Erro ao criar conta",
+      "signupSuccess": "Conta criada com sucesso"
+    },
+    "common": {
+      "dontHaveAccount": "Não tem uma conta?",
+      "alreadyHaveAccount": "Já tem uma conta?",
+      "signup": "Cadastre-se",
+      "signin": "Entrar"
+    },
+    "forgotPassword": {
+      "instructions": "Digite seu e-mail para receber as instruções de recuperação de senha",
+      "sendEmailButton": "Enviar E-mail",
+      "emailSentInfo": "Enviaremos um e-mail com os passos para recuperar sua senha",
+      "emailRequired": "E-mail é obrigatório",
+      "emailInvalid": "E-mail inválido"
+    }
+  },
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Salvar",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior"
+  }
+}

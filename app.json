@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "MyCycleV2",
-    "slug": "MyCycleV2",
-    "version": "1.0.0",
+    "name": "MyCycle",
+    "slug": "MyCycle",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#161616"
     },
     "ios": {
       "supportsTablet": true
@@ -18,10 +18,15 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#161616"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "navigationBar": {
+        "backgroundColor": "#161616",
+        "style": "dark",
+        "visible": true
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

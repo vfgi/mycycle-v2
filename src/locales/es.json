@@ -1,0 +1,64 @@
+{
+  "auth": {
+    "login": {
+      "title": "Iniciar sesión",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "loginButton": "Iniciar sesión",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "createAccount": "Crear cuenta",
+      "emailPlaceholder": "Ingresa tu correo electrónico",
+      "passwordPlaceholder": "Ingresa tu contraseña",
+      "emailRequired": "El correo electrónico es obligatorio",
+      "passwordRequired": "La contraseña es obligatoria",
+      "emailInvalid": "Correo electrónico inválido",
+      "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+      "loginError": "Error al iniciar sesión",
+      "loginSuccess": "Inicio de sesión exitoso"
+    },
+    "signup": {
+      "title": "Crear Cuenta",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "signupButton": "Crear Cuenta",
+      "emailPlaceholder": "Ingresa tu correo electrónico",
+      "passwordPlaceholder": "Ingresa tu contraseña",
+      "confirmPasswordPlaceholder": "Confirma tu contraseña",
+      "emailRequired": "El correo electrónico es obligatorio",
+      "passwordRequired": "La contraseña es obligatoria",
+      "confirmPasswordRequired": "La confirmación de contraseña es obligatoria",
+      "emailInvalid": "Correo electrónico inválido",
+      "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+      "passwordsDoNotMatch": "Las contraseñas no coinciden",
+      "signupError": "Error al crear cuenta",
+      "signupSuccess": "Cuenta creada exitosamente"
+    },
+    "common": {
+      "dontHaveAccount": "¿No tienes una cuenta?",
+      "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+      "signup": "Regístrate",
+      "signin": "Iniciar sesión"
+    },
+    "forgotPassword": {
+      "instructions": "Ingresa tu correo electrónico para recibir las instrucciones de recuperación de contraseña",
+      "sendEmailButton": "Enviar Correo",
+      "emailSentInfo": "Enviaremos un correo con los pasos para recuperar tu contraseña",
+      "emailRequired": "El correo electrónico es obligatorio",
+      "emailInvalid": "Correo electrónico inválido"
+    }
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Guardar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior"
+  }
+}
