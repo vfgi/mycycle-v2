@@ -6,6 +6,8 @@ export { CustomInput } from "./CustomInput";
 export { CustomDrawer } from "./CustomDrawer";
 export { CustomButton } from "./CustomButton";
 export { Header } from "./Header";
+export { HeaderLogo } from "./HeaderLogo";
+export { MeasurementCard } from "./MeasurementCard";
 export { Menu } from "./Menu";
 export { HelpDrawer } from "./HelpDrawer";
 export { AboutDrawer } from "./AboutDrawer";

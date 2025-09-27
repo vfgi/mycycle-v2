@@ -107,6 +107,67 @@
     "goals": "Goals",
     "history": "History"
   },
+  "measurements": {
+    "title": "Body Measurements",
+    "description": "The more measurement data we have, the more accurate our calculations and personalized recommendations will be for you.",
+    "save": "Save Measurements",
+    "placeholder": "Enter measurement in {unit}",
+    "optional": "optional",
+    "updated": "Measurements updated",
+    "updateError": "Failed to save measurements",
+    "height": {
+      "label": "Height",
+      "description": "Your total height in centimeters"
+    },
+    "neck": {
+      "label": "Neck",
+      "description": "Neck circumference at the narrowest part"
+    },
+    "back": {
+      "label": "Back",
+      "description": "Back width from shoulder to shoulder"
+    },
+    "biceps": {
+      "label": "Biceps",
+      "description": "Arm circumference when flexed"
+    },
+    "forearm": {
+      "label": "Forearm",
+      "description": "Forearm circumference at the widest part"
+    },
+    "wrist": {
+      "label": "Wrist",
+      "description": "Wrist circumference"
+    },
+    "chest": {
+      "label": "Chest",
+      "description": "Chest circumference at nipple line"
+    },
+    "abdomen": {
+      "label": "Abdomen",
+      "description": "Abdomen circumference at navel height"
+    },
+    "waist": {
+      "label": "Waist",
+      "description": "Waist circumference at the narrowest part"
+    },
+    "hip": {
+      "label": "Hip",
+      "description": "Hip circumference at the widest part"
+    },
+    "thigh": {
+      "label": "Thigh",
+      "description": "Thigh circumference at the widest part"
+    },
+    "calf": {
+      "label": "Calf",
+      "description": "Calf circumference at the widest part"
+    },
+    "foot": {
+      "label": "Foot",
+      "description": "Foot length from big toe to heel"
+    }
+  },
   "settings": {
     "title": "Settings",
     "account": "Account",

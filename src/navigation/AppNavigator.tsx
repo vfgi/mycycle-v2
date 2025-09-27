@@ -17,6 +17,7 @@ import { getErrorMessage } from "../utils/errorHandler";
 import { LoginFormData } from "../schemas/authSchema";
 import { SignupFormData } from "../schemas/signupSchema";
 import { FIXED_COLORS } from "../theme/colors";
+import { HeaderLogo } from "../components/HeaderLogo";
 
 export type RootStackParamList = {
   Login: undefined;
@@ -120,14 +121,11 @@ export const AppNavigator: React.FC = () => {
               component={MeasurementsScreen}
               options={({ route }) => ({
                 headerShown: true,
-                title: t("settings.title"),
+                headerTitle: () => <HeaderLogo />,
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
                 headerTintColor: FIXED_COLORS.text[50],
-                headerTitleStyle: {
-                  fontWeight: "bold",
-                },
               })}
             />
             <Stack.Screen
@@ -135,14 +133,11 @@ export const AppNavigator: React.FC = () => {
               component={GoalsScreen}
               options={({ route }) => ({
                 headerShown: true,
-                title: t("settings.title"),
+                headerTitle: () => <HeaderLogo />,
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
                 headerTintColor: FIXED_COLORS.text[50],
-                headerTitleStyle: {
-                  fontWeight: "bold",
-                },
               })}
             />
             <Stack.Screen
@@ -150,14 +145,11 @@ export const AppNavigator: React.FC = () => {
               component={HistoryScreen}
               options={({ route }) => ({
                 headerShown: true,
-                title: t("settings.title"),
+                headerTitle: () => <HeaderLogo />,
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
                 headerTintColor: FIXED_COLORS.text[50],
-                headerTitleStyle: {
-                  fontWeight: "bold",
-                },
               })}
             />
           </>

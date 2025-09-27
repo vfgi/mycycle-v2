@@ -107,6 +107,67 @@
     "goals": "Objetivos",
     "history": "Historial"
   },
+  "measurements": {
+    "title": "Medidas Corporales",
+    "description": "Cuantos más datos de medidas tengamos, más precisos serán nuestros cálculos y recomendaciones personalizadas para ti.",
+    "save": "Guardar Medidas",
+    "placeholder": "Ingresa la medida en {unit}",
+    "optional": "opcional",
+    "updated": "Medidas actualizadas",
+    "updateError": "Error al guardar medidas",
+    "height": {
+      "label": "Altura",
+      "description": "Tu altura total en centímetros"
+    },
+    "neck": {
+      "label": "Cuello",
+      "description": "Circunferencia del cuello en la parte más estrecha"
+    },
+    "back": {
+      "label": "Espalda",
+      "description": "Ancho de espalda de hombro a hombro"
+    },
+    "biceps": {
+      "label": "Bíceps",
+      "description": "Circunferencia del brazo contraído"
+    },
+    "forearm": {
+      "label": "Antebrazo",
+      "description": "Circunferencia del antebrazo en la parte más ancha"
+    },
+    "wrist": {
+      "label": "Muñeca",
+      "description": "Circunferencia de la muñeca"
+    },
+    "chest": {
+      "label": "Pecho",
+      "description": "Circunferencia del pecho a la altura de los pezones"
+    },
+    "abdomen": {
+      "label": "Abdomen",
+      "description": "Circunferencia del abdomen a la altura del ombligo"
+    },
+    "waist": {
+      "label": "Cintura",
+      "description": "Circunferencia de la cintura en la parte más estrecha"
+    },
+    "hip": {
+      "label": "Cadera",
+      "description": "Circunferencia de la cadera en la parte más ancha"
+    },
+    "thigh": {
+      "label": "Muslo",
+      "description": "Circunferencia del muslo en la parte más ancha"
+    },
+    "calf": {
+      "label": "Pantorrilla",
+      "description": "Circunferencia de la pantorrilla en la parte más ancha"
+    },
+    "foot": {
+      "label": "Pie",
+      "description": "Longitud del pie desde el dedo gordo hasta el talón"
+    }
+  },
   "settings": {
     "title": "Configuración",
     "account": "Cuenta",

@@ -28,12 +28,18 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#161616"
       },
-      "edgeToEdgeEnabled": true,
+      "edgeToEdgeEnabled": false,
       "predictiveBackGestureEnabled": false,
       "navigationBar": {
-        "backgroundColor": "transparent",
-        "style": "dark",
-        "visible": true
+        "backgroundColor": "#161616",
+        "style": "light",
+        "visible": true,
+        "barStyle": "light-content"
+      },
+      "statusBar": {
+        "backgroundColor": "#161616",
+        "barStyle": "light-content",
+        "translucent": false
       },
       "permissions": [
         "RECEIVE_BOOT_COMPLETED",

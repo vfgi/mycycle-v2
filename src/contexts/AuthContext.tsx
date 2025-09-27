@@ -36,13 +36,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const initializeAuth = async () => {
     try {
+      console.log("🔍 [AuthContext] Initializing auth...");
       const [user, accessToken, refreshToken] = await Promise.all([
         tokenStorage.getUser(),
         tokenStorage.getAccessToken(),
         tokenStorage.getRefreshToken(),
       ]);
 
+      console.log("🔍 [AuthContext] Storage data:", {
+        hasUser: !!user,
+        hasAccessToken: !!accessToken,
+        hasRefreshToken: !!refreshToken,
+        refreshTokenLength: refreshToken?.length || 0,
+      });
+
       if (accessToken && refreshToken) {
+        console.log("✅ [AuthContext] User authenticated from storage");
         setAuthState({
           user,
           accessToken,
@@ -51,10 +60,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           isLoading: false,
         });
       } else {
+        console.log("❌ [AuthContext] No valid tokens found in storage");
         setAuthState((prev) => ({ ...prev, isLoading: false }));
       }
     } catch (error) {
-      console.error("Error initializing auth:", error);
+      console.error("❌ [AuthContext] Error initializing auth:", error);
       setAuthState((prev) => ({ ...prev, isLoading: false }));
     }
   };
@@ -174,24 +184,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const refreshAuth = async () => {
     try {
+      console.log("🔄 [AuthContext] Starting refresh auth...");
       const refreshToken = await tokenStorage.getRefreshToken();
 
+      console.log("🔍 [AuthContext] Refresh token from storage:", {
+        hasRefreshToken: !!refreshToken,
+        refreshTokenLength: refreshToken?.length || 0,
+        refreshTokenPreview: refreshToken
+          ? `${refreshToken.substring(0, 20)}...`
+          : null,
+      });
+
       if (!refreshToken) {
+        console.log("❌ [AuthContext] No refresh token found, logging out");
         await logout();
         return;
       }
 
+      console.log("🌐 [AuthContext] Calling refresh token API...");
       const response = await authService.refreshToken(refreshToken);
+      console.log("✅ [AuthContext] Refresh token API success");
 
       // Salvar tokens
       await tokenStorage.setTokens(
         response.access_token,
         response.refresh_token
       );
+      console.log("💾 [AuthContext] New tokens saved to storage");
 
       // Se houver dados do usuário, salvar também
       if (response.user) {
         await tokenStorage.setUser(response.user);
+        console.log("👤 [AuthContext] User data updated");
       }
 
       setAuthState({
@@ -201,9 +225,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isAuthenticated: true,
         isLoading: false,
       });
+      console.log("✅ [AuthContext] Auth state updated successfully");
     } catch (error) {
-      console.error("Error refreshing auth:", error);
+      console.error("❌ [AuthContext] Error refreshing auth:", error);
       // Se o refresh token falhar, fazer logout
+      console.log("🚪 [AuthContext] Refresh failed, logging out user");
       await logout();
     }
   };

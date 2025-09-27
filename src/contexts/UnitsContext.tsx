@@ -20,6 +20,14 @@ interface UnitsContextType {
   formatHeight: (cm: number) => string;
   formatDistance: (km: number) => string;
   formatTemperature: (celsius: number) => string;
+  // Body measurements functions
+  convertBodyMeasurement: (cm: number) => { value: number; unit: string };
+  formatBodyMeasurement: (cm: number) => string;
+  convertInputToMetric: (
+    value: string,
+    measurementType: "height" | "body"
+  ) => number;
+  getUnitForMeasurement: (measurementType: "height" | "body") => string;
 }
 
 const UnitsContext = createContext<UnitsContextType | undefined>(undefined);
@@ -146,6 +154,58 @@ export const UnitsProvider: React.FC<UnitsProviderProps> = ({ children }) => {
     return `${converted.value}${converted.unit}`;
   };
 
+  // Body measurements functions
+  const convertBodyMeasurement = (
+    cm: number
+  ): { value: number; unit: string } => {
+    if (unitSystem === "imperial") {
+      return {
+        value: Math.round((cm / 2.54) * 10) / 10, // cm to inches
+        unit: "in",
+      };
+    }
+    return {
+      value: cm,
+      unit: "cm",
+    };
+  };
+
+  const formatBodyMeasurement = (cm: number): string => {
+    const converted = convertBodyMeasurement(cm);
+    return `${converted.value} ${converted.unit}`;
+  };
+
+  const convertInputToMetric = (
+    value: string,
+    measurementType: "height" | "body"
+  ): number => {
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) return 0;
+
+    if (unitSystem === "imperial") {
+      if (measurementType === "height") {
+        // For height, assume input is in feet.inches format (e.g., 5.11 = 5'11")
+        const feet = Math.floor(numValue);
+        const inches = (numValue % 1) * 100;
+        const totalInches = feet * 12 + inches;
+        return Math.round(totalInches * 2.54 * 10) / 10; // inches to cm
+      } else {
+        // For body measurements, convert inches to cm
+        return Math.round(numValue * 2.54 * 10) / 10;
+      }
+    }
+    return numValue; // Already in metric
+  };
+
+  const getUnitForMeasurement = (
+    measurementType: "height" | "body"
+  ): string => {
+    if (unitSystem === "imperial") {
+      return measurementType === "height" ? "ft" : "in";
+    }
+    return "cm";
+  };
+
   const contextValue: UnitsContextType = {
     unitSystem,
     setUnitSystem,
@@ -158,6 +218,10 @@ export const UnitsProvider: React.FC<UnitsProviderProps> = ({ children }) => {
     formatHeight,
     formatDistance,
     formatTemperature,
+    convertBodyMeasurement,
+    formatBodyMeasurement,
+    convertInputToMetric,
+    getUnitForMeasurement,
   };
 
   return (

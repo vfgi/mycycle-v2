@@ -7,10 +7,14 @@ import { AppNavigator } from "./src/navigation/AppNavigator";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { UnitsProvider } from "./src/contexts/UnitsContext";
 import { oneSignalService } from "./src/services/oneSignalService";
+import { useSystemBars } from "./src/hooks/useSystemBars";
 import "./src/i18n";
 import "./src/utils/suppressWarnings";
 
 export default function App() {
+  // Configurar barras do sistema
+  useSystemBars();
+
   useEffect(() => {
     // Inicializar OneSignal quando o app carrega
     oneSignalService.initialize().catch((error) => {
@@ -26,7 +30,11 @@ export default function App() {
             <AppNavigator />
           </AuthProvider>
         </UnitsProvider>
-        <StatusBar style="light" backgroundColor="transparent" translucent />
+        <StatusBar
+          style="light"
+          backgroundColor="transparent"
+          translucent={true}
+        />
       </GluestackUIProvider>
     </SafeAreaProvider>
   );

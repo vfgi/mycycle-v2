@@ -1,12 +1,18 @@
 export interface Measurements {
-  height: number;
-  weight: number;
-  arm_size: number;
-  leg_size: number;
-  neck_size: number;
-  waist_size: number;
-  hip_size: number;
-  chest_size: number;
+  height?: number;
+  weight?: number;
+  neck_size?: number;
+  back_size?: number;
+  biceps_size?: number;
+  forearm_size?: number;
+  wrist_size?: number;
+  chest_size?: number;
+  abdomen_size?: number;
+  waist_size?: number;
+  hip_size?: number;
+  thigh_size?: number;
+  calf_size?: number;
+  foot_size?: number;
 }
 
 export interface User {

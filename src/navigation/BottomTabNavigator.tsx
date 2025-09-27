@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { HomeScreen } from "../screens/home/HomeScreen";
 import { WorkoutsScreen } from "../screens/workouts/WorkoutsScreen";
 import { NutritionScreen } from "../screens/nutrition/NutritionScreen";
@@ -34,6 +35,7 @@ type TabNavigationProp = BottomTabNavigationProp<BottomTabParamList>;
 
 export const BottomTabNavigator: React.FC = () => {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const navigation = useNavigation<NavigationProp>();
@@ -97,7 +99,11 @@ export const BottomTabNavigator: React.FC = () => {
           tabBarStyle: {
             backgroundColor: FIXED_COLORS.background[800],
             borderTopWidth: 0,
-            height: Platform.OS === "ios" ? 80 : 60,
+            height: Platform.OS === "ios" ? 80 : 50 + insets.bottom,
+            paddingBottom:
+              Platform.OS === "android"
+                ? Math.max(insets.bottom, 8)
+                : insets.bottom,
             justifyContent: "center",
             alignItems: "center",
           },
