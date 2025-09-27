@@ -6,6 +6,7 @@ export interface EnvironmentConfig {
   IS_PRODUCTION: boolean;
   IS_DEVELOPMENT: boolean;
   ENVIRONMENT: "development" | "production";
+  ONESIGNAL_APP_ID: string;
 }
 
 type Environment = "development" | "production";
@@ -55,12 +56,17 @@ const getEnvironmentConfig = (): EnvironmentConfig => {
     ? parseInt(process.env.EXPO_PUBLIC_API_TIMEOUT, 10)
     : 30000;
 
+  const oneSignalAppId = process.env.EXPO_PUBLIC_ONESIGNAL_APP_ID || 
+    Constants.expoConfig?.extra?.oneSignalAppId || 
+    "";
+
   return {
     API_BASE_URL: apiBaseUrl,
     API_TIMEOUT: apiTimeout,
     IS_PRODUCTION: environment === "production",
     IS_DEVELOPMENT: environment === "development",
     ENVIRONMENT: environment,
+    ONESIGNAL_APP_ID: oneSignalAppId,
   };
 };
 

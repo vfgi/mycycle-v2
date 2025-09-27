@@ -23,11 +23,18 @@ import { notificationService } from "../../services/notificationService";
 import { notificationStorage } from "../../services/notificationStorage";
 import { useNavigation } from "@react-navigation/native";
 import { CreateReminderModal } from "./CreateReminderModal";
+import { useOneSignal } from "../../hooks/useOneSignal";
 
 export const NotificationsScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const { showError, showSuccess } = useToast();
+  const {
+    user: oneSignalUser,
+    updatePreferences,
+    enableNotifications,
+    disableNotifications,
+  } = useOneSignal();
   const [notifications, setNotifications] = useState<LocalNotification[]>([]);
   const [settings, setSettings] = useState<NotificationSettings>({
     pushEnabled: true,
@@ -106,6 +113,17 @@ export const NotificationsScreen: React.FC = () => {
       const newSettings = { ...settings, [key]: value };
       await notificationStorage.saveNotificationSettings(newSettings);
       setSettings(newSettings);
+
+      // Controlar OneSignal para push notifications
+      if (key === "pushEnabled") {
+        if (value) {
+          await enableNotifications();
+          showSuccess("Push notifications habilitadas");
+        } else {
+          await disableNotifications();
+          showSuccess("Push notifications desabilitadas");
+        }
+      }
     } catch (error) {
       console.error("Error updating settings:", error);
       showError(t("notifications.settingsError"));

@@ -9,6 +9,7 @@ import { AuthState, User, LoginRequest, SignupRequest } from "../types/auth";
 import { authService } from "../services/authService";
 import { userService } from "../services/userService";
 import { tokenStorage } from "../services/tokenStorage";
+import { oneSignalService } from "../services/oneSignalService";
 
 interface AuthContextType extends AuthState {
   login: (credentials: LoginRequest) => Promise<void>;
@@ -86,6 +87,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Salvar dados do usuário
       if (userProfile) {
         await tokenStorage.setUser(userProfile);
+
+        // Configurar OneSignal com dados do usuário
+        try {
+          await oneSignalService.setUserId(userProfile.id.toString());
+          await oneSignalService.setUserEmail(userProfile.email);
+        } catch (error) {
+          console.error("Error configuring OneSignal user on login:", error);
+        }
       }
 
       setAuthState({
@@ -125,6 +134,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Salvar dados do usuário
       if (userProfile) {
         await tokenStorage.setUser(userProfile);
+
+        // Configurar OneSignal com dados do usuário
+        try {
+          await oneSignalService.setUserId(userProfile.id.toString());
+          await oneSignalService.setUserEmail(userProfile.email);
+        } catch (error) {
+          console.error("Error configuring OneSignal user on signup:", error);
+        }
       }
 
       setAuthState({

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MyCycle",
-    "slug": "MyCycle",
+    "name": "MyCycleHT",
+    "slug": "MyCycleHT",
     "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,9 +13,17 @@
       "backgroundColor": "#161616"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mycycleht.app",
+      "infoPlist": {
+        "UIBackgroundModes": ["remote-notification"],
+        "NSUserNotificationAlertStyle": "alert",
+        "NSLocalNotificationUsageDescription": "This app uses notifications to remind you about your workouts and meals.",
+        "NSUserNotificationsUsageDescription": "This app needs permission to send notifications about your workouts and reminders."
+      }
     },
     "android": {
+      "package": "com.mycycleht.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#161616"
@@ -26,10 +34,39 @@
         "backgroundColor": "transparent",
         "style": "dark",
         "visible": true
-      }
+      },
+      "permissions": [
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE",
+        "WAKE_LOCK",
+        "SCHEDULE_EXACT_ALARM",
+        "USE_EXACT_ALARM",
+        "POST_NOTIFICATIONS"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#000000",
+          "defaultChannel": "default"
+        }
+      ],
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "development",
+          "devTeam": "2532D63Q8G",
+          "iPhoneDeploymentTarget": "11.0"
+        }
+      ]
+    ],
+    "extra": {
+      "oneSignalAppId": "42bc5879-89ae-417e-9bc9-b229a399faf4"
     }
   }
 }

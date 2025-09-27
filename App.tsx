@@ -1,14 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AppNavigator } from "./src/navigation/AppNavigator";
 import { AuthProvider } from "./src/contexts/AuthContext";
+import { oneSignalService } from "./src/services/oneSignalService";
 import "./src/i18n";
 import "./src/utils/suppressWarnings";
 
 export default function App() {
+  useEffect(() => {
+    // Inicializar OneSignal quando o app carrega
+    oneSignalService.initialize().catch((error) => {
+      console.error("Failed to initialize OneSignal:", error);
+    });
+  }, []);
+
   return (
     <SafeAreaProvider>
       <GluestackUIProvider config={config}>
