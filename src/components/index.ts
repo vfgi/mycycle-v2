@@ -5,3 +5,5 @@ export { ScreenContainer } from "./ScreenContainer";
 export { CustomInput } from "./CustomInput";
 export { CustomDrawer } from "./CustomDrawer";
 export { CustomButton } from "./CustomButton";
+export { Header } from "./Header";
+export { Menu } from "./Menu";

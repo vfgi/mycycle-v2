@@ -25,17 +25,6 @@ class ApiService {
     try {
       const url = `${this.baseURL}${endpoint}`;
 
-      // Log da requisição
-      console.log("🚀 API Request:", {
-        environment: ENV.ENVIRONMENT,
-        baseURL: this.baseURL,
-        endpoint,
-        fullURL: url,
-        method: options.method || "GET",
-        body: options.body,
-        timeout: this.timeout,
-      });
-
       // Adicionar token de autorização se disponível
       const accessToken = await tokenStorage.getAccessToken();
       const headers: Record<string, string> = {
@@ -60,14 +49,6 @@ class ApiService {
       const response = await fetch(url, config);
       clearTimeout(timeoutId);
       const data = await response.json();
-
-      // Log da resposta
-      console.log("📥 API Response:", {
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok,
-        data,
-      });
 
       if (!response.ok) {
         // Se for erro 401 (Unauthorized), limpar tokens

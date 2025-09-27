@@ -1,6 +1,5 @@
 import React from "react";
 import { StatusBar } from "expo-status-bar";
-import { Platform } from "react-native";
 import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
 import { SafeAreaProvider } from "react-native-safe-area-context";

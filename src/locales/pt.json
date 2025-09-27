@@ -92,5 +92,16 @@
     "welcome": "Bem-vindo ao MyCycle",
     "hello": "Olá",
     "logout": "Sair"
+  },
+  "navigation": {
+    "home": "Início",
+    "profile": "Perfil",
+    "settings": "Configurações",
+    "workouts": "Treinos",
+    "nutrition": "Nutrição",
+    "calendar": "Calendário",
+    "menu": "Menu",
+    "help": "Ajuda",
+    "about": "Sobre"
   }
 }

@@ -1,10 +1,26 @@
+export interface Measurements {
+  height: number;
+  weight: number;
+  arm_size: number;
+  leg_size: number;
+  neck_size: number;
+  waist_size: number;
+  hip_size: number;
+  chest_size: number;
+}
+
 export interface User {
   id: string;
   name: string;
   email: string;
+  phone?: string;
+  birth_date?: string;
+  gender?: string;
+  image?: string;
   role: string;
   is_active: boolean;
-  measurements: Record<string, any>;
+  measurements?: Measurements;
+  followUp?: string[];
 }
 
 export interface AuthResponse {

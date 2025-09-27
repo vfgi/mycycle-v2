@@ -1,21 +1,13 @@
 import React from "react";
-import { VStack, Text, HStack } from "@gluestack-ui/themed";
+import { VStack, Text } from "@gluestack-ui/themed";
 import { useAuth } from "../../contexts/AuthContext";
 import { FIXED_COLORS } from "../../theme/colors";
 import { useTranslation } from "../../hooks/useTranslation";
-import { SafeContainer, CustomButton } from "../../components";
+import { SafeContainer } from "../../components";
 
 export const HomeScreen: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { t } = useTranslation();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
 
   return (
     <SafeContainer>
@@ -48,13 +40,6 @@ export const HomeScreen: React.FC = () => {
               </Text>
             </VStack>
           )}
-
-          <CustomButton
-            onPress={handleLogout}
-            text={t("home.logout")}
-            bg={FIXED_COLORS.error[600]}
-            mt="$8"
-          />
         </VStack>
       </VStack>
     </SafeContainer>

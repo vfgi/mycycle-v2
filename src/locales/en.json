@@ -92,5 +92,16 @@
     "welcome": "Welcome to MyCycle",
     "hello": "Hello",
     "logout": "Logout"
+  },
+  "navigation": {
+    "home": "Home",
+    "profile": "Profile",
+    "settings": "Settings",
+    "workouts": "Workouts",
+    "nutrition": "Nutrition",
+    "calendar": "Calendar",
+    "menu": "Menu",
+    "help": "Help",
+    "about": "About"
   }
 }

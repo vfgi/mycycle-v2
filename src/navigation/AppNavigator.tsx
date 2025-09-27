@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { LoginScreen } from "../screens/auth/LoginScreen";
 import { SignupScreen } from "../screens/auth/SignupScreen";
-import { HomeScreen } from "../screens/home/HomeScreen";
+import { BottomTabNavigator } from "./BottomTabNavigator";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../hooks/useToast";
 import { useTranslation } from "../hooks/useTranslation";
@@ -62,9 +62,6 @@ export const AppNavigator: React.FC = () => {
     }
   };
 
-  console.log("isLoading", isLoading);
-  console.log("isAuthenticated", isAuthenticated);
-
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -74,7 +71,7 @@ export const AppNavigator: React.FC = () => {
         }}
       >
         {isAuthenticated ? (
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Home" component={BottomTabNavigator} />
         ) : (
           <>
             <Stack.Screen name="Login">

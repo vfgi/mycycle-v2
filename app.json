@@ -23,7 +23,7 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "navigationBar": {
-        "backgroundColor": "#161616",
+        "backgroundColor": "transparent",
         "style": "dark",
         "visible": true
       }

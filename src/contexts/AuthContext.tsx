@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { AuthState, User, LoginRequest, SignupRequest } from "../types/auth";
 import { authService } from "../services/authService";
+import { userService } from "../services/userService";
 import { tokenStorage } from "../services/tokenStorage";
 
 interface AuthContextType extends AuthState {
@@ -73,13 +74,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         response.refresh_token
       );
 
-      // Se houver dados do usuário, salvar também
-      if (response.user) {
-        await tokenStorage.setUser(response.user);
+      // Buscar perfil completo do usuário
+      let userProfile = response.user;
+      try {
+        userProfile = await userService.getProfile();
+      } catch (error) {
+        console.error("Error fetching user profile after login:", error);
+        // Se falhar, usa os dados básicos da resposta de login
+      }
+
+      // Salvar dados do usuário
+      if (userProfile) {
+        await tokenStorage.setUser(userProfile);
       }
 
       setAuthState({
-        user: response.user || null,
+        user: userProfile || null,
         accessToken: response.access_token,
         refreshToken: response.refresh_token,
         isAuthenticated: true,
@@ -103,13 +113,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         response.refresh_token
       );
 
-      // Se houver dados do usuário, salvar também
-      if (response.user) {
-        await tokenStorage.setUser(response.user);
+      // Buscar perfil completo do usuário
+      let userProfile = response.user;
+      try {
+        userProfile = await userService.getProfile();
+      } catch (error) {
+        console.error("Error fetching user profile after signup:", error);
+        // Se falhar, usa os dados básicos da resposta de signup
+      }
+
+      // Salvar dados do usuário
+      if (userProfile) {
+        await tokenStorage.setUser(userProfile);
       }
 
       setAuthState({
-        user: response.user || null,
+        user: userProfile || null,
         accessToken: response.access_token,
         refreshToken: response.refresh_token,
         isAuthenticated: true,
