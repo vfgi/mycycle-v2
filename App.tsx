@@ -5,6 +5,7 @@ import { config } from "@gluestack-ui/config";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AppNavigator } from "./src/navigation/AppNavigator";
 import { AuthProvider } from "./src/contexts/AuthContext";
+import { UnitsProvider } from "./src/contexts/UnitsContext";
 import { oneSignalService } from "./src/services/oneSignalService";
 import "./src/i18n";
 import "./src/utils/suppressWarnings";
@@ -20,9 +21,11 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <GluestackUIProvider config={config}>
-        <AuthProvider>
-          <AppNavigator />
-        </AuthProvider>
+        <UnitsProvider>
+          <AuthProvider>
+            <AppNavigator />
+          </AuthProvider>
+        </UnitsProvider>
         <StatusBar style="light" backgroundColor="transparent" translucent />
       </GluestackUIProvider>
     </SafeAreaProvider>

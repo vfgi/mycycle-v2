@@ -102,7 +102,10 @@
     "calendar": "Calendário",
     "menu": "Menu",
     "help": "Ajuda",
-    "about": "Sobre"
+    "about": "Sobre",
+    "measurements": "Medidas",
+    "goals": "Objetivos",
+    "history": "Histórico"
   },
   "settings": {
     "title": "Configurações",
@@ -119,7 +122,15 @@
     "biometric": "Biometria",
     "dataSync": "Sincronização de Dados",
     "about": "Sobre o App",
+    "unitsLabel": "Unidades de Medida",
     "changePassword": "Alterar Senha",
+    "units": {
+      "selectUnit": "Selecionar Unidade",
+      "metric": "Sistema Métrico",
+      "metricDesc": "Quilogramas, centímetros, quilômetros",
+      "imperial": "Sistema Imperial",
+      "imperialDesc": "Libras, pés, milhas"
+    },
     "changePasswordInstructions": "Digite sua senha atual e a nova senha",
     "currentPassword": "Senha Atual",
     "currentPasswordPlaceholder": "Digite sua senha atual",
@@ -153,6 +164,59 @@
     "settingsError": "Não foi possível atualizar as configurações",
     "reminder": "lembrete",
     "reminders": "lembretes",
-    "noRemindersShort": "Nenhum lembrete"
+    "noRemindersShort": "Nenhum lembrete",
+    "createReminderTitle": "Criar Novo Lembrete",
+    "reminderTitle": "Título do Lembrete",
+    "reminderTitlePlaceholder": "Ex: Lembrete de Treino",
+    "reminderMessage": "Mensagem",
+    "reminderMessagePlaceholder": "Ex: Hora de treinar pernas!",
+    "reminderMinutes": "Minutos para disparar",
+    "reminderMinutesPlaceholder": "Ex: 5 (para 5 minutos)",
+    "createButton": "Criar Lembrete",
+    "cancelButton": "Cancelar",
+    "createSuccess": "Lembrete criado com sucesso!",
+    "createError": "Não foi possível criar o lembrete",
+    "minutesInvalid": "Minutos deve ser um número válido maior que 0"
+  },
+  "help": {
+    "title": "Ajuda e Suporte",
+    "contactSupport": "Entrar em Contato com o Suporte",
+    "supportDescription": "Precisa de ajuda? Nossa equipe de suporte está pronta para ajudá-lo.",
+    "supportEmail": "support@mycycleht.com",
+    "sendEmail": "Enviar E-mail",
+    "emailSubject": "Suporte MyCycle - Preciso de Ajuda",
+    "emailBody": "Olá,\n\nPreciso de ajuda com o aplicativo MyCycle.\n\nDescreva seu problema ou dúvida abaixo:\n\n",
+    "emailSent": "E-mail de suporte enviado com sucesso!"
+  },
+  "about": {
+    "title": "Sobre o MyCycle",
+    "appDescription": "O MyCycle é desenvolvido em parceria com personal trainers especialistas, garantindo que todos os cálculos e recomendações sejam baseados em ciência e evidências.",
+    "scientificBasis": "Base Científica",
+    "calculationsTitle": "Nossos Cálculos São Baseados Em:",
+    "partnerships": "Parcerias",
+    "partnershipsDesc": "Desenvolvido em colaboração com personal trainers certificados e especialistas em fitness.",
+    "version": "Versão",
+    "buildNumber": "Build"
+  },
+  "medical": {
+    "bmiTitle": "Índice de Massa Corporal (IMC)",
+    "bmiFormula": "IMC = peso(kg) / altura(m)²",
+    "bmiSource": "Organização Mundial da Saúde (OMS)",
+    "bmiReference": "WHO Technical Report Series, No. 854",
+    "bodyFatTitle": "Percentual de Gordura Corporal",
+    "bodyFatUSArmy": "Fórmula do Exército Americano",
+    "bodyFatUSArmyRef": "US Army Body Composition Program",
+    "bodyFatYMCA": "Protocolo YMCA",
+    "bodyFatYMCARef": "YMCA Fitness Testing and Assessment Manual",
+    "bodyFatDeurenberg": "Equação de Deurenberg",
+    "bodyFatDeurenbergRef": "Deurenberg et al. (1991) - International Journal of Obesity",
+    "caloriesTitle": "Cálculo de Calorias",
+    "mifflinFormula": "Equação de Mifflin-St Jeor",
+    "mifflinRef": "Mifflin et al. (1990) - American Journal of Clinical Nutrition",
+    "katchFormula": "Fórmula de Katch-McArdle",
+    "katchRef": "McArdle, Katch & Katch - Exercise Physiology",
+    "tdeeTitle": "Gasto Energético Total Diário (TDEE)",
+    "tdeeDescription": "Baseado nos fatores de atividade do Institute of Medicine",
+    "tdeeReference": "Dietary Reference Intakes for Energy - National Academy Press"
   }
 }

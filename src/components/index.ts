@@ -7,3 +7,5 @@ export { CustomDrawer } from "./CustomDrawer";
 export { CustomButton } from "./CustomButton";
 export { Header } from "./Header";
 export { Menu } from "./Menu";
+export { HelpDrawer } from "./HelpDrawer";
+export { AboutDrawer } from "./AboutDrawer";

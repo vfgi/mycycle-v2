@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { ScrollView } from "react-native";
 import {
   VStack,
@@ -13,16 +13,20 @@ import { FIXED_COLORS } from "../../theme/colors";
 import { useTranslation } from "../../hooks/useTranslation";
 import { SafeContainer } from "../../components";
 import { LanguageSelectorModal } from "./LanguageSelectorModal";
+import { UnitSelectorModal } from "./UnitSelectorModal";
 import { getCurrentLanguage } from "../../i18n";
 import { useNavigation } from "@react-navigation/native";
 import { notificationService } from "../../services/notificationService";
+import { useUnits } from "../../contexts/UnitsContext";
 
 export const SettingsScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
-  const [notifications, setNotifications] = useState(true);
+  const { unitSystem } = useUnits();
   const [isLanguageDialogOpen, setIsLanguageDialogOpen] = useState(false);
+  const [isUnitDialogOpen, setIsUnitDialogOpen] = useState(false);
   const [remindersCount, setRemindersCount] = useState(0);
+  const [forceUpdate, setForceUpdate] = useState(0);
 
   useEffect(() => {
     loadRemindersCount();
@@ -65,50 +69,77 @@ export const SettingsScreen: React.FC = () => {
     return `${count} ${reminderWord}`;
   };
 
-  const settingsSections = [
-    {
-      title: t("settings.account"),
-      items: [
-        {
-          key: "security",
-          icon: "lock-closed-outline",
-          label: t("settings.security"),
-          action: "navigate",
-          children: t("settings.changePassword"),
-        },
-      ],
-    },
-    {
-      title: t("settings.preferences"),
-      items: [
-        {
-          key: "notifications",
-          icon: "notifications-outline",
-          label: t("settings.notifications"),
-          action: "navigate",
-          children: getRemindersText(remindersCount),
-        },
-        {
-          key: "language",
-          icon: "language-outline",
-          label: t("settings.language"),
-          action: "dialog",
-          children: getCurrentLanguageName(),
-        },
-      ],
-    },
-    {
-      title: t("settings.app"),
-      items: [
-        {
-          key: "about",
-          icon: "information-circle-outline",
-          label: t("settings.about"),
-          action: "navigate",
-        },
-      ],
-    },
-  ];
+  const handleUnitsModalClose = () => {
+    setIsUnitDialogOpen(false);
+    // Forçar re-render para atualizar a interface
+    setForceUpdate((prev) => prev + 1);
+  };
+
+  const getCurrentUnitName = (): string => {
+    switch (unitSystem) {
+      case "metric":
+        return t("settings.units.metric");
+      case "imperial":
+        return t("settings.units.imperial");
+      default:
+        return t("settings.units.metric");
+    }
+  };
+
+  const settingsSections = useMemo(
+    () => [
+      {
+        title: t("settings.account"),
+        items: [
+          {
+            key: "security",
+            icon: "lock-closed-outline",
+            label: t("settings.security"),
+            action: "navigate",
+            children: t("settings.changePassword"),
+          },
+        ],
+      },
+      {
+        title: t("settings.preferences"),
+        items: [
+          {
+            key: "notifications",
+            icon: "notifications-outline",
+            label: t("settings.notifications"),
+            action: "navigate",
+            children: getRemindersText(remindersCount),
+          },
+          {
+            key: "language",
+            icon: "language-outline",
+            label: t("settings.language"),
+            action: "dialog",
+            children: getCurrentLanguageName(),
+          },
+          {
+            key: "units",
+            icon: "calculator-outline",
+            label: t("settings.unitsLabel"),
+            action: "dialog",
+            children: getCurrentUnitName(),
+          },
+        ],
+      },
+      {
+        title: t("settings.app"),
+        items: [
+          {
+            key: "about",
+            icon: "information-circle-outline",
+            label: t("settings.about"),
+            action: "navigate",
+          },
+        ],
+      },
+    ],
+    [t, remindersCount, unitSystem, forceUpdate]
+  );
 
   const handleItemPress = (item: any) => {
     if (item.action === "navigate") {
@@ -120,6 +151,8 @@ export const SettingsScreen: React.FC = () => {
     } else if (item.action === "dialog") {
       if (item.key === "language") {
         setIsLanguageDialogOpen(true);
+      } else if (item.key === "units") {
+        setIsUnitDialogOpen(true);
       }
     }
   };
@@ -218,6 +251,11 @@ export const SettingsScreen: React.FC = () => {
       <LanguageSelectorModal
         isOpen={isLanguageDialogOpen}
         onClose={() => setIsLanguageDialogOpen(false)}
+      />
+
+      <UnitSelectorModal
+        isOpen={isUnitDialogOpen}
+        onClose={handleUnitsModalClose}
       />
     </SafeContainer>
   );

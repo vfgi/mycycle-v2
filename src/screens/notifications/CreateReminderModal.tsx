@@ -252,7 +252,6 @@ export const CreateReminderModal: React.FC<CreateReminderModalProps> = ({
               onPress={handleCreateReminder}
               text="Criar Lembrete"
               isLoading={isLoading}
-              flex={1}
             />
           </HStack>
         </AlertDialogFooter>

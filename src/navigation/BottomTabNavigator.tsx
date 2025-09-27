@@ -3,6 +3,7 @@ import { Platform } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { HomeScreen } from "../screens/home/HomeScreen";
 import { WorkoutsScreen } from "../screens/workouts/WorkoutsScreen";
 import { NutritionScreen } from "../screens/nutrition/NutritionScreen";
@@ -29,12 +30,14 @@ export type BottomTabParamList = {
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
+type TabNavigationProp = BottomTabNavigationProp<BottomTabParamList>;
 
 export const BottomTabNavigator: React.FC = () => {
   const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const navigation = useNavigation<NavigationProp>();
+  const [tabNavigation, setTabNavigation] = React.useState<any>(null);
 
   const loadNotificationCount = async () => {
     try {
@@ -60,15 +63,28 @@ export const BottomTabNavigator: React.FC = () => {
   };
 
   const handleMenuItemPress = (item: string) => {
-    if (item === "settings") {
+    if (item === "home") {
+      // Navegar para a tela Main (que contém o Tab Navigator) e depois para Home tab
+      navigation.navigate("Main", { screen: "Home" });
+    } else if (item === "settings") {
       navigation.navigate("Settings");
+    } else if (item === "measurements") {
+      navigation.navigate("Measurements");
+    } else if (item === "goals") {
+      navigation.navigate("Goals");
+    } else if (item === "history") {
+      navigation.navigate("History");
     }
-    // TODO: Implementar navegação para outros itens do menu
   };
 
   return (
     <>
       <Tab.Navigator
+        ref={(nav) => {
+          if (nav && !tabNavigation) {
+            setTabNavigation(nav);
+          }
+        }}
         initialRouteName="Home"
         screenOptions={{
           headerShown: true,

@@ -102,7 +102,10 @@
     "calendar": "Calendario",
     "menu": "Menú",
     "help": "Ayuda",
-    "about": "Acerca de"
+    "about": "Acerca de",
+    "measurements": "Medidas",
+    "goals": "Objetivos",
+    "history": "Historial"
   },
   "settings": {
     "title": "Configuración",
@@ -119,7 +122,15 @@
     "biometric": "Biometría",
     "dataSync": "Sincronización de Datos",
     "about": "Acerca de la App",
+    "unitsLabel": "Unidades de Medida",
     "changePassword": "Cambiar Contraseña",
+    "units": {
+      "selectUnit": "Seleccionar Unidades",
+      "metric": "Sistema Métrico",
+      "metricDesc": "Kilogramos, centímetros, kilómetros",
+      "imperial": "Sistema Imperial",
+      "imperialDesc": "Libras, pies, millas"
+    },
     "changePasswordInstructions": "Ingresa tu contraseña actual y la nueva contraseña",
     "currentPassword": "Contraseña Actual",
     "currentPasswordPlaceholder": "Ingresa tu contraseña actual",
@@ -153,6 +164,59 @@
     "settingsError": "No se pudieron actualizar las configuraciones",
     "reminder": "recordatorio",
     "reminders": "recordatorios",
-    "noRemindersShort": "Sin recordatorios"
+    "noRemindersShort": "Sin recordatorios",
+    "createReminderTitle": "Crear Nuevo Recordatorio",
+    "reminderTitle": "Título del Recordatorio",
+    "reminderTitlePlaceholder": "Ej: Recordatorio de Entrenamiento",
+    "reminderMessage": "Mensaje",
+    "reminderMessagePlaceholder": "Ej: ¡Es hora de entrenar piernas!",
+    "reminderMinutes": "Minutos para activar",
+    "reminderMinutesPlaceholder": "Ej: 5 (para 5 minutos)",
+    "createButton": "Crear Recordatorio",
+    "cancelButton": "Cancelar",
+    "createSuccess": "¡Recordatorio creado con éxito!",
+    "createError": "No se pudo crear el recordatorio",
+    "minutesInvalid": "Minutos debe ser un número válido mayor que 0"
+  },
+  "help": {
+    "title": "Ayuda y Soporte",
+    "contactSupport": "Contactar Soporte",
+    "supportDescription": "¿Necesitas ayuda? Nuestro equipo de soporte está listo para asistirte.",
+    "supportEmail": "support@mycycleht.com",
+    "sendEmail": "Enviar Email",
+    "emailSubject": "Soporte MyCycle - Necesito Ayuda",
+    "emailBody": "Hola,\n\nNecesito ayuda con la aplicación MyCycle.\n\nPor favor describe tu problema o pregunta abajo:\n\n",
+    "emailSent": "¡Email de soporte enviado con éxito!"
+  },
+  "about": {
+    "title": "Acerca de MyCycle",
+    "appDescription": "MyCycle está desarrollado en asociación con entrenadores personales expertos, asegurando que todos los cálculos y recomendaciones estén basados en ciencia y evidencia.",
+    "scientificBasis": "Base Científica",
+    "calculationsTitle": "Nuestros Cálculos Están Basados En:",
+    "partnerships": "Asociaciones",
+    "partnershipsDesc": "Desarrollado en colaboración con entrenadores personales certificados y expertos en fitness.",
+    "version": "Versión",
+    "buildNumber": "Build"
+  },
+  "medical": {
+    "bmiTitle": "Índice de Masa Corporal (IMC)",
+    "bmiFormula": "IMC = peso(kg) / altura(m)²",
+    "bmiSource": "Organización Mundial de la Salud (OMS)",
+    "bmiReference": "WHO Technical Report Series, No. 854",
+    "bodyFatTitle": "Porcentaje de Grasa Corporal",
+    "bodyFatUSArmy": "Fórmula del Ejército de EE.UU.",
+    "bodyFatUSArmyRef": "US Army Body Composition Program",
+    "bodyFatYMCA": "Protocolo YMCA",
+    "bodyFatYMCARef": "YMCA Fitness Testing and Assessment Manual",
+    "bodyFatDeurenberg": "Ecuación de Deurenberg",
+    "bodyFatDeurenbergRef": "Deurenberg et al. (1991) - International Journal of Obesity",
+    "caloriesTitle": "Cálculo de Calorías",
+    "mifflinFormula": "Ecuación de Mifflin-St Jeor",
+    "mifflinRef": "Mifflin et al. (1990) - American Journal of Clinical Nutrition",
+    "katchFormula": "Fórmula de Katch-McArdle",
+    "katchRef": "McArdle, Katch & Katch - Exercise Physiology",
+    "tdeeTitle": "Gasto Energético Total Diario (TDEE)",
+    "tdeeDescription": "Basado en los factores de actividad del Institute of Medicine",
+    "tdeeReference": "Dietary Reference Intakes for Energy - National Academy Press"
   }
 }

@@ -102,7 +102,10 @@
     "calendar": "Calendar",
     "menu": "Menu",
     "help": "Help",
-    "about": "About"
+    "about": "About",
+    "measurements": "Measurements",
+    "goals": "Goals",
+    "history": "History"
   },
   "settings": {
     "title": "Settings",
@@ -119,7 +122,15 @@
     "biometric": "Biometric",
     "dataSync": "Data Sync",
     "about": "About App",
+    "unitsLabel": "Measurement Units",
     "changePassword": "Change Password",
+    "units": {
+      "selectUnit": "Select Unit System",
+      "metric": "Metric System",
+      "metricDesc": "Kilograms, centimeters, kilometers",
+      "imperial": "Imperial System",
+      "imperialDesc": "Pounds, feet, miles"
+    },
     "changePasswordInstructions": "Enter your current password and new password",
     "currentPassword": "Current Password",
     "currentPasswordPlaceholder": "Enter your current password",
@@ -153,6 +164,59 @@
     "settingsError": "Could not update settings",
     "reminder": "reminder",
     "reminders": "reminders",
-    "noRemindersShort": "No reminders"
+    "noRemindersShort": "No reminders",
+    "createReminderTitle": "Create New Reminder",
+    "reminderTitle": "Reminder Title",
+    "reminderTitlePlaceholder": "Ex: Workout Reminder",
+    "reminderMessage": "Message",
+    "reminderMessagePlaceholder": "Ex: Time to train legs!",
+    "reminderMinutes": "Minutes to trigger",
+    "reminderMinutesPlaceholder": "Ex: 5 (for 5 minutes)",
+    "createButton": "Create Reminder",
+    "cancelButton": "Cancel",
+    "createSuccess": "Reminder created successfully!",
+    "createError": "Could not create reminder",
+    "minutesInvalid": "Minutes must be a valid number greater than 0"
+  },
+  "help": {
+    "title": "Help & Support",
+    "contactSupport": "Contact Support",
+    "supportDescription": "Need help? Our support team is ready to assist you.",
+    "supportEmail": "support@mycycleht.com",
+    "sendEmail": "Send Email",
+    "emailSubject": "MyCycle Support - Need Help",
+    "emailBody": "Hello,\n\nI need help with the MyCycle app.\n\nPlease describe your issue or question below:\n\n",
+    "emailSent": "Support email sent successfully!"
+  },
+  "about": {
+    "title": "About MyCycle",
+    "appDescription": "MyCycle is developed in partnership with expert personal trainers, ensuring all calculations and recommendations are based on science and evidence.",
+    "scientificBasis": "Scientific Basis",
+    "calculationsTitle": "Our Calculations Are Based On:",
+    "partnerships": "Partnerships",
+    "partnershipsDesc": "Developed in collaboration with certified personal trainers and fitness experts.",
+    "version": "Version",
+    "buildNumber": "Build"
+  },
+  "medical": {
+    "bmiTitle": "Body Mass Index (BMI)",
+    "bmiFormula": "BMI = weight(kg) / height(m)²",
+    "bmiSource": "World Health Organization (WHO)",
+    "bmiReference": "WHO Technical Report Series, No. 854",
+    "bodyFatTitle": "Body Fat Percentage",
+    "bodyFatUSArmy": "US Army Formula",
+    "bodyFatUSArmyRef": "US Army Body Composition Program",
+    "bodyFatYMCA": "YMCA Protocol",
+    "bodyFatYMCARef": "YMCA Fitness Testing and Assessment Manual",
+    "bodyFatDeurenberg": "Deurenberg Equation",
+    "bodyFatDeurenbergRef": "Deurenberg et al. (1991) - International Journal of Obesity",
+    "caloriesTitle": "Calorie Calculation",
+    "mifflinFormula": "Mifflin-St Jeor Equation",
+    "mifflinRef": "Mifflin et al. (1990) - American Journal of Clinical Nutrition",
+    "katchFormula": "Katch-McArdle Formula",
+    "katchRef": "McArdle, Katch & Katch - Exercise Physiology",
+    "tdeeTitle": "Total Daily Energy Expenditure (TDEE)",
+    "tdeeDescription": "Based on Institute of Medicine activity factors",
+    "tdeeReference": "Dietary Reference Intakes for Energy - National Academy Press"
   }
 }

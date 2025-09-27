@@ -15,6 +15,8 @@ import { useTranslation } from "../hooks/useTranslation";
 import { useAuth } from "../contexts/AuthContext";
 import { userStorage } from "../services/userStorage";
 import { User } from "../types/auth";
+import { HelpDrawer } from "./HelpDrawer";
+import { AboutDrawer } from "./AboutDrawer";
 
 const logoStandard = require("../../assets/logo-standard.png");
 
@@ -32,6 +34,8 @@ export const Menu: React.FC<MenuProps> = ({
   const { t } = useTranslation();
   const { logout } = useAuth();
   const [user, setUser] = useState<User | null>(null);
+  const [isHelpDrawerOpen, setIsHelpDrawerOpen] = useState(false);
+  const [isAboutDrawerOpen, setIsAboutDrawerOpen] = useState(false);
   const screenWidth = Dimensions.get("window").width;
   const slideAnim = React.useRef(new Animated.Value(-screenWidth)).current;
 
@@ -66,14 +70,23 @@ export const Menu: React.FC<MenuProps> = ({
     }
   }, [isOpen, slideAnim, screenWidth]);
 
-  const menuItems = [
+  const mainMenuItems = [
     { key: "home", icon: "home", label: t("navigation.home") },
-    { key: "profile", icon: "person-outline", label: t("navigation.profile") },
+    {
+      key: "measurements",
+      icon: "body-outline",
+      label: t("navigation.measurements"),
+    },
+    { key: "goals", icon: "trophy-outline", label: t("navigation.goals") },
+    { key: "history", icon: "time-outline", label: t("navigation.history") },
     {
       key: "settings",
       icon: "settings-outline",
       label: t("navigation.settings"),
     },
+  ];
+
+  const bottomMenuItems = [
     { key: "help", icon: "help-circle-outline", label: t("navigation.help") },
     {
       key: "about",
@@ -167,32 +180,24 @@ export const Menu: React.FC<MenuProps> = ({
                     </Text>
                   </VStack>
                 </HStack>
-                <Pressable
-                  onPress={() => {
-                    onMenuItemPress("profile");
-                    onClose();
-                  }}
-                  p="$2"
-                  borderRadius="$md"
-                  $pressed={{
-                    bg: FIXED_COLORS.background[600],
-                  }}
-                >
-                  <Ionicons
-                    name="chevron-forward"
-                    size={20}
-                    color={FIXED_COLORS.text[400]}
-                  />
-                </Pressable>
               </HStack>
             </VStack>
 
-            {menuItems.map((item) => (
+            {/* Main Menu Items */}
+            {mainMenuItems.map((item) => (
               <Pressable
                 key={item.key}
                 onPress={() => {
-                  onMenuItemPress(item.key);
-                  onClose();
+                  console.log("Menu item pressed:", item.key);
+                  if (item.key === "home") {
+                    onClose();
+                    setTimeout(() => {
+                      onMenuItemPress(item.key);
+                    }, 300);
+                  } else {
+                    onMenuItemPress(item.key);
+                    onClose();
+                  }
                 }}
                 p="$3"
                 borderRadius="$md"
@@ -207,6 +212,41 @@ export const Menu: React.FC<MenuProps> = ({
                     color={FIXED_COLORS.text[50]}
                   />
                   <Text color={FIXED_COLORS.text[50]} fontSize="$md">
+                    {item.label}
+                  </Text>
+                </HStack>
+              </Pressable>
+            ))}
+
+            {/* Bottom Menu Items */}
+          </VStack>
+          <VStack space="xs" mt="$6">
+            {bottomMenuItems.map((item) => (
+              <Pressable
+                key={item.key}
+                onPress={() => {
+                  if (item.key === "help") {
+                    setIsHelpDrawerOpen(true);
+                  } else if (item.key === "about") {
+                    setIsAboutDrawerOpen(true);
+                  } else {
+                    onMenuItemPress(item.key);
+                    onClose();
+                  }
+                }}
+                p="$3"
+                borderRadius="$md"
+                $pressed={{
+                  bg: FIXED_COLORS.background[700],
+                }}
+              >
+                <HStack space="md" alignItems="center">
+                  <Ionicons
+                    name={item.icon as any}
+                    size={20}
+                    color={FIXED_COLORS.text[400]}
+                  />
+                  <Text color={FIXED_COLORS.text[400]} fontSize="$sm">
                     {item.label}
                   </Text>
                 </HStack>
@@ -236,6 +276,18 @@ export const Menu: React.FC<MenuProps> = ({
           </TouchableOpacity>
         </VStack>
       </Animated.View>
+
+      {/* Help Drawer */}
+      <HelpDrawer
+        isOpen={isHelpDrawerOpen}
+        onClose={() => setIsHelpDrawerOpen(false)}
+      />
+
+      {/* About Drawer */}
+      <AboutDrawer
+        isOpen={isAboutDrawerOpen}
+        onClose={() => setIsAboutDrawerOpen(false)}
+      />
     </Modal>
   );
 };

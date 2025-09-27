@@ -7,6 +7,9 @@ import { BottomTabNavigator } from "./BottomTabNavigator";
 import { SettingsScreen } from "../screens/settings/SettingsScreen";
 import { ChangePasswordScreen } from "../screens/settings/ChangePasswordScreen";
 import { NotificationsScreen } from "../screens/notifications/NotificationsScreen";
+import { MeasurementsScreen } from "../screens/measurements/MeasurementsScreen";
+import { GoalsScreen } from "../screens/goals/GoalsScreen";
+import { HistoryScreen } from "../screens/history/HistoryScreen";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../hooks/useToast";
 import { useTranslation } from "../hooks/useTranslation";
@@ -18,10 +21,13 @@ import { FIXED_COLORS } from "../theme/colors";
 export type RootStackParamList = {
   Login: undefined;
   Signup: undefined;
-  Home: undefined;
+  Main: undefined;
   Settings: undefined;
   ChangePassword: undefined;
   Notifications: undefined;
+  Measurements: undefined;
+  Goals: undefined;
+  History: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -79,7 +85,7 @@ export const AppNavigator: React.FC = () => {
       >
         {isAuthenticated ? (
           <>
-            <Stack.Screen name="Home" component={BottomTabNavigator} />
+            <Stack.Screen name="Main" component={BottomTabNavigator} />
             <Stack.Screen
               name="Settings"
               component={SettingsScreen}
@@ -108,6 +114,51 @@ export const AppNavigator: React.FC = () => {
               options={{
                 headerShown: false,
               }}
+            />
+            <Stack.Screen
+              name="Measurements"
+              component={MeasurementsScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                title: t("settings.title"),
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+                headerTitleStyle: {
+                  fontWeight: "bold",
+                },
+              })}
+            />
+            <Stack.Screen
+              name="Goals"
+              component={GoalsScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                title: t("settings.title"),
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+                headerTitleStyle: {
+                  fontWeight: "bold",
+                },
+              })}
+            />
+            <Stack.Screen
+              name="History"
+              component={HistoryScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                title: t("settings.title"),
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+                headerTitleStyle: {
+                  fontWeight: "bold",
+                },
+              })}
             />
           </>
         ) : (

@@ -301,7 +301,8 @@ export const NotificationsScreen: React.FC = () => {
               >
                 {t("notifications.scheduledReminders")}
               </Text>
-              <Button
+              {/* // For testing purposes: Add reminder button */}
+              {/* <Button
                 size="sm"
                 variant="outline"
                 borderColor={FIXED_COLORS.primary[600]}
@@ -310,7 +311,7 @@ export const NotificationsScreen: React.FC = () => {
                 <ButtonText color={FIXED_COLORS.primary[600]}>
                   {t("notifications.addReminder")}
                 </ButtonText>
-              </Button>
+              </Button> */}
             </HStack>
 
             {notifications.length === 0 ? (
