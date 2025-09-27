@@ -14,17 +14,23 @@
       "emailInvalid": "Correo electrónico inválido",
       "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
       "loginError": "Error al iniciar sesión",
-      "loginSuccess": "Inicio de sesión exitoso"
+      "loginSuccess": "Inicio de sesión exitoso",
+      "invalidCredentials": "Correo electrónico o contraseña incorrectos",
+      "genericError": "Ocurrió un error inesperado. Inténtalo de nuevo."
     },
     "signup": {
       "title": "Crear Cuenta",
+      "name": "Nombre",
       "email": "Correo electrónico",
       "password": "Contraseña",
       "confirmPassword": "Confirmar Contraseña",
       "signupButton": "Crear Cuenta",
+      "namePlaceholder": "Ingresa tu nombre",
       "emailPlaceholder": "Ingresa tu correo electrónico",
       "passwordPlaceholder": "Ingresa tu contraseña",
       "confirmPasswordPlaceholder": "Confirma tu contraseña",
+      "nameRequired": "El nombre es obligatorio",
+      "nameMinLength": "El nombre debe tener al menos 2 caracteres",
       "emailRequired": "El correo electrónico es obligatorio",
       "passwordRequired": "La contraseña es obligatoria",
       "confirmPasswordRequired": "La confirmación de contraseña es obligatoria",
@@ -32,7 +38,8 @@
       "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
       "passwordsDoNotMatch": "Las contraseñas no coinciden",
       "signupError": "Error al crear cuenta",
-      "signupSuccess": "Cuenta creada exitosamente"
+      "signupSuccess": "Cuenta creada exitosamente",
+      "genericError": "Ocurrió un error inesperado. Inténtalo de nuevo."
     },
     "common": {
       "dontHaveAccount": "¿No tienes una cuenta?",
@@ -45,7 +52,27 @@
       "sendEmailButton": "Enviar Correo",
       "emailSentInfo": "Enviaremos un correo con los pasos para recuperar tu contraseña",
       "emailRequired": "El correo electrónico es obligatorio",
-      "emailInvalid": "Correo electrónico inválido"
+      "emailInvalid": "Correo electrónico inválido",
+      "emailSentSuccess": "Correo de recuperación enviado exitosamente",
+      "emailSentMessage": "Se enviará un correo a la dirección solicitada si existe en nuestra base de datos.",
+      "genericError": "Ocurrió un error inesperado. Inténtalo de nuevo."
+    },
+    "error": {
+      "invalid-credentials": "Correo electrónico o contraseña incorrectos",
+      "user-not-found": "Usuario no encontrado",
+      "wrong-password": "Contraseña incorrecta",
+      "email-not-found": "Correo no encontrado",
+      "account-disabled": "Cuenta deshabilitada",
+      "email-already-exists": "Correo ya registrado",
+      "weak-password": "Contraseña muy débil",
+      "invalid-email": "Correo inválido",
+      "network-error": "Error de conexión",
+      "server-error": "Error del servidor"
+    }
+  },
+  "user": {
+    "error": {
+      "email-already-exists": "Este correo ya está registrado"
     }
   },
   "common": {
@@ -60,5 +87,10 @@
     "back": "Atrás",
     "next": "Siguiente",
     "previous": "Anterior"
+  },
+  "home": {
+    "welcome": "Bienvenido a MyCycle",
+    "hello": "Hola",
+    "logout": "Cerrar sesión"
   }
 }

@@ -6,27 +6,17 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  Animated,
 } from "react-native";
-import {
-  VStack,
-  HStack,
-  Text,
-  Button,
-  ButtonText,
-  Alert,
-  AlertText,
-} from "@gluestack-ui/themed";
+import { VStack, HStack, Text, Alert, AlertText } from "@gluestack-ui/themed";
 import { loginSchema, LoginFormData } from "../../schemas/authSchema";
 import { useTranslation } from "../../hooks/useTranslation";
 import { FIXED_COLORS } from "../../theme/colors";
-import { AuthContainer, CustomInput } from "../../components";
+import { AuthContainer, CustomInput, CustomButton } from "../../components";
 import { ForgotPasswordDrawer } from "./ForgotPasswordDrawer";
 import { Image } from "@gluestack-ui/themed";
 
 const loginBackground = require("../../../assets/images/login-background.png");
 const logoStandard = require("../../../assets/logo-standard.png");
-const blackIcon = require("../../../assets/black-icon.png");
 
 interface LoginScreenProps {
   onLogin: (data: LoginFormData) => Promise<void>;
@@ -42,30 +32,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   error,
 }) => {
   const { t } = useTranslation();
-  const fadeAnim = React.useRef(new Animated.Value(0.3)).current;
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = React.useState(false);
-
-  React.useEffect(() => {
-    if (isLoading) {
-      const fadeInOut = Animated.loop(
-        Animated.sequence([
-          Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 1000,
-            useNativeDriver: true,
-          }),
-          Animated.timing(fadeAnim, {
-            toValue: 0.3,
-            duration: 1000,
-            useNativeDriver: true,
-          }),
-        ])
-      );
-      fadeInOut.start();
-    } else {
-      fadeAnim.setValue(0.3);
-    }
-  }, [isLoading, fadeAnim]);
 
   const {
     control,
@@ -84,17 +51,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
       await onLogin(data);
     } catch (err) {
       console.error("Login error:", err);
-    }
-  };
-
-  const handleSendEmail = async (email: string) => {
-    try {
-      console.log("Sending recovery email to:", email);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log("Recovery email sent successfully");
-    } catch (err) {
-      console.error("Send email error:", err);
-      throw err;
     }
   };
 
@@ -177,35 +133,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                 )}
               />
 
-              <Button
+              <CustomButton
                 onPress={handleSubmit(onSubmit)}
-                bg={FIXED_COLORS.primary[600]}
-                isDisabled={isLoading}
-                size="lg"
-                borderRadius="$xl"
-                mt="$4"
-              >
-                {isLoading ? (
-                  <HStack space="sm" alignItems="center">
-                    <Animated.Image
-                      source={blackIcon}
-                      style={{
-                        width: 40,
-                        height: 40,
-                        opacity: fadeAnim,
-                      }}
-                      resizeMode="contain"
-                    />
-                    <ButtonText color={FIXED_COLORS.text[900]}>
-                      {t("common.loading")}
-                    </ButtonText>
-                  </HStack>
-                ) : (
-                  <ButtonText color={FIXED_COLORS.text[900]}>
-                    {t("auth.login.loginButton")}
-                  </ButtonText>
-                )}
-              </Button>
+                text={t("auth.login.loginButton")}
+                isLoading={isLoading}
+              />
 
               <HStack space="sm" justifyContent="center" mt="$2">
                 <Text color={FIXED_COLORS.text[300]}>
@@ -236,7 +168,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
       <ForgotPasswordDrawer
         isOpen={isForgotPasswordOpen}
         onClose={() => setIsForgotPasswordOpen(false)}
-        onSendEmail={handleSendEmail}
         isLoading={isLoading}
       />
     </AuthContainer>

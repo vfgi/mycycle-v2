@@ -6,26 +6,16 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  Animated,
 } from "react-native";
-import {
-  VStack,
-  HStack,
-  Text,
-  Button,
-  ButtonText,
-  Alert,
-  AlertText,
-} from "@gluestack-ui/themed";
+import { VStack, HStack, Text, Alert, AlertText } from "@gluestack-ui/themed";
 import { signupSchema, SignupFormData } from "../../schemas/signupSchema";
 import { useTranslation } from "../../hooks/useTranslation";
 import { FIXED_COLORS } from "../../theme/colors";
-import { SignupContainer, CustomInput } from "../../components";
+import { SignupContainer, CustomInput, CustomButton } from "../../components";
 import { Image } from "@gluestack-ui/themed";
 
 const loginBackground = require("../../../assets/images/signup-image.png");
 const logoStandard = require("../../../assets/logo-standard.png");
-const blackIcon = require("../../../assets/black-icon.png");
 
 interface SignupScreenProps {
   onSignup: (data: SignupFormData) => Promise<void>;
@@ -41,29 +31,6 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({
   error,
 }) => {
   const { t } = useTranslation();
-  const fadeAnim = React.useRef(new Animated.Value(0.3)).current;
-
-  React.useEffect(() => {
-    if (isLoading) {
-      const fadeInOut = Animated.loop(
-        Animated.sequence([
-          Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 1000,
-            useNativeDriver: true,
-          }),
-          Animated.timing(fadeAnim, {
-            toValue: 0.3,
-            duration: 1000,
-            useNativeDriver: true,
-          }),
-        ])
-      );
-      fadeInOut.start();
-    } else {
-      fadeAnim.setValue(0.3);
-    }
-  }, [isLoading, fadeAnim]);
 
   const {
     control,
@@ -72,6 +39,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -121,6 +89,26 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({
               shadowRadius={8}
               elevation={5}
             >
+              <Controller
+                control={control}
+                name="name"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <CustomInput
+                    label={t("auth.signup.name")}
+                    placeholder={t("auth.signup.namePlaceholder")}
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    error={
+                      errors.name ? t(errors.name.message || "") : undefined
+                    }
+                    isInvalid={!!errors.name}
+                    autoCapitalize="words"
+                    autoCorrect={false}
+                  />
+                )}
+              />
+
               <Controller
                 control={control}
                 name="email"
@@ -188,35 +176,11 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({
                 )}
               />
 
-              <Button
+              <CustomButton
                 onPress={handleSubmit(onSubmit)}
-                bg={FIXED_COLORS.primary[600]}
-                isDisabled={isLoading}
-                size="lg"
-                borderRadius="$xl"
-                mt="$4"
-              >
-                {isLoading ? (
-                  <HStack space="sm" alignItems="center">
-                    <Animated.Image
-                      source={blackIcon}
-                      style={{
-                        width: 40,
-                        height: 40,
-                        opacity: fadeAnim,
-                      }}
-                      resizeMode="contain"
-                    />
-                    <ButtonText color={FIXED_COLORS.text[900]}>
-                      {t("common.loading")}
-                    </ButtonText>
-                  </HStack>
-                ) : (
-                  <ButtonText color={FIXED_COLORS.text[900]}>
-                    {t("auth.signup.signupButton")}
-                  </ButtonText>
-                )}
-              </Button>
+                text={t("auth.signup.signupButton")}
+                isLoading={isLoading}
+              />
 
               <HStack space="sm" justifyContent="center" mt="$4">
                 <Text color={FIXED_COLORS.text[600]}>

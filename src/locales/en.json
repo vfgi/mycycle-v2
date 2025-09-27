@@ -14,17 +14,23 @@
       "emailInvalid": "Invalid email",
       "passwordMinLength": "Password must be at least 6 characters",
       "loginError": "Login error",
-      "loginSuccess": "Login successful"
+      "loginSuccess": "Login successful",
+      "invalidCredentials": "Invalid email or password",
+      "genericError": "An unexpected error occurred. Please try again."
     },
     "signup": {
       "title": "Create Account",
+      "name": "Name",
       "email": "Email",
       "password": "Password",
       "confirmPassword": "Confirm Password",
       "signupButton": "Create Account",
+      "namePlaceholder": "Enter your name",
       "emailPlaceholder": "Enter your email",
       "passwordPlaceholder": "Enter your password",
       "confirmPasswordPlaceholder": "Confirm your password",
+      "nameRequired": "Name is required",
+      "nameMinLength": "Name must be at least 2 characters",
       "emailRequired": "Email is required",
       "passwordRequired": "Password is required",
       "confirmPasswordRequired": "Password confirmation is required",
@@ -32,7 +38,8 @@
       "passwordMinLength": "Password must be at least 6 characters",
       "passwordsDoNotMatch": "Passwords do not match",
       "signupError": "Error creating account",
-      "signupSuccess": "Account created successfully"
+      "signupSuccess": "Account created successfully",
+      "genericError": "An unexpected error occurred. Please try again."
     },
     "common": {
       "dontHaveAccount": "Don't have an account?",
@@ -45,7 +52,27 @@
       "sendEmailButton": "Send Email",
       "emailSentInfo": "We will send an email with steps to recover your password",
       "emailRequired": "Email is required",
-      "emailInvalid": "Invalid email"
+      "emailInvalid": "Invalid email",
+      "emailSentSuccess": "Recovery email sent successfully",
+      "emailSentMessage": "An email will be sent to the requested address if it exists in our database.",
+      "genericError": "An unexpected error occurred. Please try again."
+    },
+    "error": {
+      "invalid-credentials": "Invalid email or password",
+      "user-not-found": "User not found",
+      "wrong-password": "Wrong password",
+      "email-not-found": "Email not found",
+      "account-disabled": "Account disabled",
+      "email-already-exists": "Email already exists",
+      "weak-password": "Password too weak",
+      "invalid-email": "Invalid email",
+      "network-error": "Connection error",
+      "server-error": "Server error"
+    }
+  },
+  "user": {
+    "error": {
+      "email-already-exists": "This email is already registered"
     }
   },
   "common": {
@@ -60,5 +87,10 @@
     "back": "Back",
     "next": "Next",
     "previous": "Previous"
+  },
+  "home": {
+    "welcome": "Welcome to MyCycle",
+    "hello": "Hello",
+    "logout": "Logout"
   }
 }

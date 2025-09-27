@@ -2,6 +2,10 @@ import { z } from "zod";
 
 export const signupSchema = z
   .object({
+    name: z
+      .string()
+      .min(1, "auth.signup.nameRequired")
+      .min(2, "auth.signup.nameMinLength"),
     email: z
       .string()
       .min(1, "auth.signup.emailRequired")

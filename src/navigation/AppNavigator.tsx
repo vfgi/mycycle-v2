@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { LoginScreen } from "../screens/auth/LoginScreen";
 import { SignupScreen } from "../screens/auth/SignupScreen";
+import { HomeScreen } from "../screens/home/HomeScreen";
+import { useAuth } from "../contexts/AuthContext";
+import { useToast } from "../hooks/useToast";
+import { useTranslation } from "../hooks/useTranslation";
+import { getErrorMessage } from "../utils/errorHandler";
 import { LoginFormData } from "../schemas/authSchema";
 import { SignupFormData } from "../schemas/signupSchema";
 
@@ -15,73 +20,83 @@ export type RootStackParamList = {
 const Stack = createStackNavigator<RootStackParamList>();
 
 export const AppNavigator: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | undefined>();
+  const { isAuthenticated, isLoading, login, signup, setLoading } = useAuth();
+  const { showError } = useToast();
+  const { t } = useTranslation();
 
   const handleLogin = async (data: LoginFormData) => {
-    setIsLoading(true);
-    setError(undefined);
-
     try {
-      console.log("Login attempt:", data);
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      console.log("Login successful");
+      setLoading(true);
+      await login(data);
+      // Se chegou até aqui, o login foi bem-sucedido
+      // A navegação será feita automaticamente pelo isAuthenticated
     } catch (err) {
-      setError("Erro ao fazer login");
       console.error("Login error:", err);
-    } finally {
-      setIsLoading(false);
+      setLoading(false);
+      const errorMessage = getErrorMessage(
+        (err as Error).message || "generic-error",
+        t
+      );
+      showError(errorMessage);
+      // Não fazer throw para não quebrar o fluxo
     }
   };
 
   const handleSignup = async (data: SignupFormData) => {
-    setIsLoading(true);
-    setError(undefined);
-
     try {
-      console.log("Signup attempt:", data);
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      console.log("Signup successful");
+      setLoading(true);
+      // Remover confirmPassword antes de enviar para a API
+      const { confirmPassword, ...signupData } = data;
+      await signup(signupData);
+      // Se chegou até aqui, o signup foi bem-sucedido
+      // A navegação será feita automaticamente pelo isAuthenticated
     } catch (err) {
-      setError("Erro ao criar conta");
       console.error("Signup error:", err);
-    } finally {
-      setIsLoading(false);
+      setLoading(false);
+      const errorMessage = getErrorMessage(
+        (err as Error).message || "generic-error",
+        t
+      );
+      showError(errorMessage);
+      // Não fazer throw para não quebrar o fluxo
     }
   };
+
+  console.log("isLoading", isLoading);
+  console.log("isAuthenticated", isAuthenticated);
 
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Login"
+        initialRouteName={isAuthenticated ? "Home" : "Login"}
         screenOptions={{
           headerShown: false,
         }}
       >
-        <Stack.Screen name="Login">
-          {({ navigation }) => (
-            <LoginScreen
-              onLogin={handleLogin}
-              onNavigateToSignup={() => navigation.navigate("Signup")}
-              isLoading={isLoading}
-              error={error}
-            />
-          )}
-        </Stack.Screen>
-        <Stack.Screen name="Signup">
-          {({ navigation }) => (
-            <SignupScreen
-              onSignup={handleSignup}
-              onNavigateToLogin={() => navigation.navigate("Login")}
-              isLoading={isLoading}
-              error={error}
-            />
-          )}
-        </Stack.Screen>
+        {isAuthenticated ? (
+          <Stack.Screen name="Home" component={HomeScreen} />
+        ) : (
+          <>
+            <Stack.Screen name="Login">
+              {({ navigation }) => (
+                <LoginScreen
+                  onLogin={handleLogin}
+                  onNavigateToSignup={() => navigation.navigate("Signup")}
+                  isLoading={isLoading}
+                />
+              )}
+            </Stack.Screen>
+            <Stack.Screen name="Signup">
+              {({ navigation }) => (
+                <SignupScreen
+                  onSignup={handleSignup}
+                  onNavigateToLogin={() => navigation.navigate("Login")}
+                  isLoading={isLoading}
+                />
+              )}
+            </Stack.Screen>
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
