@@ -131,5 +131,28 @@
     "passwordRequirements": "Password must be at least 6 characters",
     "passwordChangedSuccess": "Password changed successfully!",
     "passwordChangedMessage": "Your password has been updated securely"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "settings": "Settings",
+    "pushNotifications": "Push Notifications",
+    "pushNotificationsDesc": "Receive notifications from server",
+    "localNotifications": "Local Notifications",
+    "localNotificationsDesc": "Reminders and scheduled notifications",
+    "sound": "Sound",
+    "soundDesc": "Play sound for notifications",
+    "scheduledReminders": "Scheduled Reminders",
+    "addReminder": "Add Reminder",
+    "noReminders": "No reminders scheduled",
+    "noRemindersDesc": "Create reminders so you don't forget your workouts and meals",
+    "toggleError": "Could not change notification status",
+    "confirmDelete": "Confirm Deletion",
+    "confirmDeleteMessage": "Are you sure you want to delete this notification?",
+    "deleteSuccess": "Notification deleted successfully",
+    "deleteError": "Could not delete notification",
+    "settingsError": "Could not update settings",
+    "reminder": "reminder",
+    "reminders": "reminders",
+    "noRemindersShort": "No reminders"
   }
 }

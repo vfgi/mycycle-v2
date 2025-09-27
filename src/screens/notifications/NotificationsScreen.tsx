@@ -1,0 +1,340 @@
+import React, { useState, useEffect } from "react";
+import { ScrollView, Alert } from "react-native";
+import {
+  VStack,
+  Text,
+  HStack,
+  Pressable,
+  Switch,
+  Divider,
+  Button,
+  ButtonText,
+} from "@gluestack-ui/themed";
+import { Ionicons } from "@expo/vector-icons";
+import { FIXED_COLORS } from "../../theme/colors";
+import { useTranslation } from "../../hooks/useTranslation";
+import { SafeContainer } from "../../components";
+import { useToast } from "../../hooks/useToast";
+import {
+  LocalNotification,
+  NotificationSettings,
+} from "../../types/notifications";
+import { notificationService } from "../../services/notificationService";
+import { notificationStorage } from "../../services/notificationStorage";
+import { useNavigation } from "@react-navigation/native";
+import { CreateReminderModal } from "./CreateReminderModal";
+
+export const NotificationsScreen: React.FC = () => {
+  const { t } = useTranslation();
+  const navigation = useNavigation();
+  const { showError, showSuccess } = useToast();
+  const [notifications, setNotifications] = useState<LocalNotification[]>([]);
+  const [settings, setSettings] = useState<NotificationSettings>({
+    pushEnabled: true,
+    localEnabled: true,
+    soundEnabled: true,
+    vibrationEnabled: true,
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      setIsLoading(true);
+      const [notificationsData, settingsData] = await Promise.all([
+        notificationService.getAllScheduledNotifications(),
+        notificationStorage.getNotificationSettings(),
+      ]);
+      setNotifications(notificationsData);
+      setSettings(settingsData);
+    } catch (error) {
+      console.error("Error loading notification data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleToggleNotification = async (
+    notificationId: string,
+    isActive: boolean
+  ) => {
+    try {
+      await notificationService.updateNotificationStatus(
+        notificationId,
+        isActive
+      );
+      await loadData();
+    } catch (error) {
+      console.error("Error toggling notification:", error);
+      showError(t("notifications.toggleError"));
+    }
+  };
+
+  const handleDeleteNotification = async (notificationId: string) => {
+    Alert.alert(
+      t("notifications.confirmDelete"),
+      t("notifications.confirmDeleteMessage"),
+      [
+        { text: t("common.cancel"), style: "cancel" },
+        {
+          text: t("common.delete"),
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await notificationService.cancelNotification(notificationId);
+              await loadData();
+              showSuccess(t("notifications.deleteSuccess"));
+            } catch (error) {
+              console.error("Error deleting notification:", error);
+              showError(t("notifications.deleteError"));
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleSettingsChange = async (
+    key: keyof NotificationSettings,
+    value: boolean
+  ) => {
+    try {
+      const newSettings = { ...settings, [key]: value };
+      await notificationStorage.saveNotificationSettings(newSettings);
+      setSettings(newSettings);
+    } catch (error) {
+      console.error("Error updating settings:", error);
+      showError(t("notifications.settingsError"));
+    }
+  };
+
+  const formatDate = (date: Date) => {
+    return new Date(date).toLocaleString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const renderNotificationItem = (notification: LocalNotification) => (
+    <VStack
+      key={notification.id}
+      bg={FIXED_COLORS.background[800]}
+      borderRadius="$lg"
+      p="$4"
+      mb="$3"
+    >
+      <HStack alignItems="center" justifyContent="space-between">
+        <VStack flex={1} space="xs">
+          <Text
+            color={FIXED_COLORS.text[50]}
+            fontSize="$md"
+            fontWeight="$semibold"
+          >
+            {notification.title}
+          </Text>
+          <Text color={FIXED_COLORS.text[400]} fontSize="$sm">
+            {notification.body}
+          </Text>
+          <Text color={FIXED_COLORS.text[500]} fontSize="$xs">
+            {formatDate(notification.scheduledTime)}
+          </Text>
+        </VStack>
+
+        <HStack alignItems="center" space="md">
+          <Switch
+            value={notification.isActive}
+            onValueChange={(value) =>
+              handleToggleNotification(notification.id, value)
+            }
+            trackColor={{
+              false: FIXED_COLORS.background[600],
+              true: FIXED_COLORS.primary[600],
+            }}
+            thumbColor={
+              notification.isActive
+                ? FIXED_COLORS.primary[50]
+                : FIXED_COLORS.text[400]
+            }
+          />
+
+          <Pressable onPress={() => handleDeleteNotification(notification.id)}>
+            <Ionicons
+              name="trash-outline"
+              size={20}
+              color={FIXED_COLORS.error[500]}
+            />
+          </Pressable>
+        </HStack>
+      </HStack>
+    </VStack>
+  );
+
+  return (
+    <SafeContainer>
+      <ScrollView style={{ flex: 1 }}>
+        <VStack flex={1} space="lg">
+          {/* Header */}
+          <HStack alignItems="center" justifyContent="space-between" mb="$4">
+            <Pressable onPress={() => navigation.goBack()}>
+              <Ionicons
+                name="arrow-back"
+                size={24}
+                color={FIXED_COLORS.text[50]}
+              />
+            </Pressable>
+            <Text
+              color={FIXED_COLORS.text[50]}
+              fontSize="$xl"
+              fontWeight="$bold"
+            >
+              {t("notifications.title")}
+            </Text>
+            <VStack w="$6" />
+          </HStack>
+
+          {/* Settings Section */}
+          <VStack
+            bg={FIXED_COLORS.background[800]}
+            borderRadius="$lg"
+            p="$4"
+            space="md"
+          >
+            <Text
+              color={FIXED_COLORS.text[400]}
+              fontSize="$sm"
+              fontWeight="$semibold"
+              textTransform="uppercase"
+            >
+              {t("notifications.settings")}
+            </Text>
+
+            <VStack space="md">
+              <HStack alignItems="center" justifyContent="space-between">
+                <VStack>
+                  <Text color={FIXED_COLORS.text[50]} fontSize="$md">
+                    {t("notifications.pushNotifications")}
+                  </Text>
+                  <Text color={FIXED_COLORS.text[400]} fontSize="$sm">
+                    {t("notifications.pushNotificationsDesc")}
+                  </Text>
+                </VStack>
+                <Switch
+                  value={settings.pushEnabled}
+                  onValueChange={(value) =>
+                    handleSettingsChange("pushEnabled", value)
+                  }
+                  trackColor={{
+                    false: FIXED_COLORS.background[600],
+                    true: FIXED_COLORS.primary[600],
+                  }}
+                  thumbColor={
+                    settings.pushEnabled
+                      ? FIXED_COLORS.primary[50]
+                      : FIXED_COLORS.text[400]
+                  }
+                />
+              </HStack>
+
+              <Divider bg={FIXED_COLORS.background[700]} />
+
+              <HStack alignItems="center" justifyContent="space-between">
+                <VStack>
+                  <Text color={FIXED_COLORS.text[50]} fontSize="$md">
+                    {t("notifications.localNotifications")}
+                  </Text>
+                  <Text color={FIXED_COLORS.text[400]} fontSize="$sm">
+                    {t("notifications.localNotificationsDesc")}
+                  </Text>
+                </VStack>
+                <Switch
+                  value={settings.localEnabled}
+                  onValueChange={(value) =>
+                    handleSettingsChange("localEnabled", value)
+                  }
+                  trackColor={{
+                    false: FIXED_COLORS.background[600],
+                    true: FIXED_COLORS.primary[600],
+                  }}
+                  thumbColor={
+                    settings.localEnabled
+                      ? FIXED_COLORS.primary[50]
+                      : FIXED_COLORS.text[400]
+                  }
+                />
+              </HStack>
+            </VStack>
+          </VStack>
+
+          {/* Notifications List */}
+          <VStack space="md">
+            <HStack alignItems="center" justifyContent="space-between">
+              <Text
+                color={FIXED_COLORS.text[400]}
+                fontSize="$sm"
+                fontWeight="$semibold"
+                textTransform="uppercase"
+              >
+                {t("notifications.scheduledReminders")}
+              </Text>
+              <Button
+                size="sm"
+                variant="outline"
+                borderColor={FIXED_COLORS.primary[600]}
+                onPress={() => setIsCreateModalOpen(true)}
+              >
+                <ButtonText color={FIXED_COLORS.primary[600]}>
+                  {t("notifications.addReminder")}
+                </ButtonText>
+              </Button>
+            </HStack>
+
+            {notifications.length === 0 ? (
+              <VStack
+                bg={FIXED_COLORS.background[800]}
+                borderRadius="$lg"
+                p="$6"
+                alignItems="center"
+                space="md"
+              >
+                <Ionicons
+                  name="notifications-outline"
+                  size={48}
+                  color={FIXED_COLORS.text[400]}
+                />
+                <Text
+                  color={FIXED_COLORS.text[400]}
+                  fontSize="$md"
+                  textAlign="center"
+                >
+                  {t("notifications.noReminders")}
+                </Text>
+                <Text
+                  color={FIXED_COLORS.text[500]}
+                  fontSize="$sm"
+                  textAlign="center"
+                >
+                  {t("notifications.noRemindersDesc")}
+                </Text>
+              </VStack>
+            ) : (
+              notifications.map(renderNotificationItem)
+            )}
+          </VStack>
+        </VStack>
+      </ScrollView>
+
+      <CreateReminderModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={loadData}
+      />
+    </SafeContainer>
+  );
+};

@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Platform } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { HomeScreen } from "../screens/home/HomeScreen";
 import { WorkoutsScreen } from "../screens/workouts/WorkoutsScreen";
@@ -11,6 +11,7 @@ import { FIXED_COLORS } from "../theme/colors";
 import { useTranslation } from "../hooks/useTranslation";
 import { Header, Menu } from "../components";
 import { RootStackParamList } from "./AppNavigator";
+import { notificationService } from "../services/notificationService";
 import {
   FontAwesome5,
   Ionicons,
@@ -32,16 +33,33 @@ type NavigationProp = StackNavigationProp<RootStackParamList>;
 export const BottomTabNavigator: React.FC = () => {
   const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
   const navigation = useNavigation<NavigationProp>();
 
+  const loadNotificationCount = async () => {
+    try {
+      const notifications =
+        await notificationService.getAllScheduledNotifications();
+      const activeNotifications = notifications.filter(
+        (notification) => notification.isActive
+      );
+      setNotificationCount(activeNotifications.length);
+    } catch (error) {
+      console.error("Error loading notification count:", error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      loadNotificationCount();
+    }, [])
+  );
+
   const handleNotificationPress = () => {
-    // TODO: Implementar navegação para notificações
-    console.log("Notification pressed");
+    navigation.navigate("Notifications");
   };
 
   const handleMenuItemPress = (item: string) => {
-    console.log("Menu item pressed:", item);
-
     if (item === "settings") {
       navigation.navigate("Settings");
     }
@@ -55,7 +73,10 @@ export const BottomTabNavigator: React.FC = () => {
         screenOptions={{
           headerShown: true,
           header: () => (
-            <Header onNotificationPress={handleNotificationPress} />
+            <Header
+              onNotificationPress={handleNotificationPress}
+              notificationCount={notificationCount}
+            />
           ),
           tabBarStyle: {
             backgroundColor: FIXED_COLORS.background[800],

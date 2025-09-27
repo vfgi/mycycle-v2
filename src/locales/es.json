@@ -131,5 +131,28 @@
     "passwordRequirements": "La contraseña debe tener al menos 6 caracteres",
     "passwordChangedSuccess": "¡Contraseña cambiada con éxito!",
     "passwordChangedMessage": "Tu contraseña ha sido actualizada de forma segura"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "settings": "Configuración",
+    "pushNotifications": "Notificaciones Push",
+    "pushNotificationsDesc": "Recibir notificaciones del servidor",
+    "localNotifications": "Notificaciones Locales",
+    "localNotificationsDesc": "Recordatorios y notificaciones programadas",
+    "sound": "Sonido",
+    "soundDesc": "Reproducir sonido en las notificaciones",
+    "scheduledReminders": "Recordatorios Programados",
+    "addReminder": "Agregar Recordatorio",
+    "noReminders": "No hay recordatorios programados",
+    "noRemindersDesc": "Crea recordatorios para no olvidar tus entrenamientos y comidas",
+    "toggleError": "No se pudo cambiar el estado de la notificación",
+    "confirmDelete": "Confirmar Eliminación",
+    "confirmDeleteMessage": "¿Estás seguro de que quieres eliminar esta notificación?",
+    "deleteSuccess": "Notificación eliminada con éxito",
+    "deleteError": "No se pudo eliminar la notificación",
+    "settingsError": "No se pudieron actualizar las configuraciones",
+    "reminder": "recordatorio",
+    "reminders": "recordatorios",
+    "noRemindersShort": "Sin recordatorios"
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ScrollView } from "react-native";
 import {
   VStack,
@@ -15,12 +15,28 @@ import { SafeContainer } from "../../components";
 import { LanguageSelectorModal } from "./LanguageSelectorModal";
 import { getCurrentLanguage } from "../../i18n";
 import { useNavigation } from "@react-navigation/native";
+import { notificationService } from "../../services/notificationService";
 
 export const SettingsScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const [notifications, setNotifications] = useState(true);
   const [isLanguageDialogOpen, setIsLanguageDialogOpen] = useState(false);
+  const [remindersCount, setRemindersCount] = useState(0);
+
+  useEffect(() => {
+    loadRemindersCount();
+  }, []);
+
+  const loadRemindersCount = async () => {
+    try {
+      const notifications =
+        await notificationService.getAllScheduledNotifications();
+      setRemindersCount(notifications.length);
+    } catch (error) {
+      console.error("Error loading reminders count:", error);
+    }
+  };
 
   const getCurrentLanguageName = (): string => {
     const currentLang = getCurrentLanguage();
@@ -36,6 +52,17 @@ export const SettingsScreen: React.FC = () => {
       default:
         return "English";
     }
+  };
+
+  const getRemindersText = (count: number): string => {
+    if (count === 0) {
+      return t("notifications.noRemindersShort");
+    }
+
+    const reminderWord =
+      count === 1 ? t("notifications.reminder") : t("notifications.reminders");
+
+    return `${count} ${reminderWord}`;
   };
 
   const settingsSections = [
@@ -58,9 +85,8 @@ export const SettingsScreen: React.FC = () => {
           key: "notifications",
           icon: "notifications-outline",
           label: t("settings.notifications"),
-          action: "toggle",
-          value: notifications,
-          onToggle: setNotifications,
+          action: "navigate",
+          children: getRemindersText(remindersCount),
         },
         {
           key: "language",
@@ -88,6 +114,8 @@ export const SettingsScreen: React.FC = () => {
     if (item.action === "navigate") {
       if (item.key === "security") {
         navigation.navigate("ChangePassword" as never);
+      } else if (item.key === "notifications") {
+        navigation.navigate("Notifications" as never);
       }
     } else if (item.action === "dialog") {
       if (item.key === "language") {

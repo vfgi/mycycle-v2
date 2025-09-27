@@ -131,5 +131,28 @@
     "passwordRequirements": "A palavra-passe deve ter pelo menos 6 caracteres",
     "passwordChangedSuccess": "Palavra-passe alterada com sucesso!",
     "passwordChangedMessage": "A sua palavra-passe foi actualizada com segurança"
+  },
+  "notifications": {
+    "title": "Notificações",
+    "settings": "Configurações",
+    "pushNotifications": "Notificações Push",
+    "pushNotificationsDesc": "Receber notificações do servidor",
+    "localNotifications": "Notificações Locais",
+    "localNotificationsDesc": "Lembretes e notificações agendadas",
+    "sound": "Som",
+    "soundDesc": "Reproduzir som nas notificações",
+    "scheduledReminders": "Lembretes Agendados",
+    "addReminder": "Adicionar Lembrete",
+    "noReminders": "Nenhum lembrete agendado",
+    "noRemindersDesc": "Crie lembretes para não esquecer os seus treinos e refeições",
+    "toggleError": "Não foi possível alterar o estado da notificação",
+    "confirmDelete": "Confirmar Eliminação",
+    "confirmDeleteMessage": "Tem a certeza que deseja eliminar esta notificação?",
+    "deleteSuccess": "Notificação eliminada com sucesso",
+    "deleteError": "Não foi possível eliminar a notificação",
+    "settingsError": "Não foi possível actualizar as configurações",
+    "reminder": "lembrete",
+    "reminders": "lembretes",
+    "noRemindersShort": "Nenhum lembrete"
   }
 }

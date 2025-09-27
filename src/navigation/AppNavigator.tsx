@@ -6,6 +6,7 @@ import { SignupScreen } from "../screens/auth/SignupScreen";
 import { BottomTabNavigator } from "./BottomTabNavigator";
 import { SettingsScreen } from "../screens/settings/SettingsScreen";
 import { ChangePasswordScreen } from "../screens/settings/ChangePasswordScreen";
+import { NotificationsScreen } from "../screens/notifications/NotificationsScreen";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../hooks/useToast";
 import { useTranslation } from "../hooks/useTranslation";
@@ -20,6 +21,7 @@ export type RootStackParamList = {
   Home: undefined;
   Settings: undefined;
   ChangePassword: undefined;
+  Notifications: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -96,6 +98,13 @@ export const AppNavigator: React.FC = () => {
             <Stack.Screen
               name="ChangePassword"
               component={ChangePasswordScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Notifications"
+              component={NotificationsScreen}
               options={{
                 headerShown: false,
               }}
