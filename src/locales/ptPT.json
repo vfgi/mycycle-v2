@@ -107,6 +107,67 @@
     "goals": "Objectivos",
     "history": "Histórico"
   },
+  "measurements": {
+    "title": "Medidas Corporais",
+    "description": "Quanto mais dados de medidas tivermos, mais precisos serão os nossos cálculos e recomendações personalizadas para si.",
+    "save": "Guardar Medidas",
+    "placeholder": "Digite a medida em {unit}",
+    "optional": "opcional",
+    "updated": "Medidas actualizadas",
+    "updateError": "Erro ao guardar medidas",
+    "height": {
+      "label": "Altura",
+      "description": "A sua altura total em centímetros"
+    },
+    "neck": {
+      "label": "Pescoço",
+      "description": "Circunferência do pescoço na parte mais estreita"
+    },
+    "back": {
+      "label": "Costas",
+      "description": "Largura das costas de ombro a ombro"
+    },
+    "biceps": {
+      "label": "Bíceps",
+      "description": "Circunferência do braço contraído"
+    },
+    "forearm": {
+      "label": "Antebraço",
+      "description": "Circunferência do antebraço na parte mais larga"
+    },
+    "wrist": {
+      "label": "Pulso",
+      "description": "Circunferência do pulso"
+    },
+    "chest": {
+      "label": "Peitoral",
+      "description": "Circunferência do peito na linha dos mamilos"
+    },
+    "abdomen": {
+      "label": "Abdómen",
+      "description": "Circunferência do abdómen na altura do umbigo"
+    },
+    "waist": {
+      "label": "Cintura",
+      "description": "Circunferência da cintura na parte mais estreita"
+    },
+    "hip": {
+      "label": "Anca",
+      "description": "Circunferência da anca na parte mais larga"
+    },
+    "thigh": {
+      "label": "Coxa",
+      "description": "Circunferência da coxa na parte mais larga"
+    },
+    "calf": {
+      "label": "Gémeo",
+      "description": "Circunferência do gémeo na parte mais larga"
+    },
+    "foot": {
+      "label": "Pé",
+      "description": "Comprimento do pé da ponta do dedão ao calcanhar"
+    }
+  },
   "settings": {
     "title": "Configurações",
     "account": "Conta",
@@ -226,8 +287,8 @@
       "short": "P"
     },
     "carbs": {
-      "label": "Carboidratos",
-      "short": "C"
+      "label": "Hidratos de Carbono",
+      "short": "H.C."
     },
     "fat": {
       "label": "Gordura",
