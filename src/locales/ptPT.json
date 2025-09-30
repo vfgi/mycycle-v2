@@ -294,5 +294,40 @@
       "label": "Gordura",
       "short": "G"
     }
+  },
+  "slideCard": {
+    "workouts": {
+      "title": "Os Seus Treinos",
+      "description": "Acompanhe o seu progresso e alcance os seus objectivos",
+      "buttonText": "Ver Mais"
+    },
+    "nutrition": {
+      "title": "Plano Nutricional",
+      "description": "Dietas personalizadas para o seu objectivo",
+      "buttonText": "Explorar"
+    },
+    "progress": {
+      "title": "O Seu Progresso",
+      "description": "Monitorize as suas conquistas diárias",
+      "buttonText": "Ver Detalhes"
+    }
+  },
+  "weight": {
+    "register": "Registar",
+    "registerWeight": "Registar Peso",
+    "currentWeight": "Peso Actual",
+    "weightHistory": "Histórico de Peso",
+    "enterWeight": "Digite o seu peso",
+    "weightPlaceholder": "Ex: 75.5",
+    "saveWeight": "Guardar Peso",
+    "weightSaved": "Peso registado com sucesso!",
+    "weightRequired": "Peso é obrigatório",
+    "weightInvalid": "Peso deve ser um número válido",
+    "filters": {
+      "weekly": "Semanal",
+      "monthly": "Mensal",
+      "semestral": "Semestral",
+      "annual": "Anual"
+    }
   }
 }

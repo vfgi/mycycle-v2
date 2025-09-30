@@ -294,5 +294,40 @@
       "label": "Fat",
       "short": "F"
     }
+  },
+  "slideCard": {
+    "workouts": {
+      "title": "Your Workouts",
+      "description": "Track your progress and achieve your goals",
+      "buttonText": "See More"
+    },
+    "nutrition": {
+      "title": "Nutrition Plan",
+      "description": "Personalized diets for your goal",
+      "buttonText": "Explore"
+    },
+    "progress": {
+      "title": "Your Progress",
+      "description": "Monitor your daily achievements",
+      "buttonText": "View Details"
+    }
+  },
+  "weight": {
+    "register": "Register",
+    "registerWeight": "Register Weight",
+    "currentWeight": "Current Weight",
+    "weightHistory": "Weight History",
+    "enterWeight": "Enter your weight",
+    "weightPlaceholder": "Ex: 165.5",
+    "saveWeight": "Save Weight",
+    "weightSaved": "Weight registered successfully!",
+    "weightRequired": "Weight is required",
+    "weightInvalid": "Weight must be a valid number",
+    "filters": {
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "semestral": "6 Months",
+      "annual": "Annual"
+    }
   }
 }

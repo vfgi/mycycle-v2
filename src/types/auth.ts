@@ -25,6 +25,7 @@ export interface User {
   image?: string;
   role: string;
   is_active: boolean;
+  is_premium?: boolean;
   measurements?: Measurements;
   followUp?: string[];
 }

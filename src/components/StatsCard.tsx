@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   VStack,
   HStack,
@@ -7,10 +7,12 @@ import {
   Progress,
   ProgressFilledTrack,
 } from "@gluestack-ui/themed";
+import { TouchableOpacity } from "react-native";
 import { FIXED_COLORS } from "../theme/colors";
 import { useTranslation } from "../hooks/useTranslation";
 import { useUnits } from "../contexts/UnitsContext";
 import { CircularChart } from "./CircularChart";
+import { WeightRegisterDrawer } from "../screens/home/WeightRegisterDrawer";
 
 interface StatsData {
   calories: {
@@ -78,10 +80,23 @@ const mockData: StatsData = {
 export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
   const { t } = useTranslation();
   const { getMacroUnit } = useUnits();
+  const [isWeightDrawerOpen, setIsWeightDrawerOpen] = useState(false);
 
   const getProgressPercentage = (current: number, goal: number) => {
     return Math.min((current / goal) * 100, 100);
   };
+
+  const getCaloriesColor = (percentage: number) => {
+    if (percentage <= 75) return FIXED_COLORS.success[500];
+    if (percentage <= 100) return FIXED_COLORS.warning[500];
+    return FIXED_COLORS.error[500];
+  };
+
+  const caloriesPercentage =
+    (data.calories.consumed / data.calories.goal) * 100;
+  const caloriesColor = getCaloriesColor(caloriesPercentage);
+  const weightColor = FIXED_COLORS.primary[500];
+  const exerciseColor = FIXED_COLORS.secondary[300];
 
   const StatItem: React.FC<{
     label: string;
@@ -89,9 +104,27 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
     goal: number;
     unit: string;
     showProgress?: boolean;
-  }> = ({ label, current, goal, unit, showProgress = true }) => (
+    indicatorColor?: string;
+    extraComponent?: React.ReactNode;
+  }> = ({
+    label,
+    current,
+    goal,
+    unit,
+    showProgress = true,
+    indicatorColor,
+    extraComponent,
+  }) => (
     <VStack space="xs" flex={1}>
       <HStack alignItems="center" space="xs">
+        {indicatorColor && (
+          <Box
+            width="$3"
+            height="$3"
+            borderRadius="$full"
+            bg={indicatorColor}
+          />
+        )}
         <Text color={FIXED_COLORS.text[50]} fontSize="$lg" fontWeight="$bold">
           {current}
         </Text>
@@ -99,9 +132,12 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
           / {goal} {unit}
         </Text>
       </HStack>
-      <Text color={FIXED_COLORS.text[300]} fontSize="$xs" fontWeight="$small">
-        {label}
-      </Text>
+      <HStack alignItems="center" justifyContent="space-between">
+        <Text color={FIXED_COLORS.text[300]} fontSize="$xs" fontWeight="$small">
+          {label}
+        </Text>
+        {extraComponent}
+      </HStack>
     </VStack>
   );
 
@@ -113,7 +149,6 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
     color: string;
   }> = ({ shortLabel, current, goal, unit, color }) => (
     <VStack space="xs" flex={1}>
-      <HStack alignItems="center" space="xs"></HStack>
       <Text color={FIXED_COLORS.text[50]} fontSize="$xs" fontWeight="$small">
         {shortLabel} - {current}/{goal}
         {unit}
@@ -121,7 +156,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
       <Progress
         value={getProgressPercentage(current, goal)}
         size="sm"
-        bg={FIXED_COLORS.background[700]}
+        bg={FIXED_COLORS.background[600]}
       >
         <ProgressFilledTrack bg={color} />
       </Progress>
@@ -134,7 +169,6 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
       borderRadius="$xl"
       p="$4"
       space="lg"
-      mx="$4"
       shadowColor="$black"
       shadowOffset={{ width: 0, height: 2 }}
       shadowOpacity={0.1}
@@ -150,19 +184,39 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
             current={data.calories.consumed}
             goal={data.calories.goal}
             unit="kcal"
+            indicatorColor={caloriesColor}
           />
+
           <StatItem
             label="Peso Atual"
             current={data.weight.current}
             goal={data.weight.goal}
             unit="kg"
             showProgress={false}
+            indicatorColor={weightColor}
+            extraComponent={
+              <TouchableOpacity
+                onPress={() => setIsWeightDrawerOpen(true)}
+                activeOpacity={0.7}
+              >
+                <Text
+                  color={FIXED_COLORS.warning[500]}
+                  fontSize="$xs"
+                  fontWeight="$medium"
+                  textDecorationLine="underline"
+                >
+                  {t("weight.register")}
+                </Text>
+              </TouchableOpacity>
+            }
           />
+
           <StatItem
             label="Exercícios Realizados"
             current={data.exercise.current}
             goal={data.exercise.goal}
             unit="exercícios"
+            indicatorColor={exerciseColor}
           />
         </VStack>
 
@@ -183,8 +237,8 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
       </HStack>
 
       {/* Macronutrientes */}
-      <VStack space="xs">
-        <HStack space="xs" justifyContent="space-between">
+      <VStack>
+        <HStack space="lg" justifyContent="space-between">
           <MacroItem
             shortLabel={t("macros.protein.short")}
             current={data.macros.protein.current}
@@ -208,6 +262,11 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
           />
         </HStack>
       </VStack>
+
+      <WeightRegisterDrawer
+        isOpen={isWeightDrawerOpen}
+        onClose={() => setIsWeightDrawerOpen(false)}
+      />
     </VStack>
   );
 };

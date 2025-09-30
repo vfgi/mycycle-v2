@@ -294,5 +294,40 @@
       "label": "Grasa",
       "short": "G"
     }
+  },
+  "slideCard": {
+    "workouts": {
+      "title": "Tus Entrenamientos",
+      "description": "Sigue tu progreso y alcanza tus objetivos",
+      "buttonText": "Ver Más"
+    },
+    "nutrition": {
+      "title": "Plan Nutricional",
+      "description": "Dietas personalizadas para tu objetivo",
+      "buttonText": "Explorar"
+    },
+    "progress": {
+      "title": "Tu Progreso",
+      "description": "Monitorea tus logros diarios",
+      "buttonText": "Ver Detalles"
+    }
+  },
+  "weight": {
+    "register": "Registrar",
+    "registerWeight": "Registrar Peso",
+    "currentWeight": "Peso Actual",
+    "weightHistory": "Historial de Peso",
+    "enterWeight": "Ingresa tu peso",
+    "weightPlaceholder": "Ej: 75.5",
+    "saveWeight": "Guardar Peso",
+    "weightSaved": "¡Peso registrado con éxito!",
+    "weightRequired": "El peso es obligatorio",
+    "weightInvalid": "El peso debe ser un número válido",
+    "filters": {
+      "weekly": "Semanal",
+      "monthly": "Mensual",
+      "semestral": "Semestral",
+      "annual": "Anual"
+    }
   }
 }

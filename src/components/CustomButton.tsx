@@ -15,6 +15,7 @@ interface CustomButtonProps {
   size?: "sm" | "md" | "lg" | "xl";
   borderRadius?: any;
   mt?: any;
+  height?: number;
 }
 
 export const CustomButton: React.FC<CustomButtonProps> = ({
@@ -26,6 +27,7 @@ export const CustomButton: React.FC<CustomButtonProps> = ({
   size = "lg",
   borderRadius = "$xl",
   mt = "$4",
+  height,
 }) => {
   const { t } = useTranslation();
   const fadeAnim = React.useRef(new Animated.Value(0.3)).current;
@@ -60,6 +62,7 @@ export const CustomButton: React.FC<CustomButtonProps> = ({
       size={size}
       borderRadius={borderRadius}
       mt={mt}
+      height={height}
     >
       {isLoading ? (
         <HStack space="sm" alignItems="center">
