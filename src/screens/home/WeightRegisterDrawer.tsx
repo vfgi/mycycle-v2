@@ -6,6 +6,7 @@ import { VStack, HStack, Text, ScrollView } from "@gluestack-ui/themed";
 import { TouchableOpacity } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { useTranslation } from "../../hooks/useTranslation";
+import { useUnits } from "../../contexts/UnitsContext";
 import { FIXED_COLORS } from "../../theme/colors";
 import { CustomInput, CustomDrawer, CustomButton } from "../../components";
 import { useToast } from "../../hooks/useToast";
@@ -83,6 +84,7 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
 }) => {
   const { t } = useTranslation();
   const { showSuccess } = useToast();
+  const { convertWeight, unitSystem } = useUnits();
   const [isSaving, setIsSaving] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<FilterType>("weekly");
 
@@ -116,6 +118,16 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
   const onSubmit = async (data: WeightFormData) => {
     try {
       setIsSaving(true);
+
+      const weightInDisplayUnit = parseFloat(data.weight);
+      let weightInKg = weightInDisplayUnit;
+
+      if (unitSystem === "imperial") {
+        weightInKg = weightInDisplayUnit / 2.205;
+      }
+
+      console.log("Saving weight in kg:", weightInKg);
+
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       showSuccess(t("weight.weightSaved"));
@@ -133,7 +145,11 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
     onClose();
   };
 
-  const chartData = getDataByFilter();
+  const rawChartData = getDataByFilter();
+  const chartData = rawChartData.map((item) => ({
+    ...item,
+    value: convertWeight(item.value).value,
+  }));
   const maxValue = Math.max(...chartData.map((d) => d.value));
   const minValue = Math.min(...chartData.map((d) => d.value));
 
@@ -167,6 +183,10 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
     </TouchableOpacity>
   );
 
+  const weightUnit = unitSystem === "imperial" ? "lbs" : "kg";
+  const weightPlaceholder =
+    unitSystem === "imperial" ? "Ex: 165.5" : "Ex: 75.5";
+
   return (
     <CustomDrawer isOpen={isOpen} onClose={handleClose}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -187,8 +207,8 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
                 name="weight"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <CustomInput
-                    label={t("weight.enterWeight")}
-                    placeholder={t("weight.weightPlaceholder")}
+                    label={`${t("weight.enterWeight")} (${weightUnit})`}
+                    placeholder={weightPlaceholder}
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}

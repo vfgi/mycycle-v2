@@ -11,6 +11,7 @@ import { TouchableOpacity } from "react-native";
 import { FIXED_COLORS } from "../theme/colors";
 import { useTranslation } from "../hooks/useTranslation";
 import { useUnits } from "../contexts/UnitsContext";
+import { useAuth } from "../contexts/AuthContext";
 import { CircularChart } from "./CircularChart";
 import { WeightRegisterDrawer } from "../screens/home/WeightRegisterDrawer";
 
@@ -79,8 +80,12 @@ const mockData: StatsData = {
 
 export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
   const { t } = useTranslation();
-  const { getMacroUnit } = useUnits();
+  const { user } = useAuth();
+  const { getMacroUnit, convertWeight } = useUnits();
   const [isWeightDrawerOpen, setIsWeightDrawerOpen] = useState(false);
+
+  const currentWeightKg = user?.measurements?.weight || data.weight.current;
+  const goalWeightKg = data.weight.goal;
 
   const getProgressPercentage = (current: number, goal: number) => {
     return Math.min((current / goal) * 100, 100);
@@ -97,6 +102,9 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
   const caloriesColor = getCaloriesColor(caloriesPercentage);
   const weightColor = FIXED_COLORS.primary[500];
   const exerciseColor = FIXED_COLORS.secondary[300];
+
+  const currentWeightConverted = convertWeight(currentWeightKg);
+  const goalWeightConverted = convertWeight(goalWeightKg);
 
   const StatItem: React.FC<{
     label: string;
@@ -189,9 +197,9 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
 
           <StatItem
             label="Peso Atual"
-            current={data.weight.current}
-            goal={data.weight.goal}
-            unit="kg"
+            current={currentWeightConverted.value}
+            goal={goalWeightConverted.value}
+            unit={currentWeightConverted.unit}
             showProgress={false}
             indicatorColor={weightColor}
             extraComponent={

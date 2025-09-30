@@ -66,8 +66,9 @@ export const BottomTabNavigator: React.FC = () => {
 
   const handleMenuItemPress = (item: string) => {
     if (item === "home") {
-      // Navegar para a tela Main (que contém o Tab Navigator) e depois para Home tab
       navigation.navigate("Main", { screen: "Home" });
+    } else if (item === "profile") {
+      navigation.navigate("Profile");
     } else if (item === "settings") {
       navigation.navigate("Settings");
     } else if (item === "measurements") {

@@ -46,7 +46,7 @@ export const HomeScreen: React.FC = () => {
   };
 
   return (
-    <SafeContainer paddingHorizontal={12} paddingTop={0}>
+    <SafeContainer paddingHorizontal={12} paddingTop={0} paddingBottom={0}>
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}

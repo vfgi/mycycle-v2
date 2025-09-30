@@ -27,7 +27,7 @@ export const CustomButton: React.FC<CustomButtonProps> = ({
   size = "lg",
   borderRadius = "$xl",
   mt = "$4",
-  height,
+  height = 40,
 }) => {
   const { t } = useTranslation();
   const fadeAnim = React.useRef(new Animated.Value(0.3)).current;

@@ -10,6 +10,7 @@ import { NotificationsScreen } from "../screens/notifications/NotificationsScree
 import { MeasurementsScreen } from "../screens/measurements/MeasurementsScreen";
 import { GoalsScreen } from "../screens/goals/GoalsScreen";
 import { HistoryScreen } from "../screens/history/HistoryScreen";
+import { ProfileScreen } from "../screens/profile/ProfileScreen";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../hooks/useToast";
 import { useTranslation } from "../hooks/useTranslation";
@@ -29,6 +30,7 @@ export type RootStackParamList = {
   Measurements: undefined;
   Goals: undefined;
   History: undefined;
+  Profile: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -143,6 +145,18 @@ export const AppNavigator: React.FC = () => {
             <Stack.Screen
               name="History"
               component={HistoryScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                headerTitle: () => <HeaderLogo />,
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+              })}
+            />
+            <Stack.Screen
+              name="Profile"
+              component={ProfileScreen}
               options={({ route }) => ({
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,

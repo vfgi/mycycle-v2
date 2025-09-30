@@ -143,45 +143,60 @@ export const Menu: React.FC<MenuProps> = ({
             </VStack>
 
             {/* Profile Card */}
-            <VStack
-              bg={FIXED_COLORS.background[700]}
-              borderRadius="$lg"
-              p="$4"
-              mb="$4"
+            <Pressable
+              onPress={() => {
+                onMenuItemPress("profile");
+                onClose();
+              }}
+              $pressed={{
+                opacity: 0.8,
+              }}
             >
-              <HStack alignItems="center" justifyContent="space-between">
-                <HStack alignItems="center" space="md" flex={1}>
-                  {user?.image ? (
-                    <Image
-                      source={{ uri: user.image }}
-                      alt="Profile"
-                      width={60}
-                      height={60}
-                      borderRadius={48}
-                      resizeMode="cover"
-                    />
-                  ) : (
-                    <FontAwesome
-                      name="user-circle"
-                      size={48}
-                      color={FIXED_COLORS.primary[600]}
-                    />
-                  )}
-                  <VStack flex={1}>
-                    <Text
-                      color={FIXED_COLORS.text[50]}
-                      fontSize="$lg"
-                      fontWeight="$bold"
-                    >
-                      {user?.name || "Usuário"}
-                    </Text>
-                    <Text color={FIXED_COLORS.text[400]} fontSize="$sm">
-                      {user?.email || "email@exemplo.com"}
-                    </Text>
-                  </VStack>
+              <VStack
+                bg={FIXED_COLORS.background[700]}
+                borderRadius="$lg"
+                p="$4"
+                mb="$4"
+              >
+                <HStack alignItems="center" justifyContent="space-between">
+                  <HStack alignItems="center" space="md" flex={1}>
+                    {user?.image ? (
+                      <Image
+                        source={{ uri: user.image }}
+                        alt="Profile"
+                        width={60}
+                        height={60}
+                        borderRadius={48}
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <FontAwesome
+                        name="user-circle"
+                        size={48}
+                        color={FIXED_COLORS.primary[600]}
+                      />
+                    )}
+                    <VStack flex={1}>
+                      <Text
+                        color={FIXED_COLORS.text[50]}
+                        fontSize="$lg"
+                        fontWeight="$bold"
+                      >
+                        {user?.name || "Usuário"}
+                      </Text>
+                      <Text color={FIXED_COLORS.text[400]} fontSize="$sm">
+                        {user?.email || "email@exemplo.com"}
+                      </Text>
+                    </VStack>
+                  </HStack>
+                  <Ionicons
+                    name="chevron-forward"
+                    size={24}
+                    color={FIXED_COLORS.text[400]}
+                  />
                 </HStack>
-              </HStack>
-            </VStack>
+              </VStack>
+            </Pressable>
 
             {/* Main Menu Items */}
             {mainMenuItems.map((item) => (
