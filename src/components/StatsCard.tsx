@@ -84,7 +84,7 @@ const mockData: StatsData = {
 export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const { getMacroUnit, convertWeight } = useUnits();
+  const { getMacroUnit, convertWeight, convertMacronutrient } = useUnits();
   const [isWeightDrawerOpen, setIsWeightDrawerOpen] = useState(false);
   const [goals, setGoals] = useState<Goals | null>(null);
 
@@ -113,9 +113,28 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
   const goalWeightKg = goals?.targetWeight || data.weight.goal;
   const caloriesGoal = goals?.targetCalories || data.calories.goal;
   const exerciseGoal = goals?.dailyExercises || data.exercise.goal;
-  const proteinGoal = goals?.targetProtein || data.macros.protein.goal;
-  const carbsGoal = goals?.targetCarbs || data.macros.carbs.goal;
-  const fatGoal = goals?.targetFat || data.macros.fat.goal;
+
+  // Converter macronutrientes para unidade atual (tanto current quanto goal)
+  const proteinGoalConverted = goals?.targetProtein
+    ? convertMacronutrient(goals.targetProtein).value
+    : data.macros.protein.goal;
+  const carbsGoalConverted = goals?.targetCarbs
+    ? convertMacronutrient(goals.targetCarbs).value
+    : data.macros.carbs.goal;
+  const fatGoalConverted = goals?.targetFat
+    ? convertMacronutrient(goals.targetFat).value
+    : data.macros.fat.goal;
+
+  // Converter valores atuais (consumidos) para unidade atual
+  const proteinCurrentConverted = convertMacronutrient(
+    data.macros.protein.current
+  ).value;
+  const carbsCurrentConverted = convertMacronutrient(
+    data.macros.carbs.current
+  ).value;
+  const fatCurrentConverted = convertMacronutrient(
+    data.macros.fat.current
+  ).value;
 
   const getProgressPercentage = (current: number, goal: number) => {
     if (goal === 0) return 0;
@@ -288,22 +307,22 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
         <HStack space="lg" justifyContent="space-between">
           <MacroItem
             shortLabel={t("macros.protein.short")}
-            current={data.macros.protein.current}
-            goal={proteinGoal}
+            current={proteinCurrentConverted}
+            goal={proteinGoalConverted}
             unit={getMacroUnit()}
             color={FIXED_COLORS.primary[600]}
           />
           <MacroItem
             shortLabel={t("macros.carbs.short")}
-            current={data.macros.carbs.current}
-            goal={carbsGoal}
+            current={carbsCurrentConverted}
+            goal={carbsGoalConverted}
             unit={getMacroUnit()}
             color={FIXED_COLORS.warning[500]}
           />
           <MacroItem
             shortLabel={t("macros.fat.short")}
-            current={data.macros.fat.current}
-            goal={fatGoal}
+            current={fatCurrentConverted}
+            goal={fatGoalConverted}
             unit={getMacroUnit()}
             color={FIXED_COLORS.error[500]}
           />

@@ -32,6 +32,10 @@ interface UnitsContextType {
   convertMacronutrient: (grams: number) => { value: number; unit: string };
   formatMacronutrient: (grams: number) => string;
   getMacroUnit: () => string;
+  // Water conversion functions
+  convertWater: (liters: number) => { value: number; unit: string };
+  formatWater: (liters: number) => string;
+  getWaterUnit: () => string;
 }
 
 const UnitsContext = createContext<UnitsContextType | undefined>(undefined);
@@ -79,12 +83,12 @@ export const UnitsProvider: React.FC<UnitsProviderProps> = ({ children }) => {
   const convertWeight = (kg: number): { value: number; unit: string } => {
     if (unitSystem === "imperial") {
       return {
-        value: Math.round(kg * 2.205 * 10) / 10, // kg to lbs
+        value: Math.round(kg * 2.205 * 100) / 100, // kg to lbs with 2 decimal places
         unit: "lbs",
       };
     }
     return {
-      value: kg,
+      value: Math.round(kg * 100) / 100, // kg with 2 decimal places
       unit: "kg",
     };
   };
@@ -216,9 +220,9 @@ export const UnitsProvider: React.FC<UnitsProviderProps> = ({ children }) => {
   ): { value: number; unit: string } => {
     if (unitSystem === "imperial") {
       // Convert grams to ounces (1 gram = 0.035274 ounces)
-      return { value: Math.round(grams * 0.035274 * 10) / 10, unit: "oz" };
+      return { value: Math.round(grams * 0.035274 * 100) / 100, unit: "oz" };
     }
-    return { value: grams, unit: "g" };
+    return { value: Math.round(grams * 100) / 100, unit: "g" };
   };
 
   const formatMacronutrient = (grams: number): string => {
@@ -228,6 +232,29 @@ export const UnitsProvider: React.FC<UnitsProviderProps> = ({ children }) => {
 
   const getMacroUnit = (): string => {
     return unitSystem === "imperial" ? "oz" : "g";
+  };
+
+  // Water conversion functions
+  const convertWater = (liters: number): { value: number; unit: string } => {
+    if (unitSystem === "imperial") {
+      return {
+        value: Math.round(liters * 0.264172 * 100) / 100, // L to gal with 2 decimal places
+        unit: "gal",
+      };
+    }
+    return {
+      value: Math.round(liters * 100) / 100, // L with 2 decimal places
+      unit: "L",
+    };
+  };
+
+  const formatWater = (liters: number): string => {
+    const converted = convertWater(liters);
+    return `${converted.value} ${converted.unit}`;
+  };
+
+  const getWaterUnit = (): string => {
+    return unitSystem === "imperial" ? "gal" : "L";
   };
 
   const contextValue: UnitsContextType = {
@@ -249,6 +276,9 @@ export const UnitsProvider: React.FC<UnitsProviderProps> = ({ children }) => {
     convertMacronutrient,
     formatMacronutrient,
     getMacroUnit,
+    convertWater,
+    formatWater,
+    getWaterUnit,
   };
 
   return (

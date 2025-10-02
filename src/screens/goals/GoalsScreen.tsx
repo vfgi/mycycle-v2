@@ -21,7 +21,14 @@ import { ObjectiveSelector } from "./ObjectiveSelector";
 
 export const GoalsScreen: React.FC = () => {
   const { t } = useTranslation();
-  const { convertWeight } = useUnits();
+  const {
+    convertWeight,
+    convertMacronutrient,
+    getMacroUnit,
+    convertWater,
+    getWaterUnit,
+    unitSystem,
+  } = useUnits();
   const { showSuccess } = useToast();
   const [isSaving, setIsSaving] = useState(false);
 
@@ -47,18 +54,42 @@ export const GoalsScreen: React.FC = () => {
       const goals = await goalsService.getGoals();
       if (goals) {
         setObjective(goals.objective);
+
+        // Peso - converter para unidade atual
         if (goals.targetWeight) {
           const converted = convertWeight(goals.targetWeight);
           setTargetWeight(converted.value.toString());
         }
+
+        // Gordura corporal - sempre em %
         setTargetBodyFat(goals.targetBodyFat?.toString() || "");
+
+        // Calorias - sempre em kcal
         setTargetCalories(goals.targetCalories?.toString() || "");
-        setTargetProtein(goals.targetProtein?.toString() || "");
-        setTargetCarbs(goals.targetCarbs?.toString() || "");
-        setTargetFat(goals.targetFat?.toString() || "");
+
+        // Macronutrientes - converter para unidade atual
+        if (goals.targetProtein) {
+          const converted = convertMacronutrient(goals.targetProtein);
+          setTargetProtein(converted.value.toString());
+        }
+        if (goals.targetCarbs) {
+          const converted = convertMacronutrient(goals.targetCarbs);
+          setTargetCarbs(converted.value.toString());
+        }
+        if (goals.targetFat) {
+          const converted = convertMacronutrient(goals.targetFat);
+          setTargetFat(converted.value.toString());
+        }
+
+        // Exercícios - sempre em números
         setWeeklyWorkouts(goals.weeklyWorkouts?.toString() || "");
         setDailyExercises(goals.dailyExercises?.toString() || "");
-        setWaterIntake(goals.waterIntake?.toString() || "");
+
+        // Água - converter para unidade atual (L ou gal)
+        if (goals.waterIntake) {
+          const converted = convertWater(goals.waterIntake);
+          setWaterIntake(converted.value.toString());
+        }
       }
     } catch (error) {
       console.error("Error loading goals:", error);
@@ -69,9 +100,27 @@ export const GoalsScreen: React.FC = () => {
     try {
       setIsSaving(true);
 
+      // Converter peso para kg (sempre salvar em kg)
       let weightInKg = targetWeight ? parseFloat(targetWeight) : undefined;
-      if (weightInKg && weightUnit === "lbs") {
-        weightInKg = weightInKg / 2.205;
+      if (weightInKg && unitSystem === "imperial") {
+        weightInKg = weightInKg / 2.205; // lbs to kg
+      }
+
+      // Converter macronutrientes para gramas (sempre salvar em g)
+      let proteinInG = targetProtein ? parseFloat(targetProtein) : undefined;
+      let carbsInG = targetCarbs ? parseFloat(targetCarbs) : undefined;
+      let fatInG = targetFat ? parseFloat(targetFat) : undefined;
+
+      if (unitSystem === "imperial") {
+        if (proteinInG) proteinInG = proteinInG / 0.035274; // oz to g
+        if (carbsInG) carbsInG = carbsInG / 0.035274; // oz to g
+        if (fatInG) fatInG = fatInG / 0.035274; // oz to g
+      }
+
+      // Converter água para litros (sempre salvar em L)
+      let waterInL = waterIntake ? parseFloat(waterIntake) : undefined;
+      if (waterInL && unitSystem === "imperial") {
+        waterInL = waterInL / 0.264172; // gal to L
       }
 
       const goals: Goals = {
@@ -79,12 +128,12 @@ export const GoalsScreen: React.FC = () => {
         targetWeight: weightInKg,
         targetBodyFat: targetBodyFat ? parseFloat(targetBodyFat) : undefined,
         targetCalories: targetCalories ? parseFloat(targetCalories) : undefined,
-        targetProtein: targetProtein ? parseFloat(targetProtein) : undefined,
-        targetCarbs: targetCarbs ? parseFloat(targetCarbs) : undefined,
-        targetFat: targetFat ? parseFloat(targetFat) : undefined,
+        targetProtein: proteinInG,
+        targetCarbs: carbsInG,
+        targetFat: fatInG,
         weeklyWorkouts: weeklyWorkouts ? parseInt(weeklyWorkouts) : undefined,
         dailyExercises: dailyExercises ? parseInt(dailyExercises) : undefined,
-        waterIntake: waterIntake ? parseFloat(waterIntake) : undefined,
+        waterIntake: waterInL,
       };
 
       await goalsService.saveGoals(goals);
@@ -97,6 +146,8 @@ export const GoalsScreen: React.FC = () => {
   };
 
   const weightUnit = convertWeight(0).unit;
+  const macroUnit = getMacroUnit();
+  const waterUnit = getWaterUnit();
 
   return (
     <SafeContainer paddingTop={0} paddingBottom={0} paddingHorizontal={0}>
@@ -163,7 +214,7 @@ export const GoalsScreen: React.FC = () => {
 
                 <VStack flex={1} minWidth="48%">
                   <GoalCardCompact
-                    label={t("goals.waterIntake")}
+                    label={`${t("goals.waterIntake")} (${waterUnit})`}
                     value={waterIntake}
                     onChangeText={setWaterIntake}
                     placeholder="3"
@@ -173,7 +224,7 @@ export const GoalsScreen: React.FC = () => {
 
                 <VStack flex={1} minWidth="48%">
                   <GoalCardCompact
-                    label={t("goals.targetProtein")}
+                    label={`${t("goals.targetProtein")} (${macroUnit})`}
                     value={targetProtein}
                     onChangeText={setTargetProtein}
                     placeholder="120"
@@ -183,7 +234,7 @@ export const GoalsScreen: React.FC = () => {
 
                 <VStack flex={1} minWidth="48%">
                   <GoalCardCompact
-                    label={t("goals.targetCarbs")}
+                    label={`${t("goals.targetCarbs")} (${macroUnit})`}
                     value={targetCarbs}
                     onChangeText={setTargetCarbs}
                     placeholder="250"
@@ -193,7 +244,7 @@ export const GoalsScreen: React.FC = () => {
 
                 <VStack flex={1} minWidth="48%">
                   <GoalCardCompact
-                    label={t("goals.targetFat")}
+                    label={`${t("goals.targetFat")} (${macroUnit})`}
                     value={targetFat}
                     onChangeText={setTargetFat}
                     placeholder="60"
