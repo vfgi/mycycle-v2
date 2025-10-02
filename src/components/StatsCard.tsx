@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   VStack,
   HStack,
@@ -14,6 +14,9 @@ import { useUnits } from "../contexts/UnitsContext";
 import { useAuth } from "../contexts/AuthContext";
 import { CircularChart } from "./CircularChart";
 import { WeightRegisterDrawer } from "../screens/home/WeightRegisterDrawer";
+import { goalsService } from "../services/goalsService";
+import { Goals } from "../types/goals";
+import { useFocusEffect } from "@react-navigation/native";
 
 interface StatsData {
   calories: {
@@ -83,11 +86,39 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
   const { user } = useAuth();
   const { getMacroUnit, convertWeight } = useUnits();
   const [isWeightDrawerOpen, setIsWeightDrawerOpen] = useState(false);
+  const [goals, setGoals] = useState<Goals | null>(null);
 
+  useEffect(() => {
+    loadGoals();
+  }, []);
+
+  // Recarrega os goals sempre que a tela ganha foco
+  useFocusEffect(
+    React.useCallback(() => {
+      loadGoals();
+    }, [])
+  );
+
+  const loadGoals = async () => {
+    try {
+      const loadedGoals = await goalsService.getGoals();
+      setGoals(loadedGoals);
+    } catch (error) {
+      console.error("Error loading goals:", error);
+    }
+  };
+
+  // Dados reais dos goals ou fallback para mock data
   const currentWeightKg = user?.measurements?.weight || data.weight.current;
-  const goalWeightKg = data.weight.goal;
+  const goalWeightKg = goals?.targetWeight || data.weight.goal;
+  const caloriesGoal = goals?.targetCalories || data.calories.goal;
+  const exerciseGoal = goals?.dailyExercises || data.exercise.goal;
+  const proteinGoal = goals?.targetProtein || data.macros.protein.goal;
+  const carbsGoal = goals?.targetCarbs || data.macros.carbs.goal;
+  const fatGoal = goals?.targetFat || data.macros.fat.goal;
 
   const getProgressPercentage = (current: number, goal: number) => {
+    if (goal === 0) return 0;
     return Math.min((current / goal) * 100, 100);
   };
 
@@ -97,8 +128,10 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
     return FIXED_COLORS.error[500];
   };
 
-  const caloriesPercentage =
-    (data.calories.consumed / data.calories.goal) * 100;
+  const caloriesPercentage = getProgressPercentage(
+    data.calories.consumed,
+    caloriesGoal
+  );
   const caloriesColor = getCaloriesColor(caloriesPercentage);
   const weightColor = FIXED_COLORS.primary[500];
   const exerciseColor = FIXED_COLORS.secondary[300];
@@ -190,7 +223,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
           <StatItem
             label="Calorias Consumidas"
             current={data.calories.consumed}
-            goal={data.calories.goal}
+            goal={caloriesGoal}
             unit="kcal"
             indicatorColor={caloriesColor}
           />
@@ -222,7 +255,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
           <StatItem
             label="Exercícios Realizados"
             current={data.exercise.current}
-            goal={data.exercise.goal}
+            goal={exerciseGoal}
             unit="exercícios"
             indicatorColor={exerciseColor}
           />
@@ -234,10 +267,16 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
             data={{
               calories: {
                 current: data.calories.consumed,
-                goal: data.calories.goal,
+                goal: caloriesGoal,
               },
-              weight: data.weight,
-              exercise: data.exercise,
+              weight: {
+                current: currentWeightKg,
+                goal: goalWeightKg,
+              },
+              exercise: {
+                current: data.exercise.current,
+                goal: exerciseGoal,
+              },
             }}
             size={170}
           />
@@ -250,21 +289,21 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
           <MacroItem
             shortLabel={t("macros.protein.short")}
             current={data.macros.protein.current}
-            goal={data.macros.protein.goal}
+            goal={proteinGoal}
             unit={getMacroUnit()}
             color={FIXED_COLORS.primary[600]}
           />
           <MacroItem
             shortLabel={t("macros.carbs.short")}
             current={data.macros.carbs.current}
-            goal={data.macros.carbs.goal}
+            goal={carbsGoal}
             unit={getMacroUnit()}
             color={FIXED_COLORS.warning[500]}
           />
           <MacroItem
             shortLabel={t("macros.fat.short")}
             current={data.macros.fat.current}
-            goal={data.macros.fat.goal}
+            goal={fatGoal}
             unit={getMacroUnit()}
             color={FIXED_COLORS.error[500]}
           />

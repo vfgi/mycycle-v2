@@ -93,6 +93,28 @@
     "hello": "Hello",
     "logout": "Logout"
   },
+  "goals": {
+    "defineYourGoals": "Define Your Goals",
+    "comingSoon": "Coming Soon",
+    "health": "Health",
+    "nutrition": "Nutrition",
+    "exercises": "Exercises",
+    "objective": "Objective",
+    "weightLoss": "Weight Loss",
+    "hypertrophy": "Hypertrophy",
+    "definition": "Definition",
+    "targetWeight": "Target Weight",
+    "targetBodyFat": "Target Body Fat %",
+    "targetCalories": "Calories",
+    "targetProtein": "Protein",
+    "targetCarbs": "Carbs",
+    "targetFat": "Fat",
+    "weeklyWorkouts": "Per Week",
+    "dailyExercises": "Per Day",
+    "waterIntake": "Water (L)",
+    "saveGoals": "Save Goals",
+    "goalsSaved": "Goals saved successfully!"
+  },
   "navigation": {
     "home": "Home",
     "profile": "Profile",

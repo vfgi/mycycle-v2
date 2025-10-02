@@ -93,6 +93,28 @@
     "hello": "Olá",
     "logout": "Sair"
   },
+  "goals": {
+    "defineYourGoals": "Defina suas Metas",
+    "comingSoon": "Em Breve",
+    "health": "Saúde",
+    "nutrition": "Nutrição",
+    "exercises": "Exercícios",
+    "objective": "Objetivo",
+    "weightLoss": "Perda de Peso",
+    "hypertrophy": "Hipertrofia",
+    "definition": "Definição",
+    "targetWeight": "Peso Alvo",
+    "targetBodyFat": "% Gordura Alvo",
+    "targetCalories": "Calorias",
+    "targetProtein": "Proteína",
+    "targetCarbs": "Carboidratos",
+    "targetFat": "Gordura",
+    "weeklyWorkouts": "Por Semana",
+    "dailyExercises": "Por Dia",
+    "waterIntake": "Água (L)",
+    "saveGoals": "Salvar Metas",
+    "goalsSaved": "Metas salvas com sucesso!"
+  },
   "navigation": {
     "home": "Início",
     "profile": "Perfil",
