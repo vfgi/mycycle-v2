@@ -11,6 +11,7 @@ import { MeasurementsScreen } from "../screens/measurements/MeasurementsScreen";
 import { GoalsScreen } from "../screens/goals/GoalsScreen";
 import { HistoryScreen } from "../screens/history/HistoryScreen";
 import { ProfileScreen } from "../screens/profile/ProfileScreen";
+import { WorkoutSetupScreen } from "../screens/workoutSetup";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../hooks/useToast";
 import { useTranslation } from "../hooks/useTranslation";
@@ -31,6 +32,7 @@ export type RootStackParamList = {
   Goals: undefined;
   History: undefined;
   Profile: undefined;
+  WorkoutSetup: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -81,7 +83,7 @@ export const AppNavigator: React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={isAuthenticated ? "Home" : "Login"}
+        initialRouteName={isAuthenticated ? "Main" : "Login"}
         screenOptions={{
           headerShown: false,
         }}
@@ -157,6 +159,18 @@ export const AppNavigator: React.FC = () => {
             <Stack.Screen
               name="Profile"
               component={ProfileScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                headerTitle: () => <HeaderLogo />,
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+              })}
+            />
+            <Stack.Screen
+              name="WorkoutSetup"
+              component={WorkoutSetupScreen}
               options={({ route }) => ({
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,

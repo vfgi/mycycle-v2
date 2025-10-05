@@ -12,17 +12,23 @@ interface CustomDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  minHeight?: number;
 }
 
 export const CustomDrawer: React.FC<CustomDrawerProps> = ({
   isOpen,
   onClose,
   children,
+  minHeight,
 }) => {
   return (
     <Actionsheet isOpen={isOpen} onClose={onClose}>
       <ActionsheetBackdrop />
-      <ActionsheetContent bg={FIXED_COLORS.background[800]}>
+      <ActionsheetContent
+        bg={FIXED_COLORS.background[800]}
+        maxHeight="90%"
+        minHeight={minHeight}
+      >
         <ActionsheetDragIndicatorWrapper>
           <ActionsheetDragIndicator />
         </ActionsheetDragIndicatorWrapper>

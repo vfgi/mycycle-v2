@@ -15,3 +15,4 @@ export { HelpDrawer } from "./HelpDrawer";
 export { AboutDrawer } from "./AboutDrawer";
 export { default as AdBanner } from "./AdBanner";
 export { SlideCard } from "./SlideCard";
+export { PremiumUpgradeDrawer } from "./PremiumUpgradeDrawer";
