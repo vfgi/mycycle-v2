@@ -129,6 +129,18 @@
     "goals": "Objetivos",
     "history": "Historial"
   },
+  "calendar": {
+    "noEvents": "No hay eventos para este día",
+    "workout": "Entrenamiento",
+    "measurement": "Medición",
+    "goal": "Objetivo",
+    "reminder": "Recordatorio",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "tomorrow": "Mañana",
+    "event": "evento",
+    "events": "eventos"
+  },
   "profile": {
     "title": "Perfil",
     "personalInfo": "Información Personal",
