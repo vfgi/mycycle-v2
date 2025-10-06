@@ -126,8 +126,6 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
         weightInKg = weightInDisplayUnit / 2.205;
       }
 
-      console.log("Saving weight in kg:", weightInKg);
-
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       showSuccess(t("weight.weightSaved"));

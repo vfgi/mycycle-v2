@@ -476,9 +476,15 @@
     "selectedExercisesDescription": "Configure sets, reps and weight for each exercise",
     "swappingExercise": "Swapping: {exercise}",
     "summary": "Summary",
+    "summaryDescription": "Review your selected exercises and configure sets, reps and weight",
     "selectedDays": "{{count}} days selected",
     "selectedMuscleGroups": "{{count}} muscle groups selected",
     "continue": "Continue",
+    "back": "Back",
+    "finish": "Finish",
+    "exercise": "exercise",
+    "exercises": "exercises",
+    "noExercisesForDay": "No exercises selected for this day",
     "validationTitle": "Attention",
     "validationMessage": "Select at least one exercise for each day to continue",
     "days": {
@@ -490,7 +496,7 @@
       "saturday": "Saturday",
       "sunday": "Sunday"
     },
-    "exercises": {
+    "muscleGroups": {
       "chest": "Chest",
       "back": "Back",
       "shoulders": "Shoulders",

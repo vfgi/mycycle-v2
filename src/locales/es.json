@@ -476,9 +476,15 @@
     "selectedExercisesDescription": "Configure series, repeticiones y peso para cada ejercicio",
     "swappingExercise": "Cambiando: {exercise}",
     "summary": "Resumen",
+    "summaryDescription": "Revise sus ejercicios seleccionados y configure series, repeticiones y peso",
     "selectedDays": "{{count}} días seleccionados",
     "selectedMuscleGroups": "{{count}} grupos musculares seleccionados",
     "continue": "Continuar",
+    "back": "Atrás",
+    "finish": "Finalizar",
+    "exercise": "ejercicio",
+    "exercises": "ejercicios",
+    "noExercisesForDay": "No hay ejercicios seleccionados para este día",
     "validationTitle": "Atención",
     "validationMessage": "Selecciona al menos un ejercicio para cada día para continuar",
     "days": {
@@ -490,7 +496,7 @@
       "saturday": "Sábado",
       "sunday": "Domingo"
     },
-    "exercises": {
+    "muscleGroups": {
       "chest": "Pecho",
       "back": "Espalda",
       "shoulders": "Hombros",

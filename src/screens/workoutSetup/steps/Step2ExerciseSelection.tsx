@@ -18,6 +18,10 @@ interface Step2ExerciseSelectionProps {
   selectedDays: string[];
   selectedExercises: Record<string, string[]>; // day -> exercise categories
   selectedWorkoutExercises: Record<string, Exercise[]>; // day -> selected exercises
+  exerciseConfigs: Record<
+    string,
+    { sets: string; reps: string; weight: string }
+  >;
   onExercisesChange: (day: string, categories: string[]) => void;
   onWorkoutExercisesChange: (day: string, exercises: Exercise[]) => void;
 }
@@ -43,27 +47,30 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
     null
   );
 
+  // Limpar estados quando o dia muda
+  useEffect(() => {
+    setFilteredCategory(null);
+    setSwappingExercise(null);
+    setSelectedExercisePreview(null);
+  }, [currentDay]);
+
   const handleCategoryToggle = (category: string) => {
     const currentCategories = selectedExercises[currentDay] || [];
-    let newCategories: string[];
 
+    // Se a categoria já está selecionada, deseleciona
     if (currentCategories.includes(category)) {
-      newCategories = currentCategories.filter((cat) => cat !== category);
+      const newCategories = currentCategories.filter((cat) => cat !== category);
+      onExercisesChange(currentDay, newCategories);
     } else {
-      newCategories = [...currentCategories, category];
+      // Se não está selecionada, seleciona apenas esta (remove outras)
+      onExercisesChange(currentDay, [category]);
     }
-
-    onExercisesChange(currentDay, newCategories);
   };
 
   const handleCategoryFilter = async (category: string) => {
     setFilteredCategory(category);
-    // Automaticamente seleciona o músculo quando filtrado
-    const currentCategories = selectedExercises[currentDay] || [];
-    if (!currentCategories.includes(category)) {
-      const newCategories = [...currentCategories, category];
-      onExercisesChange(currentDay, newCategories);
-    }
+    // Automaticamente seleciona apenas este músculo (remove outros)
+    onExercisesChange(currentDay, [category]);
 
     // Buscar exercícios da API
     await fetchExercisesForMuscleGroup(category);
@@ -125,21 +132,36 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
   const handleUpdateSets = (exerciseId: string, sets: string) => {
     setExerciseConfigs((prev) => ({
       ...prev,
-      [exerciseId]: { ...prev[exerciseId], sets },
+      [exerciseId]: {
+        ...prev[exerciseId],
+        sets,
+        reps: prev[exerciseId]?.reps || "12",
+        weight: prev[exerciseId]?.weight || "0",
+      },
     }));
   };
 
   const handleUpdateReps = (exerciseId: string, reps: string) => {
     setExerciseConfigs((prev) => ({
       ...prev,
-      [exerciseId]: { ...prev[exerciseId], reps },
+      [exerciseId]: {
+        ...prev[exerciseId],
+        sets: prev[exerciseId]?.sets || "3",
+        reps,
+        weight: prev[exerciseId]?.weight || "0",
+      },
     }));
   };
 
   const handleUpdateWeight = (exerciseId: string, weight: string) => {
     setExerciseConfigs((prev) => ({
       ...prev,
-      [exerciseId]: { ...prev[exerciseId], weight },
+      [exerciseId]: {
+        ...prev[exerciseId],
+        sets: prev[exerciseId]?.sets || "3",
+        reps: prev[exerciseId]?.reps || "12",
+        weight,
+      },
     }));
   };
 
@@ -362,7 +384,7 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
             fontWeight="$semibold"
           >
             {t("workoutSetup.exercisesForMuscle", {
-              muscle: t(`workoutSetup.exercises.${filteredCategory}`),
+              muscle: t(`workoutSetup.muscleGroups.${filteredCategory}`),
             })}
           </Text>
 
@@ -424,9 +446,9 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
                   onUpdateSets={handleUpdateSets}
                   onUpdateReps={handleUpdateReps}
                   onUpdateWeight={handleUpdateWeight}
-                  sets={exerciseConfigs[exercise.id]?.sets || ""}
-                  reps={exerciseConfigs[exercise.id]?.reps || ""}
-                  weight={exerciseConfigs[exercise.id]?.weight || ""}
+                  sets={exerciseConfigs[exercise.id]?.sets || "3"}
+                  reps={exerciseConfigs[exercise.id]?.reps || "12"}
+                  weight={exerciseConfigs[exercise.id]?.weight || "0"}
                 />
               ))}
             </VStack>
