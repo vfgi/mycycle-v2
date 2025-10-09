@@ -20,8 +20,6 @@ class ApiService {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
-    let timeoutId: NodeJS.Timeout | undefined;
-
     try {
       const url = `${this.baseURL}${endpoint}`;
 
@@ -35,10 +33,10 @@ class ApiService {
       if (accessToken) {
         headers.Authorization = `Bearer ${accessToken}`;
       }
-
-      // Criar AbortController para timeout
       const controller = new AbortController();
-      timeoutId = setTimeout(() => controller.abort(), this.timeout);
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+      }, this.timeout);
 
       const config: RequestInit = {
         ...options,
@@ -64,9 +62,6 @@ class ApiService {
 
       return { data };
     } catch (error) {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
       console.error("API Request Error:", error);
       return {
         error: error instanceof Error ? error.message : "Erro de conexão",
@@ -96,11 +91,20 @@ class ApiService {
     body: any,
     headers?: Record<string, string>
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, {
+    // Implementar timeout específico para PUT
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => {
+        reject(new Error("PUT request timeout"));
+      }, this.timeout);
+    });
+
+    const requestPromise = this.request<T>(endpoint, {
       method: "PUT",
       body: JSON.stringify(body),
       headers,
     });
+
+    return Promise.race([requestPromise, timeoutPromise]);
   }
 
   async delete<T>(

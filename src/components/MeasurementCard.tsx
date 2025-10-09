@@ -12,6 +12,7 @@ interface MeasurementCardProps {
   placeholder?: string;
   isOptional?: boolean;
   unit?: string;
+  error?: string;
 }
 
 export const MeasurementCard: React.FC<MeasurementCardProps> = ({
@@ -22,6 +23,7 @@ export const MeasurementCard: React.FC<MeasurementCardProps> = ({
   placeholder,
   isOptional = false,
   unit = "cm",
+  error,
 }) => {
   const { t } = useTranslation();
   return (
@@ -31,7 +33,6 @@ export const MeasurementCard: React.FC<MeasurementCardProps> = ({
       p="$4"
       space="sm"
       opacity={0.9}
-      r
     >
       <HStack alignItems="center" justifyContent="space-between">
         <VStack flex={1} space="xs">
@@ -70,6 +71,11 @@ export const MeasurementCard: React.FC<MeasurementCardProps> = ({
             }
             keyboardType="numeric"
           />
+          {error && (
+            <Text color={FIXED_COLORS.error[500]} fontSize="$sm" mt="$1">
+              {t(error)}
+            </Text>
+          )}
         </VStack>
         <Text
           color={FIXED_COLORS.text[400]}

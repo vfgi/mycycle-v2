@@ -113,7 +113,8 @@
     "dailyExercises": "Por Dia",
     "waterIntake": "Água",
     "saveGoals": "Guardar Metas",
-    "goalsSaved": "Metas guardadas com sucesso!"
+    "goalsSaved": "Metas guardadas com sucesso!",
+    "saveError": "Erro ao guardar metas"
   },
   "navigation": {
     "home": "Início",
@@ -188,7 +189,9 @@
     "thisWeek": "Esta Semana",
     "thisMonth": "Este Mês",
     "today": "Hoje",
-    "average": "Média"
+    "average": "Média",
+    "updated": "Perfil actualizado com sucesso",
+    "updateError": "Erro ao actualizar perfil"
   },
   "measurements": {
     "title": "Medidas Corporais",
@@ -198,6 +201,7 @@
     "optional": "opcional",
     "updated": "Medidas actualizadas",
     "updateError": "Erro ao guardar medidas",
+    "loadError": "Erro ao carregar medidas",
     "height": {
       "label": "Altura",
       "description": "A sua altura total em centímetros"
@@ -249,6 +253,62 @@
     "foot": {
       "label": "Pé",
       "description": "Comprimento do pé da ponta do dedão ao calcanhar"
+    },
+    "validation": {
+      "heightRequired": "A altura é obrigatória",
+      "heightInvalid": "A altura deve ser um número válido",
+      "heightMin": "A altura deve ser pelo menos 100 cm",
+      "heightMax": "A altura deve ser no máximo 250 cm",
+      "weightInvalid": "O peso deve ser um número válido",
+      "weightMin": "O peso deve ser pelo menos 30 kg",
+      "weightMax": "O peso deve ser no máximo 300 kg",
+      "neckRequired": "A medida do pescoço é obrigatória",
+      "neckInvalid": "A medida do pescoço deve ser um número válido",
+      "neckMin": "A medida do pescoço deve ser pelo menos 25 cm",
+      "neckMax": "A medida do pescoço deve ser no máximo 60 cm",
+      "backRequired": "A medida das costas é obrigatória",
+      "backInvalid": "A medida das costas deve ser um número válido",
+      "backMin": "A medida das costas deve ser pelo menos 80 cm",
+      "backMax": "A medida das costas deve ser no máximo 150 cm",
+      "bicepsRequired": "A medida do bíceps é obrigatória",
+      "bicepsInvalid": "A medida do bíceps deve ser um número válido",
+      "bicepsMin": "A medida do bíceps deve ser pelo menos 20 cm",
+      "bicepsMax": "A medida do bíceps deve ser no máximo 60 cm",
+      "forearmRequired": "A medida do antebraço é obrigatória",
+      "forearmInvalid": "A medida do antebraço deve ser um número válido",
+      "forearmMin": "A medida do antebraço deve ser pelo menos 18 cm",
+      "forearmMax": "A medida do antebraço deve ser no máximo 40 cm",
+      "wristRequired": "A medida do pulso é obrigatória",
+      "wristInvalid": "A medida do pulso deve ser um número válido",
+      "wristMin": "A medida do pulso deve ser pelo menos 12 cm",
+      "wristMax": "A medida do pulso deve ser no máximo 25 cm",
+      "chestRequired": "A medida do peito é obrigatória",
+      "chestInvalid": "A medida do peito deve ser um número válido",
+      "chestMin": "A medida do peito deve ser pelo menos 60 cm",
+      "chestMax": "A medida do peito deve ser no máximo 150 cm",
+      "abdomenRequired": "A medida do abdómen é obrigatória",
+      "abdomenInvalid": "A medida do abdómen deve ser um número válido",
+      "abdomenMin": "A medida do abdómen deve ser pelo menos 50 cm",
+      "abdomenMax": "A medida do abdómen deve ser no máximo 150 cm",
+      "waistRequired": "A medida da cintura é obrigatória",
+      "waistInvalid": "A medida da cintura deve ser um número válido",
+      "waistMin": "A medida da cintura deve ser pelo menos 50 cm",
+      "waistMax": "A medida da cintura deve ser no máximo 130 cm",
+      "hipRequired": "A medida da anca é obrigatória",
+      "hipInvalid": "A medida da anca deve ser um número válido",
+      "hipMin": "A medida da anca deve ser pelo menos 60 cm",
+      "hipMax": "A medida da anca deve ser no máximo 150 cm",
+      "thighRequired": "A medida da coxa é obrigatória",
+      "thighInvalid": "A medida da coxa deve ser um número válido",
+      "thighMin": "A medida da coxa deve ser pelo menos 35 cm",
+      "thighMax": "A medida da coxa deve ser no máximo 80 cm",
+      "calfRequired": "A medida do gémeo é obrigatória",
+      "calfInvalid": "A medida do gémeo deve ser um número válido",
+      "calfMin": "A medida do gémeo deve ser pelo menos 25 cm",
+      "calfMax": "A medida do gémeo deve ser no máximo 50 cm",
+      "footInvalid": "A medida do pé deve ser um número válido",
+      "footMin": "A medida do pé deve ser pelo menos 20 cm",
+      "footMax": "A medida do pé deve ser no máximo 35 cm"
     }
   },
   "settings": {

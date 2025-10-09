@@ -14,13 +14,7 @@ export const getMeasurementFields = (
   getUnitForMeasurement?: (type: "height" | "body") => string
 ): MeasurementField[] => {
   const isOptionalForMen = (field: string) => {
-    const optionalForMen = [
-      "back_size",
-      "biceps_size",
-      "forearm_size",
-      "wrist_size",
-      "foot_size",
-    ];
+    const optionalForMen = ["back", "biceps", "forearm", "wrist", "foot"];
     return user?.gender !== "female" && optionalForMen.includes(field);
   };
 
@@ -38,84 +32,84 @@ export const getMeasurementFields = (
       isOptional: false,
     },
     {
-      key: "neck_size",
+      key: "neck",
       label: t("measurements.neck.label"),
       description: t("measurements.neck.description"),
       unit: bodyUnit,
       isOptional: false,
     },
     {
-      key: "back_size",
+      key: "back",
       label: t("measurements.back.label"),
       description: t("measurements.back.description"),
       unit: bodyUnit,
-      isOptional: isOptionalForMen("back_size"),
+      isOptional: isOptionalForMen("back"),
     },
     {
-      key: "biceps_size",
+      key: "biceps",
       label: t("measurements.biceps.label"),
       description: t("measurements.biceps.description"),
       unit: bodyUnit,
-      isOptional: isOptionalForMen("biceps_size"),
+      isOptional: isOptionalForMen("biceps"),
     },
     {
-      key: "forearm_size",
+      key: "forearm",
       label: t("measurements.forearm.label"),
       description: t("measurements.forearm.description"),
       unit: bodyUnit,
-      isOptional: isOptionalForMen("forearm_size"),
+      isOptional: isOptionalForMen("forearm"),
     },
     {
-      key: "wrist_size",
+      key: "wrist",
       label: t("measurements.wrist.label"),
       description: t("measurements.wrist.description"),
       unit: bodyUnit,
-      isOptional: isOptionalForMen("wrist_size"),
+      isOptional: isOptionalForMen("wrist"),
     },
     {
-      key: "chest_size",
+      key: "chest",
       label: t("measurements.chest.label"),
       description: t("measurements.chest.description"),
       unit: bodyUnit,
       isOptional: false,
     },
     {
-      key: "abdomen_size",
+      key: "abdomen",
       label: t("measurements.abdomen.label"),
       description: t("measurements.abdomen.description"),
       unit: bodyUnit,
       isOptional: false,
     },
     {
-      key: "waist_size",
+      key: "waist",
       label: t("measurements.waist.label"),
       description: t("measurements.waist.description"),
       unit: bodyUnit,
       isOptional: false,
     },
     {
-      key: "hip_size",
+      key: "hip",
       label: t("measurements.hip.label"),
       description: t("measurements.hip.description"),
       unit: bodyUnit,
       isOptional: false,
     },
     {
-      key: "thigh_size",
+      key: "thigh",
       label: t("measurements.thigh.label"),
       description: t("measurements.thigh.description"),
       unit: bodyUnit,
       isOptional: false,
     },
     {
-      key: "calf_size",
+      key: "calf",
       label: t("measurements.calf.label"),
       description: t("measurements.calf.description"),
       unit: bodyUnit,
       isOptional: false,
     },
     {
-      key: "foot_size",
+      key: "foot",
       label: t("measurements.foot.label"),
       description: t("measurements.foot.description"),
       unit: bodyUnit,

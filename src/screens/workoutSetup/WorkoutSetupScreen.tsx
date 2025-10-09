@@ -129,9 +129,6 @@ export const WorkoutSetupScreen: React.FC = () => {
         muscleGroups: selectedExercises,
       };
 
-      console.log("\n🚀 DADOS PARA API:");
-      console.log(JSON.stringify(apiData, null, 2));
-
       // TODO: Implementar lógica para criar o plano de treino
       navigation.goBack();
     }

@@ -1,18 +1,20 @@
+import { Goals } from "./goals";
+
 export interface Measurements {
   height?: number;
   weight?: number;
-  neck_size?: number;
-  back_size?: number;
-  biceps_size?: number;
-  forearm_size?: number;
-  wrist_size?: number;
-  chest_size?: number;
-  abdomen_size?: number;
-  waist_size?: number;
-  hip_size?: number;
-  thigh_size?: number;
-  calf_size?: number;
-  foot_size?: number;
+  neck?: number;
+  back?: number;
+  biceps?: number;
+  forearm?: number;
+  wrist?: number;
+  chest?: number;
+  abdomen?: number;
+  waist?: number;
+  hip?: number;
+  thigh?: number;
+  calf?: number;
+  foot?: number;
 }
 
 export interface User {
@@ -20,6 +22,7 @@ export interface User {
   name: string;
   email: string;
   phone?: string;
+  address?: string;
   birth_date?: string;
   gender?: string;
   image?: string;
@@ -27,6 +30,7 @@ export interface User {
   is_active: boolean;
   is_premium?: boolean;
   measurements?: Measurements;
+  goals?: Goals;
   followUp?: string[];
 }
 

@@ -113,7 +113,8 @@
     "dailyExercises": "Por Día",
     "waterIntake": "Agua",
     "saveGoals": "Guardar Metas",
-    "goalsSaved": "¡Metas guardadas con éxito!"
+    "goalsSaved": "¡Metas guardadas con éxito!",
+    "saveError": "Error al guardar metas"
   },
   "navigation": {
     "home": "Inicio",
@@ -188,7 +189,9 @@
     "thisWeek": "Esta Semana",
     "thisMonth": "Este Mes",
     "today": "Hoy",
-    "average": "Promedio"
+    "average": "Promedio",
+    "updated": "Perfil actualizado con éxito",
+    "updateError": "Error al actualizar perfil"
   },
   "measurements": {
     "title": "Medidas Corporales",
@@ -198,6 +201,7 @@
     "optional": "opcional",
     "updated": "Medidas actualizadas",
     "updateError": "Error al guardar medidas",
+    "loadError": "Error al cargar medidas",
     "height": {
       "label": "Altura",
       "description": "Tu altura total en centímetros"
@@ -249,6 +253,62 @@
     "foot": {
       "label": "Pie",
       "description": "Longitud del pie desde el dedo gordo hasta el talón"
+    },
+    "validation": {
+      "heightRequired": "La altura es obligatoria",
+      "heightInvalid": "La altura debe ser un número válido",
+      "heightMin": "La altura debe ser al menos 100 cm",
+      "heightMax": "La altura debe ser como máximo 250 cm",
+      "weightInvalid": "El peso debe ser un número válido",
+      "weightMin": "El peso debe ser al menos 30 kg",
+      "weightMax": "El peso debe ser como máximo 300 kg",
+      "neckRequired": "La medida del cuello es obligatoria",
+      "neckInvalid": "La medida del cuello debe ser un número válido",
+      "neckMin": "La medida del cuello debe ser al menos 25 cm",
+      "neckMax": "La medida del cuello debe ser como máximo 60 cm",
+      "backRequired": "La medida de la espalda es obligatoria",
+      "backInvalid": "La medida de la espalda debe ser un número válido",
+      "backMin": "La medida de la espalda debe ser al menos 80 cm",
+      "backMax": "La medida de la espalda debe ser como máximo 150 cm",
+      "bicepsRequired": "La medida del bíceps es obligatoria",
+      "bicepsInvalid": "La medida del bíceps debe ser un número válido",
+      "bicepsMin": "La medida del bíceps debe ser al menos 20 cm",
+      "bicepsMax": "La medida del bíceps debe ser como máximo 60 cm",
+      "forearmRequired": "La medida del antebrazo es obligatoria",
+      "forearmInvalid": "La medida del antebrazo debe ser un número válido",
+      "forearmMin": "La medida del antebrazo debe ser al menos 18 cm",
+      "forearmMax": "La medida del antebrazo debe ser como máximo 40 cm",
+      "wristRequired": "La medida de la muñeca es obligatoria",
+      "wristInvalid": "La medida de la muñeca debe ser un número válido",
+      "wristMin": "La medida de la muñeca debe ser al menos 12 cm",
+      "wristMax": "La medida de la muñeca debe ser como máximo 25 cm",
+      "chestRequired": "La medida del pecho es obligatoria",
+      "chestInvalid": "La medida del pecho debe ser un número válido",
+      "chestMin": "La medida del pecho debe ser al menos 60 cm",
+      "chestMax": "La medida del pecho debe ser como máximo 150 cm",
+      "abdomenRequired": "La medida del abdomen es obligatoria",
+      "abdomenInvalid": "La medida del abdomen debe ser un número válido",
+      "abdomenMin": "La medida del abdomen debe ser al menos 50 cm",
+      "abdomenMax": "La medida del abdomen debe ser como máximo 150 cm",
+      "waistRequired": "La medida de la cintura es obligatoria",
+      "waistInvalid": "La medida de la cintura debe ser un número válido",
+      "waistMin": "La medida de la cintura debe ser al menos 50 cm",
+      "waistMax": "La medida de la cintura debe ser como máximo 130 cm",
+      "hipRequired": "La medida de la cadera es obligatoria",
+      "hipInvalid": "La medida de la cadera debe ser un número válido",
+      "hipMin": "La medida de la cadera debe ser al menos 60 cm",
+      "hipMax": "La medida de la cadera debe ser como máximo 150 cm",
+      "thighRequired": "La medida del muslo es obligatoria",
+      "thighInvalid": "La medida del muslo debe ser un número válido",
+      "thighMin": "La medida del muslo debe ser al menos 35 cm",
+      "thighMax": "La medida del muslo debe ser como máximo 80 cm",
+      "calfRequired": "La medida de la pantorrilla es obligatoria",
+      "calfInvalid": "La medida de la pantorrilla debe ser un número válido",
+      "calfMin": "La medida de la pantorrilla debe ser al menos 25 cm",
+      "calfMax": "La medida de la pantorrilla debe ser como máximo 50 cm",
+      "footInvalid": "La medida del pie debe ser un número válido",
+      "footMin": "La medida del pie debe ser al menos 20 cm",
+      "footMax": "La medida del pie debe ser como máximo 35 cm"
     }
   },
   "settings": {
@@ -513,6 +573,7 @@
   },
   "exercises": {
     "workouts": {
+      "antebracos": "Antebrazos",
       "flexaoDePulsoNeutraSentadoComHalteres": "Flexión de muñeca neutra sentado con mancuernas",
       "flexaoDePunhoReversaComAnilha": "Flexión de muñeca inversa con disco",
       "flexaoDePunhoReversaComBarraSobreUmBanco": "Flexión de muñeca inversa con barra sobre un banco",

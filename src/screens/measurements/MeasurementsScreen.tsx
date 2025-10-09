@@ -2,26 +2,16 @@ import React, { useState, useEffect, useMemo } from "react";
 import {
   ScrollView,
   Image,
-  View,
   KeyboardAvoidingView,
   Platform,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from "react-native";
-import {
-  VStack,
-  Text,
-  HStack,
-  Pressable,
-  Switch,
-  Divider,
-} from "@gluestack-ui/themed";
-import { Ionicons } from "@expo/vector-icons";
+import { VStack, Text } from "@gluestack-ui/themed";
 import { FIXED_COLORS } from "../../theme/colors";
 import { useTranslation } from "../../hooks/useTranslation";
 import { SafeContainer, MeasurementCard, CustomButton } from "../../components";
 import { useNavigation } from "@react-navigation/native";
 import { userStorage } from "../../services/userStorage";
+import { userService } from "../../services/userService";
 import { User, Measurements } from "../../types/auth";
 import { getMeasurementFields } from "./measurementFields";
 import { useUnits } from "../../contexts/UnitsContext";
@@ -29,7 +19,6 @@ import { useToast } from "../../hooks/useToast";
 
 export const MeasurementsScreen: React.FC = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation();
   const { showSuccess, showError } = useToast();
   const {
     convertBodyMeasurement,
@@ -113,10 +102,14 @@ export const MeasurementsScreen: React.FC = () => {
         measurements,
       };
 
+      // Primeiro tenta salvar na API
+      await userService.updateProfile({
+        measurements,
+      });
+
+      // Se API teve sucesso, então salva localmente
       await userStorage.setUserProfile(updatedUser);
       setUser(updatedUser);
-
-      // Aqui futuramente adicionaremos a chamada para a API
 
       showSuccess(t("measurements.updated"));
     } catch (error) {
@@ -135,87 +128,91 @@ export const MeasurementsScreen: React.FC = () => {
   };
 
   return (
-    <SafeContainer>
+    <SafeContainer paddingTop={0} paddingBottom={0} paddingHorizontal={0}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-        enabled={true}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={{ flex: 1, position: "relative" }}>
-            <Image
-              source={getGenderBasedImage()}
-              style={{
-                position: "absolute",
-                top: -280,
-                left: -30,
-                right: 0,
-                bottom: 0,
-                width: "120%",
-                height: "100%",
-                zIndex: 0,
-                opacity: 0.4,
-              }}
-              resizeMode="contain"
-            />
+        <VStack flex={1}>
+          <Image
+            source={getGenderBasedImage()}
+            style={{
+              width: "100%",
+              height: 200,
+              opacity: 0.4,
+            }}
+            resizeMode="cover"
+          />
 
-            <VStack pb="$4" space="sm">
-              <Text
-                color={FIXED_COLORS.text[50]}
-                fontSize="$xl"
-                fontWeight="$bold"
-                textAlign="center"
-              >
-                {t("measurements.title")}
-              </Text>
-              <Text
-                color={FIXED_COLORS.text[300]}
-                fontSize="$sm"
-                textAlign="center"
-                lineHeight="$sm"
-                px="$2"
-              >
-                {t("measurements.description")}
-              </Text>
-            </VStack>
-
-            <ScrollView
-              style={{ flex: 1 }}
-              contentContainerStyle={{
-                paddingBottom: 100,
-              }}
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-              bounces={true}
+          <VStack
+            position="absolute"
+            top={0}
+            left={0}
+            right={0}
+            height={200}
+            alignItems="center"
+            justifyContent="center"
+            bg="rgba(0, 0, 0, 0.3)"
+          >
+            <Text
+              color={FIXED_COLORS.background[0]}
+              fontSize="$3xl"
+              fontWeight="$bold"
+              textAlign="center"
             >
-              <VStack space="md">
-                {measurementFields.map((field) => (
-                  <MeasurementCard
-                    key={field.key}
-                    label={field.label}
-                    description={field.description}
-                    value={displayValues[field.key] || ""}
-                    onChangeText={(value) =>
-                      handleMeasurementChange(field.key, value)
-                    }
-                    unit={field.unit}
-                    isOptional={field.isOptional}
-                  />
-                ))}
-              </VStack>
-            </ScrollView>
+              {t("measurements.title")}
+            </Text>
+            <Text
+              color={FIXED_COLORS.background[100]}
+              fontSize="$sm"
+              textAlign="center"
+              lineHeight="$sm"
+              px="$4"
+              mt="$2"
+            >
+              {t("measurements.description")}
+            </Text>
+          </VStack>
 
-            <VStack position="absolute" bottom={16} left={0} right={0} p="$0">
-              <CustomButton
-                text={t("measurements.save")}
-                onPress={handleSaveMeasurements}
-                isLoading={isSaving}
-                isDisabled={isSaving}
-              />
+          <ScrollView
+            style={{ flex: 1 }}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 120 }}
+            keyboardShouldPersistTaps="handled"
+          >
+            <VStack px="$6" pt="$6" space="md">
+              {measurementFields.map((field) => (
+                <MeasurementCard
+                  key={field.key}
+                  label={field.label}
+                  description={field.description}
+                  value={displayValues[field.key] || ""}
+                  onChangeText={(value) =>
+                    handleMeasurementChange(field.key, value)
+                  }
+                  unit={field.unit}
+                  isOptional={field.isOptional}
+                />
+              ))}
             </VStack>
-          </View>
-        </TouchableWithoutFeedback>
+          </ScrollView>
+
+          <VStack
+            bg={FIXED_COLORS.background[800]}
+            p="$4"
+            mb="$6"
+            borderTopWidth={1}
+            borderTopColor={FIXED_COLORS.background[700]}
+          >
+            <CustomButton
+              text={t("measurements.save")}
+              onPress={handleSaveMeasurements}
+              isLoading={isSaving}
+              mt="$0"
+            />
+          </VStack>
+        </VStack>
       </KeyboardAvoidingView>
     </SafeContainer>
   );

@@ -113,7 +113,8 @@
     "dailyExercises": "Per Day",
     "waterIntake": "Water",
     "saveGoals": "Save Goals",
-    "goalsSaved": "Goals saved successfully!"
+    "goalsSaved": "Goals saved successfully!",
+    "saveError": "Error saving goals"
   },
   "navigation": {
     "home": "Home",
@@ -188,7 +189,9 @@
     "thisWeek": "This Week",
     "thisMonth": "This Month",
     "today": "Today",
-    "average": "Average"
+    "average": "Average",
+    "updated": "Profile updated successfully",
+    "updateError": "Error updating profile"
   },
   "measurements": {
     "title": "Body Measurements",
@@ -198,6 +201,7 @@
     "optional": "optional",
     "updated": "Measurements updated",
     "updateError": "Failed to save measurements",
+    "loadError": "Error loading measurements",
     "height": {
       "label": "Height",
       "description": "Your total height in centimeters"
@@ -249,6 +253,62 @@
     "foot": {
       "label": "Foot",
       "description": "Foot length from big toe to heel"
+    },
+    "validation": {
+      "heightRequired": "Height is required",
+      "heightInvalid": "Height must be a valid number",
+      "heightMin": "Height must be at least 100 cm",
+      "heightMax": "Height must be at most 250 cm",
+      "weightInvalid": "Weight must be a valid number",
+      "weightMin": "Weight must be at least 30 kg",
+      "weightMax": "Weight must be at most 300 kg",
+      "neckRequired": "Neck measurement is required",
+      "neckInvalid": "Neck measurement must be a valid number",
+      "neckMin": "Neck measurement must be at least 25 cm",
+      "neckMax": "Neck measurement must be at most 60 cm",
+      "backRequired": "Back measurement is required",
+      "backInvalid": "Back measurement must be a valid number",
+      "backMin": "Back measurement must be at least 80 cm",
+      "backMax": "Back measurement must be at most 150 cm",
+      "bicepsRequired": "Biceps measurement is required",
+      "bicepsInvalid": "Biceps measurement must be a valid number",
+      "bicepsMin": "Biceps measurement must be at least 20 cm",
+      "bicepsMax": "Biceps measurement must be at most 60 cm",
+      "forearmRequired": "Forearm measurement is required",
+      "forearmInvalid": "Forearm measurement must be a valid number",
+      "forearmMin": "Forearm measurement must be at least 18 cm",
+      "forearmMax": "Forearm measurement must be at most 40 cm",
+      "wristRequired": "Wrist measurement is required",
+      "wristInvalid": "Wrist measurement must be a valid number",
+      "wristMin": "Wrist measurement must be at least 12 cm",
+      "wristMax": "Wrist measurement must be at most 25 cm",
+      "chestRequired": "Chest measurement is required",
+      "chestInvalid": "Chest measurement must be a valid number",
+      "chestMin": "Chest measurement must be at least 60 cm",
+      "chestMax": "Chest measurement must be at most 150 cm",
+      "abdomenRequired": "Abdomen measurement is required",
+      "abdomenInvalid": "Abdomen measurement must be a valid number",
+      "abdomenMin": "Abdomen measurement must be at least 50 cm",
+      "abdomenMax": "Abdomen measurement must be at most 150 cm",
+      "waistRequired": "Waist measurement is required",
+      "waistInvalid": "Waist measurement must be a valid number",
+      "waistMin": "Waist measurement must be at least 50 cm",
+      "waistMax": "Waist measurement must be at most 130 cm",
+      "hipRequired": "Hip measurement is required",
+      "hipInvalid": "Hip measurement must be a valid number",
+      "hipMin": "Hip measurement must be at least 60 cm",
+      "hipMax": "Hip measurement must be at most 150 cm",
+      "thighRequired": "Thigh measurement is required",
+      "thighInvalid": "Thigh measurement must be a valid number",
+      "thighMin": "Thigh measurement must be at least 35 cm",
+      "thighMax": "Thigh measurement must be at most 80 cm",
+      "calfRequired": "Calf measurement is required",
+      "calfInvalid": "Calf measurement must be a valid number",
+      "calfMin": "Calf measurement must be at least 25 cm",
+      "calfMax": "Calf measurement must be at most 50 cm",
+      "footInvalid": "Foot measurement must be a valid number",
+      "footMin": "Foot measurement must be at least 20 cm",
+      "footMax": "Foot measurement must be at most 35 cm"
     }
   },
   "settings": {
@@ -513,6 +573,7 @@
   },
   "exercises": {
     "workouts": {
+      "antebracos": "Forearms",
       "flexaoDePulsoNeutraSentadoComHalteres": "Neutral Wrist Curl Seated with Dumbbells",
       "flexaoDePunhoReversaComAnilha": "Reverse Wrist Curl with Weight Plate",
       "flexaoDePunhoReversaComBarraSobreUmBanco": "Reverse Wrist Curl with Barbell Over a Bench",

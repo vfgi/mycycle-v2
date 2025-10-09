@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { VStack, HStack, Text, Divider } from "@gluestack-ui/themed";
 import { TouchableOpacity } from "react-native";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -7,6 +7,10 @@ import { useTranslation } from "../../hooks/useTranslation";
 import { useAuth } from "../../contexts/AuthContext";
 import { CustomInput, CustomButton } from "../../components";
 import { AITrainerField } from "./AITrainerField";
+import { userService } from "../../services/userService";
+import { userStorage } from "../../services/userStorage";
+import { useToast } from "../../hooks/useToast";
+import { User } from "../../types/auth";
 
 interface InfoFieldProps {
   icon: string;
@@ -210,22 +214,46 @@ const SelectableField: React.FC<{
 
 export const UserDataTab: React.FC = () => {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
+  const { showSuccess, showError } = useToast();
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSaveName = (newName: string) => {
-    console.log("Saving name:", newName);
+  const updateUserProfile = async (updates: Partial<User>) => {
+    if (!user) return;
+
+    try {
+      setIsSaving(true);
+
+      // Primeiro tenta salvar na API
+      await userService.updateProfile(updates);
+
+      // Se API teve sucesso, então salva localmente
+      const updatedUser = { ...user, ...updates };
+      await userStorage.setUserProfile(updatedUser);
+      updateUser(updatedUser);
+
+      showSuccess(t("profile.updated"));
+    } catch (error) {
+      showError(t("profile.updateError"));
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleSavePhone = (newPhone: string) => {
-    console.log("Saving phone:", newPhone);
+  const handleSaveName = async (newName: string) => {
+    await updateUserProfile({ name: newName });
   };
 
-  const handleSaveAddress = (newAddress: string) => {
-    console.log("Saving address:", newAddress);
+  const handleSavePhone = async (newPhone: string) => {
+    await updateUserProfile({ phone: newPhone });
   };
 
-  const handleSaveGender = (newGender: string) => {
-    console.log("Saving gender:", newGender);
+  const handleSaveAddress = async (newAddress: string) => {
+    await updateUserProfile({ address: newAddress });
+  };
+
+  const handleSaveGender = async (newGender: string) => {
+    await updateUserProfile({ gender: newGender });
   };
 
   const planType = user?.is_premium
@@ -278,7 +306,7 @@ export const UserDataTab: React.FC = () => {
       <EditableField
         icon="map-marker"
         label={t("profile.address")}
-        value={"-"}
+        value={user?.address || "-"}
         onSave={handleSaveAddress}
       />
 

@@ -13,6 +13,7 @@ import { useTranslation } from "../../hooks/useTranslation";
 import { useUnits } from "../../contexts/UnitsContext";
 import { useToast } from "../../hooks/useToast";
 import { goalsService } from "../../services/goalsService";
+import { userService } from "../../services/userService";
 import { Goals, ObjectiveType } from "../../types/goals";
 import { GoalCard } from "./GoalCard";
 import { GoalCardCompact } from "./GoalCardCompact";
@@ -29,7 +30,7 @@ export const GoalsScreen: React.FC = () => {
     getWaterUnit,
     unitSystem,
   } = useUnits();
-  const { showSuccess } = useToast();
+  const { showSuccess, showError } = useToast();
   const [isSaving, setIsSaving] = useState(false);
 
   const [objective, setObjective] = useState<ObjectiveType | undefined>(
@@ -96,6 +97,21 @@ export const GoalsScreen: React.FC = () => {
     }
   };
 
+  // Função para converter objective para o formato da API
+  const convertObjectiveForAPI = (
+    objective?: ObjectiveType
+  ): string | undefined => {
+    if (!objective) return undefined;
+
+    const objectiveMap: Record<ObjectiveType, string> = {
+      weightLoss: "weight_loss",
+      hypertrophy: "hypertrophy",
+      definition: "definition",
+    };
+
+    return objectiveMap[objective];
+  };
+
   const handleSave = async () => {
     try {
       setIsSaving(true);
@@ -136,10 +152,22 @@ export const GoalsScreen: React.FC = () => {
         waterIntake: waterInL,
       };
 
+      // Criar versão dos goals com objective convertido para API
+      const goalsForAPI: any = {
+        ...goals,
+        objective: convertObjectiveForAPI(goals.objective),
+      };
+
+      // Primeiro tenta salvar na API
+      await userService.updateProfile({ goals: goalsForAPI });
+
+      // Se API teve sucesso, então salva localmente
       await goalsService.saveGoals(goals);
+
       showSuccess(t("goals.goalsSaved"));
     } catch (error) {
       console.error("Error saving goals:", error);
+      showError(t("goals.saveError"));
     } finally {
       setIsSaving(false);
     }

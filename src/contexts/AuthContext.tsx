@@ -17,6 +17,7 @@ interface AuthContextType extends AuthState {
   logout: () => Promise<void>;
   refreshAuth: () => Promise<void>;
   setLoading: (loading: boolean) => void;
+  updateUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -238,6 +239,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setAuthState((prev) => ({ ...prev, isLoading: loading }));
   };
 
+  const updateUser = (user: User) => {
+    setAuthState((prev) => ({ ...prev, user }));
+  };
+
   const contextValue: AuthContextType = {
     ...authState,
     login,
@@ -245,6 +250,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     refreshAuth,
     setLoading,
+    updateUser,
   };
 
   return (
