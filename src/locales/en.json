@@ -86,7 +86,9 @@
     "delete": "Delete",
     "back": "Back",
     "next": "Next",
-    "previous": "Previous"
+    "previous": "Previous",
+    "goal": "Goal",
+    "ofGoal": "of goal"
   },
   "home": {
     "welcome": "Welcome to MyCycle",
@@ -1081,6 +1083,55 @@
       "tricepsPulleyPegadaInvertida": "Triceps Pushdown with Reverse Grip",
       "tricepsTestaComBarra": "Skullcrusher with Barbell",
       "tricepsTestaPegadaNeutraComHalteres": "Skullcrusher with Neutral Grip Dumbbells"
+    }
+  },
+  "history": {
+    "dailyTip": "Daily Tip",
+    "consumption": {
+      "title": "Consumption History",
+      "description": "Track your daily macronutrient and hydration intake",
+      "protein": "Protein",
+      "carbs": "Carbohydrates",
+      "fat": "Fat",
+      "water": "Water",
+      "calories": "kcal",
+      "registerMeals": "Register your meals to track your nutritional progress",
+      "caloriesConsumption": "Calorie Consumption",
+      "noDataForDate": "No consumption data recorded for this date",
+      "itemsConsumedTitle": "Items Consumed This Day",
+      "itemRegistered": "item registered",
+      "itemsRegistered": "items registered",
+      "mealTypes": {
+        "breakfast": "Breakfast",
+        "lunch": "Lunch",
+        "dinner": "Dinner",
+        "snack": "Snack"
+      }
+    },
+    "workout": {
+      "title": "Workout History",
+      "description": "Track your completed workouts and weekly progress",
+      "duration": "Duration",
+      "exercises": "Exercises",
+      "calories": "Calories",
+      "completed": "Completed",
+      "incomplete": "Incomplete",
+      "createWorkout": "Create your first workout to start tracking your progress"
+    },
+    "weight": {
+      "title": "Weight History",
+      "description": "Track your weight evolution and body composition",
+      "weeklyAverage": "Weekly Average",
+      "totalVariation": "Total Variation",
+      "weeklySummary": "Weekly Summary",
+      "bodyFat": "% Body Fat",
+      "muscleMass": "Muscle Mass",
+      "registerWeight": "Register your weight daily to track your evolution"
+    },
+    "tabs": {
+      "consumption": "Consumption",
+      "workout": "Workout",
+      "weight": "Weight"
     }
   }
 }

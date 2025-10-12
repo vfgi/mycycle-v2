@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { VStack, HStack, Text, Divider } from "@gluestack-ui/themed";
 import { FIXED_COLORS } from "../../theme/colors";
 import { useTranslation } from "../../hooks/useTranslation";
 import { useAuth } from "../../contexts/AuthContext";
 import { useUnits } from "../../contexts/UnitsContext";
+import { goalsService } from "../../services/goalsService";
+import { Goals } from "../../types/goals";
 
 interface StatValue {
   label: string;
@@ -47,14 +49,35 @@ export const StatsTab: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { convertWeight } = useUnits();
+  const [goals, setGoals] = useState<Goals | null>(null);
 
+  useEffect(() => {
+    loadGoals();
+  }, []);
+
+  const loadGoals = async () => {
+    try {
+      const goalsData = await goalsService.getGoals();
+      setGoals(goalsData);
+    } catch (error) {
+      console.error("Error loading goals:", error);
+    }
+  };
+
+  // Weight Stats
   const currentWeight = user?.measurements?.weight || 0;
-  const goalWeight = 70;
+  const goalWeight = goals?.targetWeight || 0;
   const difference = currentWeight - goalWeight;
 
   const currentWeightConverted = convertWeight(currentWeight);
   const goalWeightConverted = convertWeight(goalWeight);
   const differenceConverted = convertWeight(Math.abs(difference));
+
+  // Nutrition Stats
+  const targetCalories = goals?.targetCalories || 0;
+
+  // Exercise Stats
+  const weeklyWorkouts = goals?.weeklyWorkouts || 0;
 
   return (
     <VStack space="xl">
@@ -63,21 +86,32 @@ export const StatsTab: React.FC = () => {
         stats={[
           {
             label: t("profile.current"),
-            value: `${currentWeightConverted.value} ${currentWeightConverted.unit}`,
+            value:
+              currentWeight > 0
+                ? `${currentWeightConverted.value} ${currentWeightConverted.unit}`
+                : "-",
           },
           {
             label: t("profile.goal"),
-            value: `${goalWeightConverted.value} ${goalWeightConverted.unit}`,
+            value:
+              goalWeight > 0
+                ? `${goalWeightConverted.value} ${goalWeightConverted.unit}`
+                : "-",
           },
           {
             label: t("profile.difference"),
-            value: `${difference > 0 ? "+" : "-"}${differenceConverted.value} ${
-              differenceConverted.unit
-            }`,
+            value:
+              currentWeight > 0 && goalWeight > 0
+                ? `${difference > 0 ? "+" : "-"}${differenceConverted.value} ${
+                    differenceConverted.unit
+                  }`
+                : "-",
             color:
-              difference > 0
-                ? FIXED_COLORS.warning[500]
-                : FIXED_COLORS.success[500],
+              currentWeight > 0 && goalWeight > 0
+                ? difference > 0
+                  ? FIXED_COLORS.warning[500]
+                  : FIXED_COLORS.success[500]
+                : undefined,
           },
         ]}
       />
@@ -88,7 +122,10 @@ export const StatsTab: React.FC = () => {
         title={t("profile.workouts")}
         stats={[
           { label: t("profile.total"), value: "24" },
-          { label: t("profile.thisWeek"), value: "4" },
+          {
+            label: t("profile.thisWeek"),
+            value: weeklyWorkouts > 0 ? `${weeklyWorkouts}` : "0",
+          },
           { label: t("profile.thisMonth"), value: "18" },
         ]}
       />
@@ -100,7 +137,10 @@ export const StatsTab: React.FC = () => {
         stats={[
           { label: t("profile.today"), value: "1850" },
           { label: t("profile.average"), value: "2100" },
-          { label: t("profile.goal"), value: "2200" },
+          {
+            label: t("profile.goal"),
+            value: targetCalories > 0 ? `${targetCalories}` : "2200",
+          },
         ]}
       />
 

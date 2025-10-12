@@ -53,8 +53,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (accessToken && refreshToken) {
         console.log("✅ [AuthContext] User authenticated from storage");
+
+        // Buscar dados atualizados do usuário da API
+        let updatedUser = user;
+        try {
+          updatedUser = await userService.getProfile();
+        } catch (error) {
+          console.error(
+            "❌ [AuthContext] Error fetching updated profile:",
+            error
+          );
+        }
+
         setAuthState({
-          user,
+          user: updatedUser,
           accessToken,
           refreshToken,
           isAuthenticated: true,

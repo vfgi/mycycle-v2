@@ -86,7 +86,9 @@
     "delete": "Eliminar",
     "back": "Atrás",
     "next": "Siguiente",
-    "previous": "Anterior"
+    "previous": "Anterior",
+    "goal": "Meta",
+    "ofGoal": "de la meta"
   },
   "home": {
     "welcome": "Bienvenido a MyCycle",
@@ -1081,6 +1083,55 @@
       "tricepsPulleyPegadaInvertida": "Tríceps en polea con agarre invertido",
       "tricepsTestaComBarra": "Tríceps en frente con barra",
       "tricepsTestaPegadaNeutraComHalteres": "Tríceps en frente con agarre neutro y mancuernas"
+    }
+  },
+  "history": {
+    "dailyTip": "Consejo del Día",
+    "consumption": {
+      "title": "Historial de Consumo",
+      "description": "Rastrea tu consumo diario de macronutrientes e hidratación",
+      "protein": "Proteína",
+      "carbs": "Carbohidratos",
+      "fat": "Grasa",
+      "water": "Agua",
+      "calories": "kcal",
+      "registerMeals": "Registra tus comidas para seguir tu progreso nutricional",
+      "caloriesConsumption": "Consumo de Calorías",
+      "noDataForDate": "No hay datos de consumo registrados para esta fecha",
+      "itemsConsumedTitle": "Elementos Consumidos Este Día",
+      "itemRegistered": "elemento registrado",
+      "itemsRegistered": "elementos registrados",
+      "mealTypes": {
+        "breakfast": "Desayuno",
+        "lunch": "Almuerzo",
+        "dinner": "Cena",
+        "snack": "Merienda"
+      }
+    },
+    "workout": {
+      "title": "Historial de Entrenamientos",
+      "description": "Rastrea tus entrenamientos completados y progreso semanal",
+      "duration": "Duración",
+      "exercises": "Ejercicios",
+      "calories": "Calorías",
+      "completed": "Completado",
+      "incomplete": "Incompleto",
+      "createWorkout": "Crea tu primer entrenamiento para comenzar a rastrear tu progreso"
+    },
+    "weight": {
+      "title": "Historial de Peso",
+      "description": "Rastrea tu evolución de peso y composición corporal",
+      "weeklyAverage": "Promedio Semanal",
+      "totalVariation": "Variación Total",
+      "weeklySummary": "Resumen Semanal",
+      "bodyFat": "% Grasa Corporal",
+      "muscleMass": "Masa Muscular",
+      "registerWeight": "Registra tu peso diariamente para rastrear tu evolución"
+    },
+    "tabs": {
+      "consumption": "Consumo",
+      "workout": "Entrenamiento",
+      "weight": "Peso"
     }
   }
 }

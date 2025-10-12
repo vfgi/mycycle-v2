@@ -1,121 +1,67 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React from "react";
 import { ScrollView } from "react-native";
-import {
-  VStack,
-  Text,
-  HStack,
-  Pressable,
-  Switch,
-  Divider,
-} from "@gluestack-ui/themed";
+import { VStack } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { FIXED_COLORS } from "../../theme/colors";
 import { useTranslation } from "../../hooks/useTranslation";
-import { SafeContainer } from "../../components";
-import { useNavigation } from "@react-navigation/native";
+import { SafeContainer, DailyTipCard, AnimatedTabs } from "../../components";
+import { ConsumptionTab } from "./components/ConsumptionTab";
+import { WorkoutTab } from "./components/WorkoutTab";
+import { WeightTab } from "./components/WeightTab";
 
 export const HistoryScreen: React.FC = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation();
 
-  const historySections = useMemo(
-    () => [
-      {
-        title: "Em Breve",
-        items: [
-          {
-            key: "placeholder",
-            icon: "time-outline",
-            label: "Funcionalidades de Histórico",
-            action: "none",
-            children: "Esta tela será implementada em breve",
-          },
-        ],
-      },
-    ],
-    [t]
-  );
-
-  const handleItemPress = (item: any) => {
-    // Implementar ações futuras aqui
-  };
-
-  const renderHistoryItem = (item: any) => {
-    return (
-      <VStack key={item.key}>
-        <Pressable
-          onPress={() => handleItemPress(item)}
-          p="$4"
-          borderRadius="$md"
-          $pressed={{
-            bg: FIXED_COLORS.background[700],
-          }}
-        >
-          <HStack alignItems="center" justifyContent="space-between">
-            <HStack alignItems="center" space="md" flex={1}>
-              <Ionicons
-                name={item.icon as any}
-                size={24}
-                color={FIXED_COLORS.text[50]}
-              />
-              <VStack flex={1}>
-                <Text color={FIXED_COLORS.text[50]} fontSize="$md">
-                  {item.label}
-                </Text>
-                {item.children && (
-                  <Text color={FIXED_COLORS.text[400]} fontSize="$sm">
-                    {item.children}
-                  </Text>
-                )}
-              </VStack>
-            </HStack>
-
-            <Ionicons
-              name="chevron-forward"
-              size={20}
-              color={FIXED_COLORS.text[400]}
-            />
-          </HStack>
-        </Pressable>
-      </VStack>
-    );
-  };
+  const tabData = [
+    {
+      id: "consumption",
+      title: t("history.tabs.consumption"),
+      icon: (
+        <Ionicons
+          name="restaurant-outline"
+          size={18}
+          color={FIXED_COLORS.text[400]}
+        />
+      ),
+      content: <ConsumptionTab />,
+    },
+    {
+      id: "workout",
+      title: t("history.tabs.workout"),
+      icon: (
+        <Ionicons
+          name="barbell-outline"
+          size={18}
+          color={FIXED_COLORS.text[400]}
+        />
+      ),
+      content: <WorkoutTab />,
+    },
+    {
+      id: "weight",
+      title: t("history.tabs.weight"),
+      icon: (
+        <Ionicons
+          name="scale-outline"
+          size={18}
+          color={FIXED_COLORS.text[400]}
+        />
+      ),
+      content: <WeightTab />,
+    },
+  ];
 
   return (
-    <SafeContainer>
-      <ScrollView style={{ flex: 1 }}>
-        <VStack flex={1} p="$0" space="lg">
-          {historySections.map((section, sectionIndex) => (
-            <VStack key={section.title} space="sm">
-              <Text
-                color={FIXED_COLORS.text[400]}
-                fontSize="$sm"
-                fontWeight="$semibold"
-                textTransform="uppercase"
-                letterSpacing="$sm"
-                mb="$2"
-              >
-                {section.title}
-              </Text>
+    <SafeContainer paddingHorizontal={0} paddingTop={0} paddingBottom={0}>
+      <VStack space="lg" paddingHorizontal="$4" p="$4">
+        <DailyTipCard />
+      </VStack>
 
-              <VStack
-                bg={FIXED_COLORS.background[800]}
-                borderRadius="$lg"
-                space="xs"
-              >
-                {section.items.map((item, itemIndex) => (
-                  <VStack key={item.key}>
-                    {renderHistoryItem(item)}
-                    {itemIndex < section.items.length - 1 && (
-                      <Divider bg={FIXED_COLORS.background[700]} mx="$4" />
-                    )}
-                  </VStack>
-                ))}
-              </VStack>
-            </VStack>
-          ))}
-        </VStack>
-      </ScrollView>
+      <AnimatedTabs
+        tabs={tabData}
+        reduceMotion="never"
+        containerStyle={{ flex: 1 }}
+      />
     </SafeContainer>
   );
 };
