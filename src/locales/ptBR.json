@@ -1116,7 +1116,15 @@
       "calories": "Calorias",
       "completed": "Concluído",
       "incomplete": "Incompleto",
-      "createWorkout": "Crie seu primeiro treino para começar a acompanhar seu progresso"
+      "createWorkout": "Crie seu primeiro treino para começar a acompanhar seu progresso",
+      "exercisesExecutedTitle": "Exercícios Executados Neste Dia",
+      "exerciseRegistered": "exercício registrado",
+      "exercisesRegistered": "exercícios registrados",
+      "totalDuration": "total",
+      "weight": "Carga",
+      "sets": "Séries",
+      "rest": "Descanso",
+      "noDataForDate": "Nenhum exercício registrado para esta data"
     },
     "weight": {
       "title": "Histórico de Peso",

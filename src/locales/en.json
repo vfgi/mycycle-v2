@@ -1116,7 +1116,15 @@
       "calories": "Calories",
       "completed": "Completed",
       "incomplete": "Incomplete",
-      "createWorkout": "Create your first workout to start tracking your progress"
+      "createWorkout": "Create your first workout to start tracking your progress",
+      "exercisesExecutedTitle": "Exercises Performed This Day",
+      "exerciseRegistered": "exercise registered",
+      "exercisesRegistered": "exercises registered",
+      "totalDuration": "total",
+      "weight": "Weight",
+      "sets": "Sets",
+      "rest": "Rest",
+      "noDataForDate": "No exercises recorded for this date"
     },
     "weight": {
       "title": "Weight History",
