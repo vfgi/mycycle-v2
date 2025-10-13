@@ -1136,10 +1136,81 @@
       "muscleMass": "Massa Muscular",
       "registerWeight": "Registe o seu peso diariamente para acompanhar a sua evolução"
     },
+    "overview": {
+      "title": "Visão Geral",
+      "description": "Acompanhe o seu progresso geral e evolução ao longo do tempo",
+      "weightProgress": "Progresso de Peso",
+      "measurementsProgress": "Progresso de Medidas",
+      "initial": "Inicial",
+      "current": "Actual",
+      "bodyFat": "Gordura",
+      "muscleMass": "Músculo",
+      "bmi": "IMC",
+      "weightGoal": "Meta de Peso",
+      "noWeightData": "Nenhum dado de peso disponível para este período",
+      "noMeasurementData": "Nenhum dado de medidas disponível para este período",
+      "bmiCategories": {
+        "underweight": "Abaixo do Peso",
+        "normal": "Normal",
+        "overweight": "Excesso de Peso",
+        "obese": "Obesidade"
+      },
+      "bodyFatCategories": {
+        "essential": "Essencial",
+        "athlete": "Atleta",
+        "fitness": "Fitness",
+        "average": "Médio",
+        "obese": "Alto",
+        "unknown": "Indeterminado"
+      },
+      "measurementsSummary": "Toque para ver relatório detalhado",
+      "measurements": {
+        "chest": "Peito",
+        "waist": "Cintura",
+        "bicep": "Bíceps",
+        "thigh": "Coxa",
+        "neck": "Pescoço",
+        "forearm": "Antebraço",
+        "calf": "Gémeo"
+      },
+      "measurementsTracked": "medidas acompanhadas",
+      "premiumAnalysis": "Análise Premium",
+      "unlockInsights": "Desbloqueie insights personalizados",
+      "progressAnalysis": "Análise de Progresso",
+      "overallScore": "Pontuação Geral",
+      "strengths": "Pontos Fortes",
+      "recommendations": "Recomendações",
+      "upgradeToPremium": "Actualizar para Premium",
+      "viewFullReport": "Ver Relatório Completo",
+      "features": {
+        "progressAnalysis": "Análise detalhada de progresso",
+        "personalizedRecommendations": "Recomendações personalizadas",
+        "trendPrediction": "Previsão de tendências",
+        "detailedReports": "Relatórios detalhados"
+      },
+      "analysis": {
+        "consistentProgress": "Progresso consistente",
+        "muscleGain": "Ganho de massa muscular",
+        "fatLoss": "Perda de gordura corporal",
+        "increaseProtein": "Aumentar consumo de proteína",
+        "moreCardio": "Incluir mais exercícios cardiovasculares",
+        "adjustCalories": "Ajustar consumo calórico",
+        "focusCompound": "Focar em exercícios compostos",
+        "trackSleep": "Monitorizar qualidade do sono"
+      },
+      "periods": {
+        "1week": "1 Semana",
+        "1month": "1 Mês",
+        "3months": "3 Meses",
+        "6months": "6 Meses",
+        "1year": "1 Ano",
+        "all": "Desde o Início"
+      }
+    },
     "tabs": {
       "consumption": "Consumo",
       "workout": "Treino",
-      "weight": "Peso"
+      "overview": "Visão Geral"
     }
   }
 }

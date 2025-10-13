@@ -172,7 +172,6 @@ export const EmptyWorkoutScreen: React.FC<EmptyWorkoutScreenProps> = ({
         isOpen={isUpgradeDrawerOpen}
         onClose={() => setIsUpgradeDrawerOpen(false)}
         onUpgrade={(planId) => {
-          console.log("Upgrade to plan:", planId);
           setIsUpgradeDrawerOpen(false);
           // TODO: Implementar lógica de upgrade
         }}

@@ -59,8 +59,6 @@ export const ConsumptionTab: React.FC = () => {
   );
   const [goals, setGoals] = useState<Goals | null>(null);
 
-  console.log("🍽️ ConsumptionTab - selectedDate atual:", selectedDate);
-
   useEffect(() => {
     loadGoals();
   }, []);
@@ -75,7 +73,6 @@ export const ConsumptionTab: React.FC = () => {
   };
 
   const handleDayPress = (day: any) => {
-    console.log("🍽️ ConsumptionTab - Dia clicado:", day.dateString);
     setSelectedDate(day.dateString);
   };
 
@@ -107,7 +104,6 @@ export const ConsumptionTab: React.FC = () => {
             paddingTop: 16,
             paddingBottom: 40,
             paddingHorizontal: 16,
-            marginBottom: 40,
           }}
         >
           {selectedData ? (

@@ -10,6 +10,7 @@ import { NotificationsScreen } from "../screens/notifications/NotificationsScree
 import { MeasurementsScreen } from "../screens/measurements/MeasurementsScreen";
 import { GoalsScreen } from "../screens/goals/GoalsScreen";
 import { HistoryScreen } from "../screens/history/HistoryScreen";
+import { CalendarScreen } from "../screens/calendar/CalendarScreen";
 import { ProfileScreen } from "../screens/profile/ProfileScreen";
 import { WorkoutSetupScreen } from "../screens/workoutSetup";
 import { useAuth } from "../contexts/AuthContext";
@@ -31,6 +32,7 @@ export type RootStackParamList = {
   Measurements: undefined;
   Goals: undefined;
   History: undefined;
+  Calendar: undefined;
   Profile: undefined;
   WorkoutSetup: undefined;
 };
@@ -147,6 +149,18 @@ export const AppNavigator: React.FC = () => {
             <Stack.Screen
               name="History"
               component={HistoryScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                headerTitle: () => <HeaderLogo />,
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+              })}
+            />
+            <Stack.Screen
+              name="Calendar"
+              component={CalendarScreen}
               options={({ route }) => ({
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Platform } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { HomeScreen } from "../screens/home/HomeScreen";
 import { WorkoutsScreen } from "../screens/workouts/WorkoutsScreen";
 import { NutritionScreen } from "../screens/nutrition/NutritionScreen";
-import { CalendarScreen } from "../screens/calendar/CalendarScreen";
+import { HistoryScreen } from "../screens/history/HistoryScreen";
 import { FIXED_COLORS } from "../theme/colors";
 import { useTranslation } from "../hooks/useTranslation";
 import { Header, Menu } from "../components";
@@ -24,7 +24,7 @@ export type BottomTabParamList = {
   Home: undefined;
   Workouts: undefined;
   Nutrition: undefined;
-  Calendar: undefined;
+  History: undefined;
   Menu: undefined;
 };
 
@@ -39,7 +39,12 @@ export const BottomTabNavigator: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const navigation = useNavigation<NavigationProp>();
-  const [tabNavigation, setTabNavigation] = React.useState<any>(null);
+  const tabNavigationRef = useRef<TabNavigationProp | null>(null);
+  const tabNavigation = useNavigation<TabNavigationProp>();
+
+  useEffect(() => {
+    tabNavigationRef.current = tabNavigation;
+  }, [tabNavigation]);
 
   const loadNotificationCount = async () => {
     try {
@@ -66,7 +71,7 @@ export const BottomTabNavigator: React.FC = () => {
 
   const handleMenuItemPress = (item: string) => {
     if (item === "home") {
-      navigation.navigate("Main", { screen: "Home" });
+      tabNavigationRef.current?.navigate("Home");
     } else if (item === "profile") {
       navigation.navigate("Profile");
     } else if (item === "settings") {
@@ -75,19 +80,14 @@ export const BottomTabNavigator: React.FC = () => {
       navigation.navigate("Measurements");
     } else if (item === "goals") {
       navigation.navigate("Goals");
-    } else if (item === "history") {
-      navigation.navigate("History");
+    } else if (item === "calendar") {
+      navigation.navigate("Calendar");
     }
   };
 
   return (
     <>
       <Tab.Navigator
-        ref={(nav) => {
-          if (nav && !tabNavigation) {
-            setTabNavigation(nav);
-          }
-        }}
         initialRouteName="Home"
         screenOptions={{
           headerShown: true,
@@ -151,12 +151,12 @@ export const BottomTabNavigator: React.FC = () => {
           }}
         />
         <Tab.Screen
-          name="Calendar"
-          component={CalendarScreen}
+          name="History"
+          component={HistoryScreen}
           options={{
-            tabBarLabel: t("navigation.calendar"),
+            tabBarLabel: t("navigation.history"),
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="calendar-number" size={size - 4} color={color} />
+              <Ionicons name="time-outline" size={size - 4} color={color} />
             ),
           }}
         />

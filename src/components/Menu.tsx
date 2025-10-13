@@ -78,7 +78,11 @@ export const Menu: React.FC<MenuProps> = ({
       label: t("navigation.measurements"),
     },
     { key: "goals", icon: "trophy-outline", label: t("navigation.goals") },
-    { key: "history", icon: "time-outline", label: t("navigation.history") },
+    {
+      key: "calendar",
+      icon: "calendar-number",
+      label: t("navigation.calendar"),
+    },
     {
       key: "settings",
       icon: "settings-outline",

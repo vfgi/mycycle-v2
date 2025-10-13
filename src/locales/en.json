@@ -1136,10 +1136,81 @@
       "muscleMass": "Muscle Mass",
       "registerWeight": "Register your weight daily to track your evolution"
     },
+    "overview": {
+      "title": "Overview",
+      "description": "Track your overall progress and evolution over time",
+      "weightProgress": "Weight Progress",
+      "measurementsProgress": "Measurements Progress",
+      "initial": "Initial",
+      "current": "Current",
+      "bodyFat": "Body Fat",
+      "muscleMass": "Muscle",
+      "bmi": "BMI",
+      "weightGoal": "Weight Goal",
+      "noWeightData": "No weight data available for this period",
+      "noMeasurementData": "No measurement data available for this period",
+      "bmiCategories": {
+        "underweight": "Underweight",
+        "normal": "Normal",
+        "overweight": "Overweight",
+        "obese": "Obese"
+      },
+      "bodyFatCategories": {
+        "essential": "Essential",
+        "athlete": "Athlete",
+        "fitness": "Fitness",
+        "average": "Average",
+        "obese": "High",
+        "unknown": "Unknown"
+      },
+      "measurementsSummary": "Tap to see detailed report",
+      "measurements": {
+        "chest": "Chest",
+        "waist": "Waist",
+        "bicep": "Bicep",
+        "thigh": "Thigh",
+        "neck": "Neck",
+        "forearm": "Forearm",
+        "calf": "Calf"
+      },
+      "measurementsTracked": "measurements tracked",
+      "premiumAnalysis": "Premium Analysis",
+      "unlockInsights": "Unlock personalized insights",
+      "progressAnalysis": "Progress Analysis",
+      "overallScore": "Overall Score",
+      "strengths": "Strengths",
+      "recommendations": "Recommendations",
+      "upgradeToPremium": "Upgrade to Premium",
+      "viewFullReport": "View Full Report",
+      "features": {
+        "progressAnalysis": "Detailed progress analysis",
+        "personalizedRecommendations": "Personalized recommendations",
+        "trendPrediction": "Trend prediction",
+        "detailedReports": "Detailed reports"
+      },
+      "analysis": {
+        "consistentProgress": "Consistent progress",
+        "muscleGain": "Muscle mass gain",
+        "fatLoss": "Body fat loss",
+        "increaseProtein": "Increase protein intake",
+        "moreCardio": "Include more cardiovascular exercises",
+        "adjustCalories": "Adjust caloric intake",
+        "focusCompound": "Focus on compound exercises",
+        "trackSleep": "Monitor sleep quality"
+      },
+      "periods": {
+        "1week": "1 Week",
+        "1month": "1 Month",
+        "3months": "3 Months",
+        "6months": "6 Months",
+        "1year": "1 Year",
+        "all": "Since Beginning"
+      }
+    },
     "tabs": {
       "consumption": "Consumption",
       "workout": "Workout",
-      "weight": "Weight"
+      "overview": "Overview"
     }
   }
 }

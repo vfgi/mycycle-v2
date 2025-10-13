@@ -7,7 +7,7 @@ import { useTranslation } from "../../hooks/useTranslation";
 import { SafeContainer, DailyTipCard, AnimatedTabs } from "../../components";
 import { ConsumptionTab } from "./components/ConsumptionTab";
 import { WorkoutTab } from "./components/WorkoutTab";
-import { WeightTab } from "./components/WeightTab";
+import { OverviewTab } from "./components/OverviewTab";
 
 export const HistoryScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -38,16 +38,16 @@ export const HistoryScreen: React.FC = () => {
       content: <WorkoutTab />,
     },
     {
-      id: "weight",
-      title: t("history.tabs.weight"),
+      id: "overview",
+      title: t("history.tabs.overview"),
       icon: (
         <Ionicons
-          name="scale-outline"
+          name="analytics-outline"
           size={18}
           color={FIXED_COLORS.text[400]}
         />
       ),
-      content: <WeightTab />,
+      content: <OverviewTab />,
     },
   ];
 

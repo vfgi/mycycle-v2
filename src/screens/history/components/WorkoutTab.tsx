@@ -17,10 +17,7 @@ export const WorkoutTab: React.FC = () => {
     new Date().toISOString().split("T")[0]
   );
 
-  console.log("💪 WorkoutTab - selectedDate atual:", selectedDate);
-
   const handleDayPress = (day: any) => {
-    console.log("💪 WorkoutTab - Dia clicado:", day.dateString);
     setSelectedDate(day.dateString);
   };
 
@@ -44,9 +41,6 @@ export const WorkoutTab: React.FC = () => {
     (sum, exercise) => sum + exercise.duration,
     0
   );
-  const completedExercises = selectedExercises.filter(
-    (exercise) => exercise.completed
-  ).length;
 
   return (
     <VStack flex={1}>
@@ -57,7 +51,7 @@ export const WorkoutTab: React.FC = () => {
       >
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={{ paddingTop: 16, marginBottom: 40, paddingHorizontal: 16 }}
+          style={{ paddingTop: 16, paddingHorizontal: 16 }}
         >
           {selectedExercises.length > 0 ? (
             <VStack space="md">
