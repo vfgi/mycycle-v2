@@ -24,14 +24,23 @@ interface Step2ExerciseSelectionProps {
   >;
   onExercisesChange: (day: string, categories: string[]) => void;
   onWorkoutExercisesChange: (day: string, exercises: Exercise[]) => void;
+  onUpdateSets: (exerciseId: string, sets: string) => void;
+  onUpdateReps: (exerciseId: string, reps: string) => void;
+  onUpdateWeight: (exerciseId: string, weight: string) => void;
+  onRemoveExercise: (exerciseId: string) => void;
 }
 
 export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
   selectedDays,
   selectedExercises,
   selectedWorkoutExercises,
+  exerciseConfigs,
   onExercisesChange,
   onWorkoutExercisesChange,
+  onUpdateSets,
+  onUpdateReps,
+  onUpdateWeight,
+  onRemoveExercise,
 }) => {
   const { t } = useTranslation();
   const [currentDay, setCurrentDay] = useState(selectedDays[0] || "");
@@ -40,9 +49,6 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
   const [isLoadingExercises, setIsLoadingExercises] = useState(false);
   const [selectedExercisePreview, setSelectedExercisePreview] =
     useState<Exercise | null>(null);
-  const [exerciseConfigs, setExerciseConfigs] = useState<
-    Record<string, { sets: string; reps: string; weight: string }>
-  >({});
   const [swappingExercise, setSwappingExercise] = useState<Exercise | null>(
     null
   );
@@ -129,40 +135,16 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
     setSelectedExercisePreview(exercise);
   };
 
-  const handleUpdateSets = (exerciseId: string, sets: string) => {
-    setExerciseConfigs((prev) => ({
-      ...prev,
-      [exerciseId]: {
-        ...prev[exerciseId],
-        sets,
-        reps: prev[exerciseId]?.reps || "12",
-        weight: prev[exerciseId]?.weight || "0",
-      },
-    }));
+  const handleUpdateSetsLocal = (exerciseId: string, sets: string) => {
+    onUpdateSets(exerciseId, sets);
   };
 
-  const handleUpdateReps = (exerciseId: string, reps: string) => {
-    setExerciseConfigs((prev) => ({
-      ...prev,
-      [exerciseId]: {
-        ...prev[exerciseId],
-        sets: prev[exerciseId]?.sets || "3",
-        reps,
-        weight: prev[exerciseId]?.weight || "0",
-      },
-    }));
+  const handleUpdateRepsLocal = (exerciseId: string, reps: string) => {
+    onUpdateReps(exerciseId, reps);
   };
 
-  const handleUpdateWeight = (exerciseId: string, weight: string) => {
-    setExerciseConfigs((prev) => ({
-      ...prev,
-      [exerciseId]: {
-        ...prev[exerciseId],
-        sets: prev[exerciseId]?.sets || "3",
-        reps: prev[exerciseId]?.reps || "12",
-        weight,
-      },
-    }));
+  const handleUpdateWeightLocal = (exerciseId: string, weight: string) => {
+    onUpdateWeight(exerciseId, weight);
   };
 
   const handleRemoveExercise = (exercise: Exercise) => {
@@ -172,10 +154,8 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
     );
     onWorkoutExercisesChange(currentDay, updatedExercises);
 
-    // Remove config if exists
-    const newConfigs = { ...exerciseConfigs };
-    delete newConfigs[exercise.id];
-    setExerciseConfigs(newConfigs);
+    // Remove config using parent function
+    onRemoveExercise(exercise.id);
   };
 
   const handleSwapExercise = (exercise: Exercise) => {
@@ -199,15 +179,13 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
       updatedExercises[exerciseIndex] = newExercise;
       onWorkoutExercisesChange(currentDay, updatedExercises);
 
-      // Preservar configurações se existirem
-      if (exerciseConfigs[swappingExercise.id]) {
-        setExerciseConfigs((prev) => ({
-          ...prev,
-          [newExercise.id]: prev[swappingExercise.id],
-        }));
-        const newConfigs = { ...exerciseConfigs };
-        delete newConfigs[swappingExercise.id];
-        setExerciseConfigs(newConfigs);
+      // Preserve configurations if they exist
+      const oldConfig = exerciseConfigs[swappingExercise.id];
+      if (oldConfig) {
+        onUpdateSets(newExercise.id, oldConfig.sets);
+        onUpdateReps(newExercise.id, oldConfig.reps);
+        onUpdateWeight(newExercise.id, oldConfig.weight);
+        onRemoveExercise(swappingExercise.id);
       }
     }
 
@@ -443,9 +421,9 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
                   exercise={exercise}
                   onRemove={handleRemoveExercise}
                   onSwap={handleSwapExercise}
-                  onUpdateSets={handleUpdateSets}
-                  onUpdateReps={handleUpdateReps}
-                  onUpdateWeight={handleUpdateWeight}
+                  onUpdateSets={handleUpdateSetsLocal}
+                  onUpdateReps={handleUpdateRepsLocal}
+                  onUpdateWeight={handleUpdateWeightLocal}
                   sets={exerciseConfigs[exercise.id]?.sets || "3"}
                   reps={exerciseConfigs[exercise.id]?.reps || "12"}
                   weight={exerciseConfigs[exercise.id]?.weight || "0"}
