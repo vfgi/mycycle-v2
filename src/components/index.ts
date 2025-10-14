@@ -17,6 +17,8 @@ export { default as AdBanner } from "./AdBanner";
 export { SlideCard } from "./SlideCard";
 export { PremiumUpgradeDrawer } from "./PremiumUpgradeDrawer";
 export { DailyTipCard } from "./DailyTipCard";
+export { DailyContentCard } from "./DailyContentCard";
+export { default as FloatingTextInput } from "./ui/FloatingTextInput";
 export { default as AnimatedTabs } from "./ui/AnimatedTabs";
 export { default as Typography } from "./ui/Typography";
 export { ExpandableCalendarComponent } from "./ui/ExpandableCalendarComponent";

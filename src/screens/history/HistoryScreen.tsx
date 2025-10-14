@@ -4,7 +4,11 @@ import { VStack } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { FIXED_COLORS } from "../../theme/colors";
 import { useTranslation } from "../../hooks/useTranslation";
-import { SafeContainer, DailyTipCard, AnimatedTabs } from "../../components";
+import {
+  SafeContainer,
+  DailyContentCard,
+  AnimatedTabs,
+} from "../../components";
 import { ConsumptionTab } from "./components/ConsumptionTab";
 import { WorkoutTab } from "./components/WorkoutTab";
 import { OverviewTab } from "./components/OverviewTab";
@@ -13,6 +17,18 @@ export const HistoryScreen: React.FC = () => {
   const { t } = useTranslation();
 
   const tabData = [
+    {
+      id: "overview",
+      title: t("history.tabs.overview"),
+      icon: (
+        <Ionicons
+          name="analytics-outline"
+          size={18}
+          color={FIXED_COLORS.text[400]}
+        />
+      ),
+      content: <OverviewTab />,
+    },
     {
       id: "consumption",
       title: t("history.tabs.consumption"),
@@ -37,24 +53,12 @@ export const HistoryScreen: React.FC = () => {
       ),
       content: <WorkoutTab />,
     },
-    {
-      id: "overview",
-      title: t("history.tabs.overview"),
-      icon: (
-        <Ionicons
-          name="analytics-outline"
-          size={18}
-          color={FIXED_COLORS.text[400]}
-        />
-      ),
-      content: <OverviewTab />,
-    },
   ];
 
   return (
     <SafeContainer paddingHorizontal={0} paddingTop={0} paddingBottom={0}>
       <VStack space="lg" paddingHorizontal="$4" p="$4">
-        <DailyTipCard />
+        <DailyContentCard />
       </VStack>
 
       <AnimatedTabs

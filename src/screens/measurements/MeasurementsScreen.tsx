@@ -182,19 +182,33 @@ export const MeasurementsScreen: React.FC = () => {
             keyboardShouldPersistTaps="handled"
           >
             <VStack px="$6" pt="$6" space="md">
-              {measurementFields.map((field) => (
-                <MeasurementCard
-                  key={field.key}
-                  label={field.label}
-                  description={field.description}
-                  value={displayValues[field.key] || ""}
-                  onChangeText={(value) =>
-                    handleMeasurementChange(field.key, value)
-                  }
-                  unit={field.unit}
-                  isOptional={field.isOptional}
-                />
-              ))}
+              {measurementFields.map((field) => {
+                const currentValue =
+                  user?.measurements?.[
+                    field.key as keyof typeof user.measurements
+                  ];
+                const displayCurrentValue = currentValue
+                  ? field.key === "height"
+                    ? convertHeight(currentValue).value.toString()
+                    : convertBodyMeasurement(currentValue).value.toString()
+                  : undefined;
+
+                return (
+                  <MeasurementCard
+                    key={field.key}
+                    label={field.label}
+                    description={field.description}
+                    value={displayValues[field.key] || ""}
+                    onChangeText={(value) =>
+                      handleMeasurementChange(field.key, value)
+                    }
+                    unit={field.unit}
+                    isOptional={field.isOptional}
+                    currentValue={displayCurrentValue}
+                    measurementKey={field.key}
+                  />
+                );
+              })}
             </VStack>
           </ScrollView>
 

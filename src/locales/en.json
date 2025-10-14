@@ -90,6 +90,29 @@
     "goal": "Goal",
     "ofGoal": "of goal"
   },
+  "weekDays": {
+    "sunday": {
+      "short": "Sun"
+    },
+    "monday": {
+      "short": "Mon"
+    },
+    "tuesday": {
+      "short": "Tue"
+    },
+    "wednesday": {
+      "short": "Wed"
+    },
+    "thursday": {
+      "short": "Thu"
+    },
+    "friday": {
+      "short": "Fri"
+    },
+    "saturday": {
+      "short": "Sat"
+    }
+  },
   "home": {
     "welcome": "Welcome to MyCycle",
     "hello": "Hello",
@@ -131,6 +154,95 @@
     "measurements": "Measurements",
     "goals": "Goals",
     "history": "History"
+  },
+  "nutrition": {
+    "tabs": {
+      "food": "Food",
+      "supplements": "Supplements"
+    },
+    "food": {
+      "title": "Food & Nutrition",
+      "description": "Manage your daily nutrition and track your nutritional goals",
+      "weeklyCalories": "Last 7 Days Calories",
+      "weeklyNutrients": "Last 7 Days Nutrients",
+      "average": "Average",
+      "onTarget": "On target",
+      "nearTarget": "Near target",
+      "belowTarget": "Below target",
+      "aboveTarget": "Above target",
+      "nutrients": {
+        "calories": "Calories",
+        "protein": "Protein",
+        "carbs": "Carbs",
+        "fat": "Fat"
+      },
+      "comingSoonDescription": "We're developing a complete nutritional tracking tool with a comprehensive food database.",
+      "featuresTitle": "Features in Development",
+      "features": {
+        "search": "Food Search",
+        "searchDescription": "Complete database with Brazilian and international foods",
+        "calculator": "Nutrition Calculator",
+        "calculatorDescription": "Automatically calculate calories, macros and micronutrients",
+        "favorites": "Favorite Foods",
+        "favoritesDescription": "Save your most consumed foods for quick access",
+        "tracking": "Daily Tracking",
+        "trackingDescription": "Log your meals and monitor your nutritional progress"
+      }
+    },
+    "meals": {
+      "meals": "Meals",
+      "todayMeals": "Today's Meals",
+      "allMeals": "All Meals",
+      "activeMeals": "Active Meals",
+      "inactiveMeals": "Inactive Meals",
+      "management": "Manage Meals",
+      "active": "Active",
+      "inactive": "Inactive",
+      "total": "Total",
+      "maxCalories": "Max Calories",
+      "searchIngredients": "Search Ingredients",
+      "searchPlaceholder": "Search meals...",
+      "noResultsFound": "No meals found",
+      "noMealsFound": "No meals registered",
+      "viewAll": "View all",
+      "ingredients": "ingredients",
+      "nutritionalInfo": "Nutritional Information",
+      "preparationInfo": "Preparation Info",
+      "instructions": "Instructions",
+      "actions": "Actions",
+      "activate": "Activate Meal",
+      "deactivate": "Deactivate Meal",
+      "delete": "Delete Meal",
+      "prep": "prep",
+      "cooking": "cooking",
+      "types": {
+        "breakfast": "Breakfast",
+        "snack": "Snack",
+        "lunch": "Lunch",
+        "dinner": "Dinner"
+      },
+      "difficulty": {
+        "easy": "Easy",
+        "medium": "Medium",
+        "hard": "Hard"
+      }
+    },
+    "supplements": {
+      "title": "Supplements",
+      "description": "Organize your supplements and optimize your supplementation",
+      "comingSoonDescription": "Complete supplement management system with reminders and personalized recommendations.",
+      "featuresTitle": "Features in Development",
+      "features": {
+        "protein": "Proteins & Amino Acids",
+        "proteinDescription": "Whey, casein, creatine and other performance supplements",
+        "preworkout": "Pre-workout & Energy",
+        "preworkoutDescription": "Caffeine, beta-alanine and compounds for energy and focus",
+        "vitamins": "Vitamins & Minerals",
+        "vitaminsDescription": "Vitamin complexes, omega-3, vitamin D and other essentials",
+        "schedule": "Personalized Schedule",
+        "scheduleDescription": "Smart reminders based on your workouts and goals"
+      }
+    }
   },
   "calendar": {
     "noEvents": "No events for this day",
@@ -201,6 +313,7 @@
     "save": "Save Measurements",
     "placeholder": "Enter measurement in {unit}",
     "optional": "optional",
+    "current": "Current",
     "updated": "Measurements updated",
     "updateError": "Failed to save measurements",
     "loadError": "Error loading measurements",

@@ -90,6 +90,29 @@
     "goal": "Meta",
     "ofGoal": "de la meta"
   },
+  "weekDays": {
+    "sunday": {
+      "short": "Dom"
+    },
+    "monday": {
+      "short": "Lun"
+    },
+    "tuesday": {
+      "short": "Mar"
+    },
+    "wednesday": {
+      "short": "Mié"
+    },
+    "thursday": {
+      "short": "Jue"
+    },
+    "friday": {
+      "short": "Vie"
+    },
+    "saturday": {
+      "short": "Sáb"
+    }
+  },
   "home": {
     "welcome": "Bienvenido a MyCycle",
     "hello": "Hola",
@@ -131,6 +154,95 @@
     "measurements": "Medidas",
     "goals": "Objetivos",
     "history": "Historial"
+  },
+  "nutrition": {
+    "tabs": {
+      "food": "Alimentos",
+      "supplements": "Suplementos"
+    },
+    "food": {
+      "title": "Alimentos y Nutrición",
+      "description": "Gestiona tu alimentación diaria y sigue tus metas nutricionales",
+      "weeklyCalories": "Calorías de los Últimos 7 Días",
+      "weeklyNutrients": "Nutrientes de los Últimos 7 Días",
+      "average": "Promedio",
+      "onTarget": "Meta alcanzada",
+      "nearTarget": "Cerca de la meta",
+      "belowTarget": "Por debajo de la meta",
+      "aboveTarget": "Por encima de la meta",
+      "nutrients": {
+        "calories": "Calorías",
+        "protein": "Proteína",
+        "carbs": "Carbohidratos",
+        "fat": "Grasa"
+      },
+      "comingSoonDescription": "Estamos desarrollando una herramienta completa de seguimiento nutricional con base de datos de alimentos.",
+      "featuresTitle": "Funciones en Desarrollo",
+      "features": {
+        "search": "Búsqueda de Alimentos",
+        "searchDescription": "Base de datos completa con alimentos brasileños e internacionales",
+        "calculator": "Calculadora Nutricional",
+        "calculatorDescription": "Calcula automáticamente calorías, macros y micronutrientes",
+        "favorites": "Alimentos Favoritos",
+        "favoritesDescription": "Guarda tus alimentos más consumidos para acceso rápido",
+        "tracking": "Seguimiento Diario",
+        "trackingDescription": "Registra tus comidas y monitorea tu progreso nutricional"
+      }
+    },
+    "meals": {
+      "meals": "Comidas",
+      "todayMeals": "Comidas de Hoy",
+      "allMeals": "Todas las Comidas",
+      "activeMeals": "Comidas Activas",
+      "inactiveMeals": "Comidas Inactivas",
+      "management": "Gestionar Comidas",
+      "active": "Activas",
+      "inactive": "Inactivas",
+      "total": "Total",
+      "maxCalories": "Máximo de Calorías",
+      "searchIngredients": "Buscar Ingredientes",
+      "searchPlaceholder": "Buscar comidas...",
+      "noResultsFound": "No se encontraron comidas",
+      "noMealsFound": "No hay comidas registradas",
+      "viewAll": "Ver todas",
+      "ingredients": "ingredientes",
+      "nutritionalInfo": "Información Nutricional",
+      "preparationInfo": "Información de Preparación",
+      "instructions": "Instrucciones",
+      "actions": "Acciones",
+      "activate": "Activar Comida",
+      "deactivate": "Desactivar Comida",
+      "delete": "Eliminar Comida",
+      "prep": "preparación",
+      "cooking": "cocción",
+      "types": {
+        "breakfast": "Desayuno",
+        "snack": "Merienda",
+        "lunch": "Almuerzo",
+        "dinner": "Cena"
+      },
+      "difficulty": {
+        "easy": "Fácil",
+        "medium": "Medio",
+        "hard": "Difícil"
+      }
+    },
+    "supplements": {
+      "title": "Suplementos",
+      "description": "Organiza tus suplementos y optimiza tu suplementación",
+      "comingSoonDescription": "Sistema completo de gestión de suplementos con recordatorios y recomendaciones personalizadas.",
+      "featuresTitle": "Funciones en Desarrollo",
+      "features": {
+        "protein": "Proteínas y Aminoácidos",
+        "proteinDescription": "Whey, caseína, creatina y otros suplementos de rendimiento",
+        "preworkout": "Pre-entreno y Energía",
+        "preworkoutDescription": "Cafeína, beta-alanina y compuestos para energía y concentración",
+        "vitamins": "Vitaminas y Minerales",
+        "vitaminsDescription": "Complejos vitamínicos, omega-3, vitamina D y otros esenciales",
+        "schedule": "Horario Personalizado",
+        "scheduleDescription": "Recordatorios inteligentes basados en tus entrenamientos y objetivos"
+      }
+    }
   },
   "calendar": {
     "noEvents": "No hay eventos para este día",
@@ -201,6 +313,7 @@
     "save": "Guardar Medidas",
     "placeholder": "Ingresa la medida en {unit}",
     "optional": "opcional",
+    "current": "Actual",
     "updated": "Medidas actualizadas",
     "updateError": "Error al guardar medidas",
     "loadError": "Error al cargar medidas",

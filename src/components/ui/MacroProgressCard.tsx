@@ -30,10 +30,6 @@ export const MacroProgressCard: React.FC<MacroProgressCardProps> = ({
   const safeGoalValue = goalValue || 100; // Valor padrão se não houver meta
   const percentage = Math.min((currentValue / safeGoalValue) * 100, 100);
 
-  console.log(
-    `📊 ${title} - Current: ${currentValue}, Goal: ${safeGoalValue}, Percentage: ${percentage}%`
-  );
-
   return (
     <LinearGradient
       colors={colors as [string, string]}

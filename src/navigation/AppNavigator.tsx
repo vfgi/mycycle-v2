@@ -13,6 +13,7 @@ import { HistoryScreen } from "../screens/history/HistoryScreen";
 import { CalendarScreen } from "../screens/calendar/CalendarScreen";
 import { ProfileScreen } from "../screens/profile/ProfileScreen";
 import { WorkoutSetupScreen } from "../screens/workoutSetup";
+import { MealsManagementScreen } from "../screens/nutrition/MealsManagementScreen";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../hooks/useToast";
 import { useTranslation } from "../hooks/useTranslation";
@@ -35,6 +36,7 @@ export type RootStackParamList = {
   Calendar: undefined;
   Profile: undefined;
   WorkoutSetup: undefined;
+  MealsManagement: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -185,6 +187,18 @@ export const AppNavigator: React.FC = () => {
             <Stack.Screen
               name="WorkoutSetup"
               component={WorkoutSetupScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                headerTitle: () => <HeaderLogo />,
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+              })}
+            />
+            <Stack.Screen
+              name="MealsManagement"
+              component={MealsManagementScreen}
               options={({ route }) => ({
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,

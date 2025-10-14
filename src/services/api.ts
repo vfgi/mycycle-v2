@@ -1,5 +1,6 @@
 import { ENV } from "../config";
 import { tokenStorage } from "./tokenStorage";
+import { authService } from "./authService";
 
 export interface ApiResponse<T = any> {
   data?: T;
@@ -10,6 +11,7 @@ export interface ApiResponse<T = any> {
 class ApiService {
   private baseURL: string;
   private timeout: number;
+  private isRefreshing: boolean = false;
 
   constructor() {
     this.baseURL = ENV.API_BASE_URL;
@@ -49,8 +51,70 @@ class ApiService {
       const data = await response.json();
 
       if (!response.ok) {
-        // Se for erro 401 (Unauthorized), limpar tokens
-        if (response.status === 401) {
+        // Se for erro 401 (Unauthorized), tentar refresh token primeiro
+        if (response.status === 401 && !this.isRefreshing) {
+          console.log(
+            "🔄 [ApiService] 401 detected, attempting token refresh..."
+          );
+
+          try {
+            this.isRefreshing = true;
+            const refreshToken = await tokenStorage.getRefreshToken();
+
+            if (refreshToken) {
+              console.log("🌐 [ApiService] Refreshing token...");
+              const refreshResponse = await authService.refreshToken(
+                refreshToken
+              );
+
+              // Salvar novos tokens
+              await tokenStorage.setTokens(
+                refreshResponse.access_token,
+                refreshResponse.refresh_token
+              );
+
+              console.log(
+                "✅ [ApiService] Token refreshed, retrying original request..."
+              );
+
+              // Tentar novamente a requisição original com o novo token
+              const newAccessToken = refreshResponse.access_token;
+              const retryHeaders = {
+                ...headers,
+                Authorization: `Bearer ${newAccessToken}`,
+              };
+
+              const retryResponse = await fetch(url, {
+                ...config,
+                headers: retryHeaders,
+              });
+
+              const retryData = await retryResponse.json();
+
+              if (retryResponse.ok) {
+                console.log("✅ [ApiService] Retry successful");
+                return { data: retryData };
+              } else {
+                console.log("❌ [ApiService] Retry failed, clearing tokens");
+                await tokenStorage.clearAll();
+              }
+            } else {
+              console.log(
+                "❌ [ApiService] No refresh token available, clearing tokens"
+              );
+              await tokenStorage.clearAll();
+            }
+          } catch (refreshError) {
+            console.error(
+              "❌ [ApiService] Token refresh failed:",
+              refreshError
+            );
+            await tokenStorage.clearAll();
+          } finally {
+            this.isRefreshing = false;
+          }
+        } else if (response.status === 401) {
+          // Se já está refreshing ou falhou, limpar tokens
           await tokenStorage.clearAll();
         }
 
