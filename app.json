@@ -231,7 +231,7 @@
         "expo-build-properties",
         {
           "ios": {
-            "deploymentTarget": "15.1"
+            "deploymentTarget": "16.0"
           }
         }
       ],
@@ -263,7 +263,7 @@
         {
           "mode": "production",
           "devTeam": "2532D63Q8G",
-          "iPhoneDeploymentTarget": "15.1"
+          "iPhoneDeploymentTarget": "16.0"
         }
       ]
     ],
