@@ -179,15 +179,11 @@
           "NSAllowsArbitraryLoadsInWebContent": true
         },
         "NSLocalNotificationUsageDescription": "This app needs access to your local notifications to let you know when to remind you your medications and supplements.",
-        "UIBackgroundModes": [
-          "remote-notification"
-        ],
+        "UIBackgroundModes": ["remote-notification"],
         "CFBundleURLTypes": [
           {
             "CFBundleURLName": "facebook",
-            "CFBundleURLSchemes": [
-              "fb1506051177065150"
-            ]
+            "CFBundleURLSchemes": ["fb1506051177065150"]
           }
         ],
         "FacebookAppID": "1506051177065150",
@@ -207,9 +203,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000000"
       },
-      "permissions": [
-        "POST_NOTIFICATIONS"
-      ],
+      "permissions": ["POST_NOTIFICATIONS"],
       "edgeToEdgeEnabled": true,
       "intentFilters": [
         {
@@ -221,10 +215,7 @@
               "host": "1506051177065150.app.link"
             }
           ],
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
+          "category": ["BROWSABLE", "DEFAULT"]
         }
       ]
     },
@@ -267,20 +258,12 @@
           "clientToken": "",
           "displayName": "MyCycle"
         }
-      ],
-      [
-        "onesignal-expo-plugin",
-        {
-          "mode": "production",
-          "devTeam": "2532D63Q8G"
-        }
       ]
     ],
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
-      "oneSignalAppId": "42bc5879-89ae-417e-9bc9-b229a399faf4",
       "router": {},
       "eas": {
         "projectId": "6917d6d5-67c9-495f-8037-97588067242c"
