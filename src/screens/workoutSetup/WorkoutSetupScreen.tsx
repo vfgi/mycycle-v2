@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ScrollView, Alert } from "react-native";
 import { VStack } from "@gluestack-ui/themed";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { SafeContainer } from "../../components";
 import { StepIndicator, SetupHeader, NavigationButtons } from "./components";
 import {
@@ -19,6 +19,9 @@ import {
 import { useTranslation } from "../../hooks/useTranslation";
 import { useToast } from "../../hooks/useToast";
 import { MUSCLE_GROUP_MAPPING } from "./data/muscleGroups";
+import { RootStackParamList } from "../../navigation/AppNavigator";
+
+type WorkoutSetupRouteProp = RouteProp<RootStackParamList, "WorkoutSetup">;
 
 interface WorkoutSetupData {
   daysPerWeek: number;
@@ -27,8 +30,12 @@ interface WorkoutSetupData {
 
 export const WorkoutSetupScreen: React.FC = () => {
   const navigation = useNavigation();
+  const route = useRoute<WorkoutSetupRouteProp>();
   const { t } = useTranslation();
   const { showSuccess, showError } = useToast();
+
+  const editPlan = route.params?.editPlan;
+  const isEditing = !!editPlan;
 
   const [planName, setPlanName] = useState("");
   const [planDescription, setPlanDescription] = useState("");
@@ -45,6 +52,63 @@ export const WorkoutSetupScreen: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isCreating, setIsCreating] = useState(false);
   const totalSteps = 4; // Steps: 0=Plano, 1=Dias, 2=Exercícios, 3=Resumo
+
+  // Inicializar dados quando estiver editando
+  useEffect(() => {
+    if (editPlan) {
+      setPlanName(editPlan.name);
+      setPlanDescription(editPlan.description || "");
+
+      // Extrair dias únicos de todos os workouts
+      const allDays = editPlan.workouts.flatMap((w) => w.weekDays);
+      const uniqueDays = Array.from(new Set(allDays));
+      setSelectedDays(uniqueDays);
+
+      // Mapear workouts para exercícios por dia
+      const exercisesByDay: Record<string, Exercise[]> = {};
+      const configs: Record<
+        string,
+        { sets: string; reps: string; weight: string }
+      > = {};
+      const categoriesByDay: Record<string, string[]> = {};
+
+      editPlan.workouts.forEach((workout) => {
+        workout.weekDays.forEach((day) => {
+          exercisesByDay[day] = workout.exercises.map((ex, index) => ({
+            id: `${ex.name}-${index}`,
+            name: ex.name,
+            category: ex.category || "Força",
+            muscle_group: ex.muscle_group,
+            difficulty: ex.difficulty || "Intermediário",
+            equipment: ex.equipment || "",
+            instructions: ex.instructions || "",
+            imageURL: ex.videoURL || "",
+            previewImage: ex.imageURL || "",
+          }));
+
+          // Configurar sets, reps, weight para cada exercício
+          workout.exercises.forEach((ex, index) => {
+            const exerciseId = `${ex.name}-${index}`;
+            configs[exerciseId] = {
+              sets: String(ex.sets),
+              reps: String(ex.reps),
+              weight: String(ex.weight),
+            };
+          });
+
+          // Extrair categorias únicas
+          const categories = Array.from(
+            new Set(workout.exercises.map((ex) => ex.muscle_group))
+          );
+          categoriesByDay[day] = categories;
+        });
+      });
+
+      setSelectedWorkoutExercises(exercisesByDay);
+      setExerciseConfigs(configs);
+      setSelectedExercises(categoriesByDay);
+    }
+  }, [editPlan]);
 
   const handleDaysChange = (days: string[]) => {
     setSelectedDays(days);
@@ -206,20 +270,23 @@ export const WorkoutSetupScreen: React.FC = () => {
             const mappedCategory = mapCategory(exercise.category);
             const mappedDifficulty = mapDifficulty(exercise.difficulty);
 
-            return {
+            const exerciseData = {
               name: exercise.name,
               category: mappedCategory,
               muscle_group: exercise.muscle_group,
               difficulty: mappedDifficulty,
-              equipment: exercise.equipment,
+              equipment: exercise.equipment || "",
               sets: parseInt(exerciseConfigs[exercise.id]?.sets || "3"),
               reps: parseInt(exerciseConfigs[exercise.id]?.reps || "12"),
               weight: parseFloat(exerciseConfigs[exercise.id]?.weight || "0"),
               order: index + 1,
-              instructions: exercise.instructions,
-              videoURL: exercise.imageURL,
-              imageURL: exercise.previewImage,
+              instructions: exercise.instructions || "",
+              videoURL: exercise.imageURL || "",
+              imageURL: exercise.previewImage || "",
             };
+
+            console.log(`📝 [EXERCISE ${index + 1}]`, exerciseData);
+            return exerciseData;
           }) || [];
 
         const workoutName = generateWorkoutName(dayKey);
@@ -235,18 +302,35 @@ export const WorkoutSetupScreen: React.FC = () => {
       const trainingPlanData: CreateTrainingPlanRequest = {
         name: planName,
         description: planDescription,
-        is_active: true,
+        is_active: editPlan?.is_active ?? true,
         workouts,
       };
 
-      await trainingService.createTrainingPlan(trainingPlanData);
+      console.log(
+        "🎯 [TRAINING PLAN DATA]",
+        JSON.stringify(trainingPlanData, null, 2)
+      );
 
-      showSuccess(t("workoutSetup.planCreated"));
+      if (isEditing && editPlan) {
+        console.log("✏️ [UPDATE] Atualizando plano:", editPlan.id);
+        await trainingService.updateTrainingPlan(editPlan.id, trainingPlanData);
+        showSuccess(t("workoutSetup.planUpdated"));
+      } else {
+        console.log("➕ [CREATE] Criando novo plano");
+        await trainingService.createTrainingPlan(trainingPlanData);
+        showSuccess(t("workoutSetup.planCreated"));
+      }
 
+      console.log("✅ [SUCCESS] Plano salvo! Voltando para tela anterior...");
       navigation.goBack();
     } catch (error) {
-      console.error("Erro ao criar plano de treino:", error);
-      showError(t("workoutSetup.planCreationError"));
+      console.error("❌ [ERROR] Erro ao salvar plano de treino:", error);
+      console.error("❌ [ERROR] Detalhes:", JSON.stringify(error, null, 2));
+      showError(
+        isEditing
+          ? t("workoutSetup.planUpdateError")
+          : t("workoutSetup.planCreationError")
+      );
     } finally {
       setIsCreating(false);
     }
@@ -354,6 +438,7 @@ export const WorkoutSetupScreen: React.FC = () => {
             onContinue={handleContinue}
             isContinueDisabled={!isStepValid() || isCreating}
             isLoading={isCreating}
+            isEditing={isEditing}
           />
         </VStack>
       </ScrollView>

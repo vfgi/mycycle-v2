@@ -13,8 +13,10 @@ import { HistoryScreen } from "../screens/history/HistoryScreen";
 import { CalendarScreen } from "../screens/calendar/CalendarScreen";
 import { ProfileScreen } from "../screens/profile/ProfileScreen";
 import { WorkoutSetupScreen } from "../screens/workoutSetup";
+import { WorkoutCreationScreen } from "../screens/workouts/WorkoutCreationScreen";
 import { AllWorkoutsScreen } from "../screens/workouts/AllWorkoutsScreen";
 import { AllTrainingPlansScreen } from "../screens/workouts/AllTrainingPlansScreen";
+import { EmptyWorkoutScreen } from "../screens/workouts/EmptyWorkoutScreen";
 import { MealsManagementScreen } from "../screens/nutrition/MealsManagementScreen";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../hooks/useToast";
@@ -24,6 +26,9 @@ import { LoginFormData } from "../schemas/authSchema";
 import { SignupFormData } from "../schemas/signupSchema";
 import { FIXED_COLORS } from "../theme/colors";
 import { HeaderLogo } from "../components/HeaderLogo";
+
+import { TrainingPlanResponse } from "../types/training";
+import { WorkoutSession } from "../services/workoutsService";
 
 export type RootStackParamList = {
   Login: undefined;
@@ -37,9 +42,11 @@ export type RootStackParamList = {
   History: undefined;
   Calendar: undefined;
   Profile: undefined;
-  WorkoutSetup: undefined;
+  WorkoutSetup: { editPlan?: TrainingPlanResponse } | undefined;
+  WorkoutCreation: { editWorkout?: WorkoutSession } | undefined;
   AllWorkouts: undefined;
   AllTrainingPlans: undefined;
+  EmptyWorkout: undefined;
   MealsManagement: undefined;
 };
 
@@ -105,6 +112,7 @@ export const AppNavigator: React.FC = () => {
               options={({ route }) => ({
                 headerShown: true,
                 title: t("settings.title"),
+                headerBackTitleVisible: false,
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -134,6 +142,7 @@ export const AppNavigator: React.FC = () => {
               options={({ route }) => ({
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
+                headerBackTitleVisible: false,
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -146,6 +155,7 @@ export const AppNavigator: React.FC = () => {
               options={({ route }) => ({
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
+                headerBackTitleVisible: false,
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -158,6 +168,7 @@ export const AppNavigator: React.FC = () => {
               options={({ route }) => ({
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
+                headerBackTitleVisible: false,
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -170,6 +181,7 @@ export const AppNavigator: React.FC = () => {
               options={({ route }) => ({
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
+                headerBackTitleVisible: false,
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -182,6 +194,7 @@ export const AppNavigator: React.FC = () => {
               options={({ route }) => ({
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
+                headerBackTitleVisible: false,
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -194,6 +207,20 @@ export const AppNavigator: React.FC = () => {
               options={({ route }) => ({
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
+                headerBackTitleVisible: false,
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+              })}
+            />
+            <Stack.Screen
+              name="WorkoutCreation"
+              component={WorkoutCreationScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                headerTitle: () => <HeaderLogo />,
+                headerBackTitleVisible: false,
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -206,6 +233,7 @@ export const AppNavigator: React.FC = () => {
               options={({ route }) => ({
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
+                headerBackTitleVisible: false,
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -218,6 +246,20 @@ export const AppNavigator: React.FC = () => {
               options={({ route }) => ({
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
+                headerBackTitleVisible: false,
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+              })}
+            />
+            <Stack.Screen
+              name="EmptyWorkout"
+              component={EmptyWorkoutScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                headerTitle: () => <HeaderLogo />,
+                headerBackTitleVisible: false,
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -230,6 +272,7 @@ export const AppNavigator: React.FC = () => {
               options={({ route }) => ({
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
+                headerBackTitleVisible: false,
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },

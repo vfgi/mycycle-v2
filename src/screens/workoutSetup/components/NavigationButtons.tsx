@@ -11,6 +11,7 @@ interface NavigationButtonsProps {
   isContinueDisabled: boolean;
   isBackDisabled?: boolean;
   isLoading?: boolean;
+  isEditing?: boolean;
 }
 
 export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
@@ -21,6 +22,7 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   isContinueDisabled,
   isBackDisabled = false,
   isLoading = false,
+  isEditing = false,
 }) => {
   const { t } = useTranslation();
   const isFirstStep = currentStep === 0;
@@ -91,8 +93,8 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
           >
             {isLastStep
               ? isLoading
-                ? t("workoutSetup.creatingPlan")
-                : t("workoutSetup.createPlan")
+                ? t("workoutSetup.savingPlan")
+                : t("workoutSetup.save")
               : t("workoutSetup.continue")}
           </Text>
         )}

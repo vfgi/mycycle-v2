@@ -5,18 +5,22 @@ import { useTranslation } from "../../hooks/useTranslation";
 import { useAuth } from "../../contexts/AuthContext";
 import { CustomButton } from "../../components";
 import { PremiumUpgradeDrawer } from "../../components";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../../navigation/AppNavigator";
 
-interface EmptyWorkoutScreenProps {
-  onCreateCustom: () => void;
-}
+type NavigationProp = StackNavigationProp<RootStackParamList>;
 
-export const EmptyWorkoutScreen: React.FC<EmptyWorkoutScreenProps> = ({
-  onCreateCustom,
-}) => {
+export const EmptyWorkoutScreen: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const isPremium = user?.is_premium || false;
+  const navigation = useNavigation<NavigationProp>();
   const [isUpgradeDrawerOpen, setIsUpgradeDrawerOpen] = useState(false);
+
+  const handleCreateCustom = () => {
+    navigation.navigate("WorkoutSetup");
+  };
 
   return (
     <ScrollView
@@ -29,6 +33,7 @@ export const EmptyWorkoutScreen: React.FC<EmptyWorkoutScreenProps> = ({
         paddingHorizontal: 24,
         minHeight: "100%",
       }}
+      backgroundColor={FIXED_COLORS.background[950]}
       showsVerticalScrollIndicator={false}
     >
       <VStack
@@ -96,7 +101,7 @@ export const EmptyWorkoutScreen: React.FC<EmptyWorkoutScreenProps> = ({
 
             <CustomButton
               text={t("workouts.startCreating")}
-              onPress={onCreateCustom}
+              onPress={handleCreateCustom}
               bg={FIXED_COLORS.primary[600]}
             />
           </VStack>

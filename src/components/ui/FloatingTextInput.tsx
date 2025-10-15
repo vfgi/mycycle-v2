@@ -19,7 +19,7 @@ import Animated, {
   Easing,
   ReduceMotion,
 } from "react-native-reanimated";
-import { useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo, useEffect } from "react";
 
 // These should ideally match your StyleSheet to avoid magic numbers
 const DEFAULT_INPUT_HEIGHT = 50; //you can change this according to your liking
@@ -83,6 +83,30 @@ export default function FloatingTextInput(
   );
   const translateYUp = useMemo(() => -inputHeight / 2, [inputHeight]);
   //End
+
+  // Inicializar a animação se o campo já tiver valor
+  useEffect(() => {
+    if (props.value) {
+      animatedValue.value = 1;
+    }
+  }, []);
+
+  // Atualizar animação quando o valor mudar externamente
+  useEffect(() => {
+    if (props.value && animatedValue.value === 0) {
+      animatedValue.value = withTiming(1, {
+        duration: 200,
+        easing: Easing.in(Easing.linear),
+        reduceMotion: motion,
+      });
+    } else if (!props.value && !isFocused && animatedValue.value === 1) {
+      animatedValue.value = withTiming(0, {
+        duration: 200,
+        easing: Easing.out(Easing.linear),
+        reduceMotion: motion,
+      });
+    }
+  }, [props.value]);
 
   const handleFocus = () => {
     setIsFocused(true);

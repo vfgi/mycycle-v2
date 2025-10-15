@@ -81,12 +81,17 @@ export class WorkoutsService {
     id: string,
     workout: Partial<WorkoutSession>
   ): Promise<WorkoutSession> {
+    console.log("✏️ [API] PUT /workouts/" + id, workout);
+
     const response = await apiService.put<WorkoutSession>(
       `/workouts/${id}`,
       workout
     );
 
+    console.log("📥 [API] Update Response:", response);
+
     if (response.error) {
+      console.error("❌ [API] Update Error:", response.error);
       throw new Error(response.error);
     }
 
@@ -94,15 +99,23 @@ export class WorkoutsService {
       throw new Error("Invalid server response");
     }
 
+    console.log("✅ [API] Treino atualizado com sucesso");
     return response.data;
   }
 
   async deleteWorkout(id: string): Promise<void> {
-    const response = await apiService.delete(`/workouts/${id}`);
+    console.log("🗑️ [API] DELETE /workouts/" + id);
+
+    const response = await apiService.delete<void>(`/workouts/${id}`);
+
+    console.log("📥 [API] Delete Response:", response);
 
     if (response.error) {
+      console.error("❌ [API] Delete Error:", response.error);
       throw new Error(response.error);
     }
+
+    console.log("✅ [API] Treino excluído com sucesso");
   }
 }
 

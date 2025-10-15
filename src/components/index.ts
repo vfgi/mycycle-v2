@@ -26,3 +26,4 @@ export { ExpandableCalendarComponent } from "./ui/ExpandableCalendarComponent";
 export { SemicircularProgress } from "./ui/SemicircularProgress";
 export { MacroProgressCard } from "./ui/MacroProgressCard";
 export { WorkoutGoalCard } from "./ui/WorkoutGoalCard";
+export { IconAnimatedButton } from "./ui/IconAnimatedButton";

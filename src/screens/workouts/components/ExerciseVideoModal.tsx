@@ -64,7 +64,6 @@ export const ExerciseVideoModal: React.FC<ExerciseVideoModalProps> = ({
                   height: 300,
                 }}
                 resizeMode="contain"
-                borderRadius="$lg"
               />
 
               {/* Informações adicionais */}

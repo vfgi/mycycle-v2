@@ -28,6 +28,7 @@ interface Step2ExerciseSelectionProps {
   onUpdateReps: (exerciseId: string, reps: string) => void;
   onUpdateWeight: (exerciseId: string, weight: string) => void;
   onRemoveExercise: (exerciseId: string) => void;
+  hideDaySelector?: boolean;
 }
 
 export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
@@ -41,6 +42,7 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
   onUpdateReps,
   onUpdateWeight,
   onRemoveExercise,
+  hideDaySelector = false,
 }) => {
   const { t } = useTranslation();
   const [currentDay, setCurrentDay] = useState(selectedDays[0] || "");
@@ -208,12 +210,6 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
     return getWeekDayLabel(currentDay, t);
   };
 
-  const isAllDaysCompleted = () => {
-    return selectedDays.every(
-      (day) => selectedExercises[day] && selectedExercises[day].length > 0
-    );
-  };
-
   return (
     <VStack space="lg">
       <VStack space="md">
@@ -224,67 +220,71 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
         >
           {t("workoutSetup.selectExercises")}
         </Text>
-        <Text color={FIXED_COLORS.text[300]} fontSize="$sm">
-          {t("workoutSetup.selectExercisesDescription")}
-        </Text>
+        {!hideDaySelector && (
+          <Text color={FIXED_COLORS.text[300]} fontSize="$sm">
+            {t("workoutSetup.selectExercisesDescription")}
+          </Text>
+        )}
       </VStack>
 
       {/* Day Selector */}
-      <VStack space="sm">
-        <Text
-          color={FIXED_COLORS.text[400]}
-          fontSize="$sm"
-          fontWeight="$semibold"
-        >
-          {t("workoutSetup.selectDay")}
-        </Text>
-        <HStack space="xs" flexWrap="wrap">
-          {selectedDays.map((day) => {
-            const dayInfo = WEEK_DAYS.find((d) => d.key === day);
-            const isSelected = currentDay === day;
-            const isCompleted =
-              selectedExercises[day] && selectedExercises[day].length > 0;
+      {!hideDaySelector && (
+        <VStack space="sm">
+          <Text
+            color={FIXED_COLORS.text[400]}
+            fontSize="$sm"
+            fontWeight="$semibold"
+          >
+            {t("workoutSetup.selectDay")}
+          </Text>
+          <HStack space="xs" flexWrap="wrap">
+            {selectedDays.map((day) => {
+              const dayInfo = WEEK_DAYS.find((d) => d.key === day);
+              const isSelected = currentDay === day;
+              const isCompleted =
+                selectedExercises[day] && selectedExercises[day].length > 0;
 
-            return (
-              <Pressable
-                key={day}
-                onPress={() => setCurrentDay(day)}
-                bg={
-                  isSelected
-                    ? FIXED_COLORS.primary[600]
-                    : isCompleted
-                    ? FIXED_COLORS.success[600]
-                    : FIXED_COLORS.background[700]
-                }
-                borderRadius="$lg"
-                px="$3"
-                py="$2"
-              >
-                <HStack alignItems="center" space="xs">
-                  <Text
-                    color={
-                      isSelected || isCompleted
-                        ? FIXED_COLORS.text[950]
-                        : FIXED_COLORS.text[300]
-                    }
-                    fontSize="$sm"
-                    fontWeight="$medium"
-                  >
-                    {dayInfo ? t(dayInfo.labelKey) : day}
-                  </Text>
-                  {isCompleted && (
-                    <Ionicons
-                      name="checkmark-circle"
-                      size={16}
-                      color={FIXED_COLORS.text[950]}
-                    />
-                  )}
-                </HStack>
-              </Pressable>
-            );
-          })}
-        </HStack>
-      </VStack>
+              return (
+                <Pressable
+                  key={day}
+                  onPress={() => setCurrentDay(day)}
+                  bg={
+                    isSelected
+                      ? FIXED_COLORS.primary[600]
+                      : isCompleted
+                      ? FIXED_COLORS.success[600]
+                      : FIXED_COLORS.background[700]
+                  }
+                  borderRadius="$lg"
+                  px="$3"
+                  py="$2"
+                >
+                  <HStack alignItems="center" space="xs">
+                    <Text
+                      color={
+                        isSelected || isCompleted
+                          ? FIXED_COLORS.text[950]
+                          : FIXED_COLORS.text[300]
+                      }
+                      fontSize="$sm"
+                      fontWeight="$medium"
+                    >
+                      {dayInfo ? t(dayInfo.labelKey) : day}
+                    </Text>
+                    {isCompleted && (
+                      <Ionicons
+                        name="checkmark-circle"
+                        size={16}
+                        color={FIXED_COLORS.text[950]}
+                      />
+                    )}
+                  </HStack>
+                </Pressable>
+              );
+            })}
+          </HStack>
+        </VStack>
+      )}
 
       {/* Current Day Title */}
       {currentDay && (

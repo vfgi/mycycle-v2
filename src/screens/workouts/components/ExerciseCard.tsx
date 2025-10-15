@@ -56,7 +56,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
         </Text>
 
         {/* Imagem e informações lado a lado */}
-        <HStack space="md" alignItems="flex-start">
+        <HStack space="md" alignItems="flex-start" flex={1}>
           {/* Imagem do exercício */}
           <Pressable onPress={handleImagePress}>
             <Box
@@ -113,7 +113,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
           </Pressable>
 
           {/* Informações do exercício */}
-          <VStack flex={1} space="sm">
+          <VStack flex={1} space="sm" justifyContent="space-between">
             {/* Grupo muscular */}
             <Text
               color={FIXED_COLORS.primary[400]}
@@ -124,14 +124,19 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
             </Text>
 
             {/* Sets, Reps, Weight */}
-            <HStack space="sm" flexWrap="wrap">
+            <HStack
+              space="sm"
+              flexWrap="wrap"
+              justifyContent={onPlayPress ? "flex-start" : "space-between"}
+            >
               <Box
                 bg={FIXED_COLORS.background[700]}
                 borderRadius="$md"
                 px="$3"
                 py="$2"
                 alignItems="center"
-                minWidth="$10"
+                minWidth={onPlayPress ? "$10" : "$16"}
+                flex={onPlayPress ? undefined : 1}
               >
                 <Text
                   color={FIXED_COLORS.text[400]}
@@ -156,7 +161,8 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
                 px="$3"
                 py="$2"
                 alignItems="center"
-                minWidth="$10"
+                minWidth={onPlayPress ? "$10" : "$16"}
+                flex={onPlayPress ? undefined : 1}
               >
                 <Text
                   color={FIXED_COLORS.text[400]}
@@ -181,7 +187,8 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
                 px="$3"
                 py="$2"
                 alignItems="center"
-                minWidth="$10"
+                minWidth={onPlayPress ? "$10" : "$16"}
+                flex={onPlayPress ? undefined : 1}
               >
                 <Text
                   color={FIXED_COLORS.text[400]}
@@ -202,32 +209,34 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
             </HStack>
           </VStack>
 
-          {/* Botão Play */}
-          <Pressable
-            onPress={() => onPlayPress?.(exercise)}
-            bg={FIXED_COLORS.primary[600]}
-            borderRadius="$full"
-            width={48}
-            height={48}
-            justifyContent="center"
-            alignItems="center"
-            shadowColor={FIXED_COLORS.primary[800]}
-            shadowOffset={{ width: 0, height: 4 }}
-            shadowOpacity={0.3}
-            shadowRadius={8}
-            elevation={4}
-            style={({ pressed }) => ({
-              transform: [{ scale: pressed ? 0.95 : 1 }],
-              opacity: pressed ? 0.8 : 1,
-            })}
-          >
-            <Ionicons
-              name="play"
-              size={24}
-              color={FIXED_COLORS.text[50]}
-              style={{ marginLeft: 2 }}
-            />
-          </Pressable>
+          {/* Botão Play - Condicional */}
+          {onPlayPress && (
+            <Pressable
+              onPress={() => onPlayPress?.(exercise)}
+              bg={FIXED_COLORS.primary[600]}
+              borderRadius="$full"
+              width={48}
+              height={48}
+              justifyContent="center"
+              alignItems="center"
+              shadowColor={FIXED_COLORS.primary[800]}
+              shadowOffset={{ width: 0, height: 4 }}
+              shadowOpacity={0.3}
+              shadowRadius={8}
+              elevation={4}
+              style={({ pressed }) => ({
+                transform: [{ scale: pressed ? 0.95 : 1 }],
+                opacity: pressed ? 0.8 : 1,
+              })}
+            >
+              <Ionicons
+                name="play"
+                size={24}
+                color={FIXED_COLORS.text[50]}
+                style={{ marginLeft: 2 }}
+              />
+            </Pressable>
+          )}
         </HStack>
       </VStack>
 

@@ -48,7 +48,20 @@ class ApiService {
 
       const response = await fetch(url, config);
       clearTimeout(timeoutId);
-      const data = await response.json();
+
+      // Tentar fazer parse do JSON, mas se falhar (ex: 204 No Content), retornar null
+      let data = null;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        try {
+          data = await response.json();
+        } catch (e) {
+          // Se falhar o parse, deixa data como null
+          console.log(
+            "⚠️ [ApiService] Response sem JSON body (provavelmente 204)"
+          );
+        }
+      }
 
       if (!response.ok) {
         // Se for erro 401 (Unauthorized), tentar refresh token primeiro

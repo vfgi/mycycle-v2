@@ -1,19 +1,8 @@
-import React, { useState, useEffect } from "react";
-import {
-  VStack,
-  Text,
-  HStack,
-  ScrollView,
-  Accordion,
-  AccordionItem,
-  AccordionHeader,
-  AccordionTrigger,
-  AccordionTitleText,
-  AccordionContent,
-  Spinner,
-} from "@gluestack-ui/themed";
-import { Image } from "react-native";
+import React, { useState, useCallback } from "react";
+import { VStack, Text, Spinner } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { FIXED_COLORS } from "../../theme/colors";
 import { useTranslation } from "../../hooks/useTranslation";
 import { SafeContainer } from "../../components";
@@ -22,25 +11,43 @@ import {
   WorkoutSession,
 } from "../../services/workoutsService";
 import { useToast } from "../../hooks/useToast";
-import { ExerciseCard } from "./components/ExerciseCard";
+import { RootStackParamList } from "../../navigation/AppNavigator";
+import {
+  WorkoutHeader,
+  WorkoutsList,
+  DeleteWorkoutModal,
+} from "./components/workouts";
+
+type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 export const AllWorkoutsScreen: React.FC = () => {
   const { t } = useTranslation();
-  const { showError } = useToast();
+  const { showError, showSuccess } = useToast();
+  const navigation = useNavigation<NavigationProp>();
   const [workouts, setWorkouts] = useState<WorkoutSession[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [workoutToDelete, setWorkoutToDelete] = useState<WorkoutSession | null>(
+    null
+  );
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  useEffect(() => {
-    loadWorkouts();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      console.log("🔄 [FOCUS] AllWorkoutsScreen ganhou foco, recarregando...");
+      loadWorkouts();
+    }, [])
+  );
 
   const loadWorkouts = async () => {
     try {
       setIsLoading(true);
+      console.log("📥 [GET] Carregando treinos...");
       const workoutsData = await workoutsService.getWorkouts();
+      console.log("✅ [GET] Treinos carregados:", workoutsData.length);
       setWorkouts(workoutsData || []);
     } catch (error) {
-      console.error("Erro ao carregar treinos:", error);
+      console.error("❌ [GET ERROR] Erro ao carregar treinos:", error);
       showError(t("workouts.loadWorkoutsError"));
       setWorkouts([]);
     } finally {
@@ -50,14 +57,17 @@ export const AllWorkoutsScreen: React.FC = () => {
 
   const handleExercisePlay = (exercise: any) => {
     console.log("🎯 [EXERCISE] Playing exercise:", exercise.name);
-    // TODO: Implementar navegação para tela de execução do exercício
+  };
+
+  const handleCreateWorkout = () => {
+    console.log("➕ [CREATE] Navegando para criação de treino");
+    navigation.navigate("WorkoutCreation");
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const { language } = useTranslation();
 
-    // Mapear idiomas para locales
     const localeMap: { [key: string]: string } = {
       ptBR: "pt-BR",
       ptPT: "pt-PT",
@@ -86,49 +96,56 @@ export const AllWorkoutsScreen: React.FC = () => {
     return formatDate(lastDate);
   };
 
+  const handleEditWorkout = (workout: WorkoutSession) => {
+    console.log("✏️ [EDIT] Editando treino:", workout.id);
+    navigation.navigate("WorkoutCreation", { editWorkout: workout });
+  };
+
+  const handleDeleteWorkout = (workout: WorkoutSession) => {
+    console.log("🗑️ [DELETE] Preparando para excluir treino:", workout.id);
+    setWorkoutToDelete(workout);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDeleteWorkout = async () => {
+    if (!workoutToDelete) return;
+
+    try {
+      setIsDeleting(true);
+      console.log("🗑️ [DELETE] Excluindo treino:", workoutToDelete.id);
+
+      await workoutsService.deleteWorkout(workoutToDelete.id);
+
+      console.log("✅ [DELETE] Treino excluído! Recarregando lista...");
+
+      await loadWorkouts();
+
+      showSuccess(t("workouts.workoutDeletedSuccess"));
+      setDeleteModalOpen(false);
+      setWorkoutToDelete(null);
+    } catch (error) {
+      console.error("❌ [DELETE ERROR] Erro ao excluir treino:", error);
+      showError(t("workouts.deleteWorkoutError"));
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const closeDeleteModal = () => {
+    if (isDeleting) return;
+    setDeleteModalOpen(false);
+    setWorkoutToDelete(null);
+  };
+
   if (isLoading) {
     return (
       <SafeContainer paddingTop={0} paddingBottom={0} paddingHorizontal={0}>
         <VStack flex={1}>
-          <Image
-            source={require("../../../assets/images/exercises/gym-cardio.jpg")}
-            style={{
-              width: "100%",
-              height: 200,
-              opacity: 0.4,
-            }}
-            resizeMode="cover"
+          <WorkoutHeader
+            title={t("workouts.workoutsList")}
+            description={t("workouts.workoutsDescription")}
+            onCreateWorkout={handleCreateWorkout}
           />
-
-          <VStack
-            position="absolute"
-            top={0}
-            left={0}
-            right={0}
-            height={200}
-            alignItems="center"
-            justifyContent="center"
-            bg="rgba(0, 0, 0, 0.3)"
-          >
-            <Text
-              color={FIXED_COLORS.background[0]}
-              fontSize="$3xl"
-              fontWeight="$bold"
-              textAlign="center"
-            >
-              {t("workouts.workoutsList")}
-            </Text>
-            <Text
-              color={FIXED_COLORS.background[100]}
-              fontSize="$sm"
-              textAlign="center"
-              lineHeight="$sm"
-              px="$4"
-              mt="$2"
-            >
-              {t("workouts.workoutsDescription")}
-            </Text>
-          </VStack>
 
           <VStack flex={1} justifyContent="center" alignItems="center" p="$6">
             <Spinner size="large" color={FIXED_COLORS.primary[400]} />
@@ -145,45 +162,11 @@ export const AllWorkoutsScreen: React.FC = () => {
     return (
       <SafeContainer paddingTop={0} paddingBottom={0} paddingHorizontal={0}>
         <VStack flex={1}>
-          <Image
-            source={require("../../../assets/images/exercises/gym-cardio.jpg")}
-            style={{
-              width: "100%",
-              height: 200,
-              opacity: 0.4,
-            }}
-            resizeMode="cover"
+          <WorkoutHeader
+            title={t("workouts.workoutsList")}
+            description={t("workouts.workoutsDescription")}
+            onCreateWorkout={handleCreateWorkout}
           />
-
-          <VStack
-            position="absolute"
-            top={0}
-            left={0}
-            right={0}
-            height={200}
-            alignItems="center"
-            justifyContent="center"
-            bg="rgba(0, 0, 0, 0.3)"
-          >
-            <Text
-              color={FIXED_COLORS.background[0]}
-              fontSize="$3xl"
-              fontWeight="$bold"
-              textAlign="center"
-            >
-              {t("workouts.workoutsList")}
-            </Text>
-            <Text
-              color={FIXED_COLORS.background[100]}
-              fontSize="$sm"
-              textAlign="center"
-              lineHeight="$sm"
-              px="$4"
-              mt="$2"
-            >
-              {t("workouts.workoutsDescription")}
-            </Text>
-          </VStack>
 
           <VStack
             flex={1}
@@ -223,174 +206,28 @@ export const AllWorkoutsScreen: React.FC = () => {
   return (
     <SafeContainer paddingTop={0} paddingBottom={0} paddingHorizontal={0}>
       <VStack flex={1}>
-        <Image
-          source={require("../../../assets/images/exercises/gym-cardio.jpg")}
-          style={{
-            width: "100%",
-            height: 200,
-            opacity: 0.4,
-          }}
-          resizeMode="cover"
+        <WorkoutHeader
+          title={t("workouts.workoutsList")}
+          description={t("workouts.workoutsDescription")}
+          onCreateWorkout={handleCreateWorkout}
         />
 
-        <VStack
-          position="absolute"
-          top={0}
-          left={0}
-          right={0}
-          height={200}
-          alignItems="center"
-          justifyContent="center"
-          bg="rgba(0, 0, 0, 0.3)"
-        >
-          <Text
-            color={FIXED_COLORS.background[0]}
-            fontSize="$3xl"
-            fontWeight="$bold"
-            textAlign="center"
-          >
-            {t("workouts.workoutsList")}
-          </Text>
-          <Text
-            color={FIXED_COLORS.background[100]}
-            fontSize="$sm"
-            textAlign="center"
-            lineHeight="$sm"
-            px="$4"
-            mt="$2"
-          >
-            {t("workouts.workoutsDescription")}
-          </Text>
-        </VStack>
+        <WorkoutsList
+          workouts={workouts}
+          getLastWorkoutDate={getLastWorkoutDate}
+          isWorkoutCompleted={isWorkoutCompleted}
+          onEditWorkout={handleEditWorkout}
+          onDeleteWorkout={handleDeleteWorkout}
+          onPlayExercise={handleExercisePlay}
+        />
 
-        <ScrollView flex={1} showsVerticalScrollIndicator={false}>
-          <VStack px="$2" pt="$4" pb="$8" space="md">
-            <Accordion
-              size="md"
-              variant="unfilled"
-              type="multiple"
-              isCollapsible={true}
-              isDisabled={false}
-            >
-              {(workouts || []).map((workout, workoutIndex) => (
-                <AccordionItem
-                  key={workout.id}
-                  value={`workout-${workout.id}`}
-                  bg={FIXED_COLORS.background[800]}
-                  borderRadius="$lg"
-                  borderWidth={1}
-                  borderColor={FIXED_COLORS.background[700]}
-                  mb="$3"
-                >
-                  <AccordionHeader>
-                    <AccordionTrigger>
-                      {({ isExpanded }: { isExpanded: boolean }) => (
-                        <HStack flex={1} alignItems="center" space="sm">
-                          <Ionicons
-                            name={
-                              isWorkoutCompleted(workout)
-                                ? "checkmark-circle"
-                                : "time-outline"
-                            }
-                            size={20}
-                            color={
-                              isWorkoutCompleted(workout)
-                                ? FIXED_COLORS.success[400]
-                                : FIXED_COLORS.primary[400]
-                            }
-                          />
-                          <VStack flex={1} space="xs">
-                            <AccordionTitleText
-                              color={FIXED_COLORS.text[100]}
-                              fontSize="$lg"
-                              fontWeight="$bold"
-                            >
-                              {workout.name}
-                            </AccordionTitleText>
-                            <HStack alignItems="center" space="md">
-                              <Text
-                                color={FIXED_COLORS.text[300]}
-                                fontSize="$sm"
-                                fontWeight="$medium"
-                              >
-                                {getLastWorkoutDate(workout)}
-                              </Text>
-                              <Text
-                                color={FIXED_COLORS.text[400]}
-                                fontSize="$sm"
-                              >
-                                •
-                              </Text>
-                              <Text
-                                color={FIXED_COLORS.text[300]}
-                                fontSize="$sm"
-                                fontWeight="$medium"
-                              >
-                                {workout.exercises.length}{" "}
-                                {t("workouts.exercises")}
-                              </Text>
-                            </HStack>
-                          </VStack>
-                          <Ionicons
-                            name={isExpanded ? "chevron-up" : "chevron-down"}
-                            size={20}
-                            color={FIXED_COLORS.text[400]}
-                          />
-                        </HStack>
-                      )}
-                    </AccordionTrigger>
-                  </AccordionHeader>
-
-                  <AccordionContent>
-                    <VStack space="md">
-                      {workout.exercises.length > 0 ? (
-                        workout.exercises.map((exercise, exerciseIndex) => (
-                          <ExerciseCard
-                            key={exercise.id || exerciseIndex}
-                            exercise={{
-                              name: exercise.name,
-                              muscle_group: exercise.muscle_group,
-                              sets: exercise.sets,
-                              reps: exercise.reps,
-                              weight: exercise.weight,
-                              imageURL: exercise.imageURL,
-                              videoURL: exercise.videoURL,
-                              category: exercise.category || "",
-                              difficulty: exercise.difficulty || "",
-                              equipment: exercise.equipment || "",
-                              order: exercise.order || exerciseIndex,
-                            }}
-                            onPlayPress={() => handleExercisePlay(exercise)}
-                          />
-                        ))
-                      ) : (
-                        <VStack
-                          alignItems="center"
-                          justifyContent="center"
-                          py="$8"
-                          space="md"
-                        >
-                          <Ionicons
-                            name="barbell-outline"
-                            size={48}
-                            color={FIXED_COLORS.text[400]}
-                          />
-                          <Text
-                            color={FIXED_COLORS.text[400]}
-                            fontSize="$md"
-                            textAlign="center"
-                          >
-                            {t("workouts.noExercisesInWorkout")}
-                          </Text>
-                        </VStack>
-                      )}
-                    </VStack>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </VStack>
-        </ScrollView>
+        <DeleteWorkoutModal
+          isOpen={deleteModalOpen}
+          workoutName={workoutToDelete?.name || ""}
+          isDeleting={isDeleting}
+          onClose={closeDeleteModal}
+          onConfirm={confirmDeleteWorkout}
+        />
       </VStack>
     </SafeContainer>
   );

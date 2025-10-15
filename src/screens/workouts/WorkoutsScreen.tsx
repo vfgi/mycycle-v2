@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { VStack, Text } from "@gluestack-ui/themed";
 import { FIXED_COLORS } from "../../theme/colors";
 import { useTranslation } from "../../hooks/useTranslation";
-import { SafeContainer, AnimatedTabs } from "../../components";
+import { SafeContainer, AnimatedTabs, AdBanner } from "../../components";
 import { EmptyWorkoutScreen } from "./EmptyWorkoutScreen";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { RootStackParamList } from "../../navigation/AppNavigator";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { trainingService } from "../../services/trainingService";
@@ -14,11 +14,14 @@ import { MuscleCards } from "./components/MuscleCards";
 import { ExerciseList } from "./components/ExerciseList";
 import { PlanExercisesList } from "./components/PlanExercisesList";
 import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "../../contexts/AuthContext";
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 export const WorkoutsScreen: React.FC = () => {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const isPremium = user?.is_premium || false;
   const [trainingPlans, setTrainingPlans] = useState<TrainingPlanResponse[]>(
     []
   );
@@ -26,9 +29,12 @@ export const WorkoutsScreen: React.FC = () => {
   const [todayExercises, setTodayExercises] = useState<TrainingExercise[]>([]);
   const navigation = useNavigation<NavigationProp>();
 
-  useEffect(() => {
-    loadTrainingPlans();
-  }, []);
+  // Carregar planos quando a tela receber foco
+  useFocusEffect(
+    useCallback(() => {
+      loadTrainingPlans();
+    }, [])
+  );
 
   const loadTrainingPlans = async () => {
     try {
@@ -81,10 +87,6 @@ export const WorkoutsScreen: React.FC = () => {
     if (!activePlan) return [];
 
     return activePlan.workouts;
-  };
-
-  const handleCreateCustom = () => {
-    navigation.navigate("WorkoutSetup");
   };
 
   const handleViewAllWorkouts = () => {
@@ -153,12 +155,19 @@ export const WorkoutsScreen: React.FC = () => {
   if (trainingPlans.length === 0) {
     return (
       <SafeContainer paddingTop={0} paddingBottom={0} paddingHorizontal={0}>
-        <EmptyWorkoutScreen onCreateCustom={handleCreateCustom} />
+        <EmptyWorkoutScreen />
       </SafeContainer>
     );
   }
   return (
     <SafeContainer paddingTop={0} paddingBottom={0} paddingHorizontal={0}>
+      {/* Banner de Propaganda - Apenas para não premium */}
+      {!isPremium && (
+        <VStack pb="$2" px="$4">
+          <AdBanner />
+        </VStack>
+      )}
+
       {/* Card de Estatísticas */}
       <WorkoutStatsCard
         dailyGoal={mockStats.dailyGoal}
