@@ -23,21 +23,21 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
         fontSize="$sm"
         fontWeight="$semibold"
       >
-        {t("workoutSetup.step")} {currentStep} {t("workoutSetup.of")}{" "}
+        {t("workoutSetup.step")} {currentStep + 1} {t("workoutSetup.of")}{" "}
         {totalSteps}
       </Text>
       <HStack space="xs">
         {Array.from({ length: totalSteps }, (_, index) => (
           <Pressable
             key={index}
-            onPress={() => onStepPress?.(index + 1)}
+            onPress={() => onStepPress?.(index)}
             disabled={!onStepPress}
           >
             <VStack
               w="$3"
               h="$1"
               bg={
-                index < currentStep
+                index <= currentStep
                   ? FIXED_COLORS.primary[600]
                   : FIXED_COLORS.background[600]
               }

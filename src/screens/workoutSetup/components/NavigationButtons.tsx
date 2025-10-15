@@ -1,5 +1,5 @@
 import React from "react";
-import { HStack, Pressable, Text } from "@gluestack-ui/themed";
+import { HStack, Pressable, Text, Spinner } from "@gluestack-ui/themed";
 import { FIXED_COLORS } from "../../../theme/colors";
 import { useTranslation } from "../../../hooks/useTranslation";
 
@@ -10,6 +10,7 @@ interface NavigationButtonsProps {
   onContinue: () => void;
   isContinueDisabled: boolean;
   isBackDisabled?: boolean;
+  isLoading?: boolean;
 }
 
 export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
@@ -19,10 +20,11 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   onContinue,
   isContinueDisabled,
   isBackDisabled = false,
+  isLoading = false,
 }) => {
   const { t } = useTranslation();
-  const isFirstStep = currentStep === 1;
-  const isLastStep = currentStep === totalSteps;
+  const isFirstStep = currentStep === 0;
+  const isLastStep = currentStep === totalSteps - 1;
 
   return (
     <HStack space="md" justifyContent="space-between">
@@ -75,15 +77,25 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
         alignItems="center"
         opacity={isContinueDisabled ? 0.5 : 1}
       >
-        <Text
-          color={
-            isContinueDisabled ? FIXED_COLORS.text[600] : FIXED_COLORS.text[50]
-          }
-          fontSize="$md"
-          fontWeight="$semibold"
-        >
-          {isLastStep ? t("workoutSetup.finish") : t("workoutSetup.continue")}
-        </Text>
+        {isLoading ? (
+          <Spinner color={FIXED_COLORS.text[50]} />
+        ) : (
+          <Text
+            color={
+              isContinueDisabled
+                ? FIXED_COLORS.text[600]
+                : FIXED_COLORS.text[50]
+            }
+            fontSize="$md"
+            fontWeight="$semibold"
+          >
+            {isLastStep
+              ? isLoading
+                ? t("workoutSetup.creatingPlan")
+                : t("workoutSetup.createPlan")
+              : t("workoutSetup.continue")}
+          </Text>
+        )}
       </Pressable>
     </HStack>
   );

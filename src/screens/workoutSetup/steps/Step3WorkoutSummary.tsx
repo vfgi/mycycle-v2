@@ -2,10 +2,9 @@ import React from "react";
 import { VStack, Text, HStack, ScrollView } from "@gluestack-ui/themed";
 import { FIXED_COLORS } from "../../../theme/colors";
 import { useTranslation } from "../../../hooks/useTranslation";
-import { WEEK_DAYS, getWeekDayLabel } from "../../../utils/weekDays";
+import { getWeekDayLabel } from "../../../utils/weekDays";
 import { Exercise } from "../../../types/exercises";
 import { SelectedExerciseItem } from "../components";
-import { EXERCISE_CATEGORIES } from "../data/exerciseCategories";
 
 interface Step3WorkoutSummaryProps {
   selectedDays: string[];
@@ -19,6 +18,7 @@ interface Step3WorkoutSummaryProps {
   onUpdateReps: (exerciseId: string, reps: string) => void;
   onUpdateWeight: (exerciseId: string, weight: string) => void;
   onRemoveExercise: (exerciseId: string) => void;
+  generateWorkoutName: (day: string) => string;
 }
 
 export const Step3WorkoutSummary: React.FC<Step3WorkoutSummaryProps> = ({
@@ -30,14 +30,9 @@ export const Step3WorkoutSummary: React.FC<Step3WorkoutSummaryProps> = ({
   onUpdateReps,
   onUpdateWeight,
   onRemoveExercise,
+  generateWorkoutName,
 }) => {
   const { t } = useTranslation();
-
-  const getMuscleGroupNames = (muscleGroups: string[]) => {
-    return muscleGroups.map((group) => {
-      return t(`workoutSetup.muscleGroups.${group}`);
-    });
-  };
 
   return (
     <VStack space="lg" flex={1}>
@@ -59,8 +54,7 @@ export const Step3WorkoutSummary: React.FC<Step3WorkoutSummaryProps> = ({
         <VStack space="lg">
           {selectedDays.map((day) => {
             const dayExercises = selectedWorkoutExercises[day] || [];
-            const dayMuscleGroups = selectedExercises[day] || [];
-            const muscleGroupNames = getMuscleGroupNames(dayMuscleGroups);
+            const workoutName = generateWorkoutName(day);
 
             return (
               <VStack key={day} space="md">
@@ -87,19 +81,19 @@ export const Step3WorkoutSummary: React.FC<Step3WorkoutSummaryProps> = ({
                       >
                         {getWeekDayLabel(day, t)}
                       </Text>
-                      <HStack space="md" alignItems="center">
-                        <Text color={FIXED_COLORS.text[400]} fontSize="$sm">
-                          {dayExercises.length}{" "}
-                          {dayExercises.length === 1
-                            ? t("workoutSetup.exercise")
-                            : t("workoutSetup.exercises")}
-                        </Text>
-                        {muscleGroupNames.length > 0 && (
-                          <Text color={FIXED_COLORS.text[500]} fontSize="$sm">
-                            {muscleGroupNames.join(", ")}
-                          </Text>
-                        )}
-                      </HStack>
+                      <Text
+                        color={FIXED_COLORS.text[300]}
+                        fontSize="$md"
+                        fontWeight="$medium"
+                      >
+                        {workoutName}
+                      </Text>
+                      <Text color={FIXED_COLORS.text[400]} fontSize="$sm">
+                        {dayExercises.length}{" "}
+                        {dayExercises.length === 1
+                          ? t("workoutSetup.exercise")
+                          : t("workoutSetup.exercises")}
+                      </Text>
                     </VStack>
                   </HStack>
                 </VStack>
@@ -126,7 +120,6 @@ export const Step3WorkoutSummary: React.FC<Step3WorkoutSummaryProps> = ({
                         onRemove={() => onRemoveExercise(exercise.id)}
                         onSwap={() => {
                           // TODO: Implementar troca de exercício
-                          console.log("Swap exercise:", exercise.id);
                         }}
                       />
                     ))}

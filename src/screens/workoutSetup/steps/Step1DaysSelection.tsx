@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { VStack, Text, HStack, Pressable } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { FIXED_COLORS } from "../../../theme/colors";
@@ -27,14 +27,20 @@ export const Step1DaysSelection: React.FC<Step1DaysSelectionProps> = ({
   const isDaySelected = (dayKey: string) => selectedDays.includes(dayKey);
 
   return (
-    <VStack space="md">
-      <Text color={FIXED_COLORS.text[50]} fontSize="$lg" fontWeight="$semibold">
-        {t("workoutSetup.selectDays")}
-      </Text>
+    <VStack space="lg" flex={1}>
+      <VStack space="md">
+        <Text
+          color={FIXED_COLORS.text[50]}
+          fontSize="$lg"
+          fontWeight="$semibold"
+        >
+          {t("workoutSetup.selectDays")}
+        </Text>
 
-      <Text color={FIXED_COLORS.text[300]} fontSize="$sm">
-        {t("workoutSetup.selectDaysDescription")}
-      </Text>
+        <Text color={FIXED_COLORS.text[300]} fontSize="$sm">
+          {t("workoutSetup.selectDaysDescription")}
+        </Text>
+      </VStack>
 
       <VStack bg={FIXED_COLORS.background[800]} borderRadius="$lg" space="xs">
         {WEEK_DAYS.map((day) => (

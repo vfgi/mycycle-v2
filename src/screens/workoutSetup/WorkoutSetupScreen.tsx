@@ -1,15 +1,24 @@
 import React, { useState } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, Alert } from "react-native";
 import { VStack } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { SafeContainer } from "../../components";
 import { StepIndicator, SetupHeader, NavigationButtons } from "./components";
 import {
+  Step0PlanInfo,
   Step1DaysSelection,
   Step2ExerciseSelection,
   Step3WorkoutSummary,
 } from "./steps";
 import { Exercise } from "../../types/exercises";
+import { trainingService } from "../../services/trainingService";
+import {
+  CreateTrainingPlanRequest,
+  TrainingExercise,
+} from "../../types/training";
+import { useTranslation } from "../../hooks/useTranslation";
+import { useToast } from "../../hooks/useToast";
+import { MUSCLE_GROUP_MAPPING } from "./data/muscleGroups";
 
 interface WorkoutSetupData {
   daysPerWeek: number;
@@ -18,6 +27,11 @@ interface WorkoutSetupData {
 
 export const WorkoutSetupScreen: React.FC = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
+  const { showSuccess, showError } = useToast();
+
+  const [planName, setPlanName] = useState("");
+  const [planDescription, setPlanDescription] = useState("");
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [selectedExercises, setSelectedExercises] = useState<
     Record<string, string[]>
@@ -28,8 +42,9 @@ export const WorkoutSetupScreen: React.FC = () => {
   const [exerciseConfigs, setExerciseConfigs] = useState<
     Record<string, { sets: string; reps: string; weight: string }>
   >({});
-  const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 3;
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isCreating, setIsCreating] = useState(false);
+  const totalSteps = 4; // Steps: 0=Plano, 1=Dias, 2=Exercícios, 3=Resumo
 
   const handleDaysChange = (days: string[]) => {
     setSelectedDays(days);
@@ -53,6 +68,41 @@ export const WorkoutSetupScreen: React.FC = () => {
         return newWorkoutExercises;
       });
     }
+  };
+
+  // Função para gerar nome do treino baseado nos grupos musculares dos exercícios selecionados
+  const generateWorkoutName = (day: string): string => {
+    const dayExercises = selectedWorkoutExercises[day] || [];
+    if (dayExercises.length === 0) return `Treino ${day}`;
+
+    // Extrair grupos musculares únicos dos exercícios selecionados
+    const uniqueMuscleGroups = Array.from(
+      new Set(dayExercises.map((exercise) => exercise.muscle_group))
+    );
+
+    // Mapear para nomes em português
+    const muscleGroupNames = uniqueMuscleGroups.map((group) => {
+      // Mapear os nomes que vêm da API para o formato do MUSCLE_GROUP_MAPPING
+      const mappingKey = group
+        .toLowerCase()
+        .replace("peitoral", "chest")
+        .replace("costas", "back")
+        .replace("ombros", "shoulders")
+        .replace("bíceps", "biceps")
+        .replace("triceps", "triceps")
+        .replace("pernas", "legs")
+        .replace("glúteos", "glutes")
+        .replace("gluteos", "glutes")
+        .replace("panturrilhas", "calves")
+        .replace("antebraços", "forearms")
+        .replace("antebracos", "forearms")
+        .replace("trapézio", "traps")
+        .replace("trapezio", "traps");
+
+      return MUSCLE_GROUP_MAPPING[mappingKey] || group;
+    });
+
+    return muscleGroupNames.join(" - ");
   };
 
   const handleExercisesChange = (day: string, categories: string[]) => {
@@ -110,27 +160,95 @@ export const WorkoutSetupScreen: React.FC = () => {
     });
   };
 
-  const handleContinue = () => {
-    if (currentStep < totalSteps) {
+  const handleContinue = async () => {
+    if (currentStep < totalSteps - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Dados para API - Incluir configurações diretamente nos exercícios
-      const apiData = {
-        days: selectedDays,
-        exercises: Object.keys(selectedWorkoutExercises).reduce((acc, day) => {
-          acc[day] = selectedWorkoutExercises[day].map((exercise) => ({
-            ...exercise,
-            sets: exerciseConfigs[exercise.id]?.sets || "3",
-            reps: exerciseConfigs[exercise.id]?.reps || "12",
-            weight: exerciseConfigs[exercise.id]?.weight || "0",
-          }));
-          return acc;
-        }, {} as Record<string, any[]>),
-        muscleGroups: selectedExercises,
+      await createTrainingPlan();
+    }
+  };
+
+  // Mapear categorias para os valores aceitos pela API
+  const mapCategory = (category: string): string => {
+    const categoryMap: Record<string, string> = {
+      Forca: "Força",
+      Força: "Força",
+      Hipertrofia: "Hipertrofia",
+      Resistencia: "Resistência",
+      Resistência: "Resistência",
+      Cardio: "Cardio",
+      Flexibilidade: "Flexibilidade",
+      Core: "Core",
+      Funcional: "Funcional",
+    };
+    return categoryMap[category] || "Força"; // Default para Força
+  };
+
+  // Mapear dificuldades para os valores aceitos pela API
+  const mapDifficulty = (difficulty: string): string => {
+    const difficultyMap: Record<string, string> = {
+      Iniciante: "Iniciante",
+      Intermediario: "Intermediário",
+      Intermediário: "Intermediário",
+      Avancado: "Avançado",
+      Avançado: "Avançado",
+    };
+    return difficultyMap[difficulty] || "Intermediário"; // Default para Intermediário
+  };
+
+  const createTrainingPlan = async () => {
+    try {
+      setIsCreating(true);
+
+      const workouts = selectedDays.map((dayKey) => {
+        const exercises: TrainingExercise[] =
+          selectedWorkoutExercises[dayKey]?.map((exercise, index) => {
+            const mappedCategory = mapCategory(exercise.category);
+            const mappedDifficulty = mapDifficulty(exercise.difficulty);
+
+            return {
+              name: exercise.name,
+              category: mappedCategory,
+              muscle_group: exercise.muscle_group,
+              difficulty: mappedDifficulty,
+              equipment: exercise.equipment,
+              sets: parseInt(exerciseConfigs[exercise.id]?.sets || "3"),
+              reps: parseInt(exerciseConfigs[exercise.id]?.reps || "12"),
+              weight: parseFloat(exerciseConfigs[exercise.id]?.weight || "0"),
+              order: index + 1,
+              instructions: exercise.instructions,
+              videoURL: exercise.imageURL,
+              imageURL: exercise.previewImage,
+            };
+          }) || [];
+
+        const workoutName = generateWorkoutName(dayKey);
+
+        return {
+          name: workoutName,
+          description: "",
+          weekDays: [dayKey],
+          exercises,
+        };
+      });
+
+      const trainingPlanData: CreateTrainingPlanRequest = {
+        name: planName,
+        description: planDescription,
+        is_active: true,
+        workouts,
       };
 
-      // TODO: Implementar lógica para criar o plano de treino
+      await trainingService.createTrainingPlan(trainingPlanData);
+
+      showSuccess(t("workoutSetup.planCreated"));
+
       navigation.goBack();
+    } catch (error) {
+      console.error("Erro ao criar plano de treino:", error);
+      showError(t("workoutSetup.planCreationError"));
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -139,13 +257,15 @@ export const WorkoutSetupScreen: React.FC = () => {
   };
 
   const handleBack = () => {
-    if (currentStep > 1) {
+    if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
   };
 
   const isStepValid = () => {
     switch (currentStep) {
+      case 0:
+        return planName.trim().length > 0;
       case 1:
         return selectedDays.length > 0;
       case 2:
@@ -166,6 +286,15 @@ export const WorkoutSetupScreen: React.FC = () => {
 
   const renderCurrentStep = () => {
     switch (currentStep) {
+      case 0:
+        return (
+          <Step0PlanInfo
+            planName={planName}
+            planDescription={planDescription}
+            onPlanNameChange={setPlanName}
+            onPlanDescriptionChange={setPlanDescription}
+          />
+        );
       case 1:
         return (
           <Step1DaysSelection
@@ -199,6 +328,7 @@ export const WorkoutSetupScreen: React.FC = () => {
             onUpdateReps={handleUpdateReps}
             onUpdateWeight={handleUpdateWeight}
             onRemoveExercise={handleRemoveExercise}
+            generateWorkoutName={generateWorkoutName}
           />
         );
       default:
@@ -222,7 +352,8 @@ export const WorkoutSetupScreen: React.FC = () => {
             totalSteps={totalSteps}
             onBack={handleBack}
             onContinue={handleContinue}
-            isContinueDisabled={!isStepValid()}
+            isContinueDisabled={!isStepValid() || isCreating}
+            isLoading={isCreating}
           />
         </VStack>
       </ScrollView>

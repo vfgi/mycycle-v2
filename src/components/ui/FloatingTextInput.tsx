@@ -40,6 +40,7 @@ type FloatingTextInputProps = {
   isError?: boolean;
   errorMessage?: string;
   reduceMotion?: "never" | "always" | "system";
+  height?: number;
 };
 
 export default function FloatingTextInput(

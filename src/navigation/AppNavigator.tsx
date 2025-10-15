@@ -13,6 +13,8 @@ import { HistoryScreen } from "../screens/history/HistoryScreen";
 import { CalendarScreen } from "../screens/calendar/CalendarScreen";
 import { ProfileScreen } from "../screens/profile/ProfileScreen";
 import { WorkoutSetupScreen } from "../screens/workoutSetup";
+import { AllWorkoutsScreen } from "../screens/workouts/AllWorkoutsScreen";
+import { AllTrainingPlansScreen } from "../screens/workouts/AllTrainingPlansScreen";
 import { MealsManagementScreen } from "../screens/nutrition/MealsManagementScreen";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../hooks/useToast";
@@ -36,6 +38,8 @@ export type RootStackParamList = {
   Calendar: undefined;
   Profile: undefined;
   WorkoutSetup: undefined;
+  AllWorkouts: undefined;
+  AllTrainingPlans: undefined;
   MealsManagement: undefined;
 };
 
@@ -187,6 +191,30 @@ export const AppNavigator: React.FC = () => {
             <Stack.Screen
               name="WorkoutSetup"
               component={WorkoutSetupScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                headerTitle: () => <HeaderLogo />,
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+              })}
+            />
+            <Stack.Screen
+              name="AllWorkouts"
+              component={AllWorkoutsScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                headerTitle: () => <HeaderLogo />,
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+              })}
+            />
+            <Stack.Screen
+              name="AllTrainingPlans"
+              component={AllTrainingPlansScreen}
               options={({ route }) => ({
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,

@@ -62,7 +62,7 @@ export const MealDetailsDrawer: React.FC<MealDetailsDrawerProps> = ({
   };
 
   return (
-    <CustomDrawer isOpen={isOpen} onClose={onClose} size="lg">
+    <CustomDrawer isOpen={isOpen} onClose={onClose} minHeight={650}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <VStack space="lg">
           {/* Header com imagem */}

@@ -21,6 +21,7 @@ export { DailyContentCard } from "./DailyContentCard";
 export { default as FloatingTextInput } from "./ui/FloatingTextInput";
 export { default as AnimatedTabs } from "./ui/AnimatedTabs";
 export { default as Typography } from "./ui/Typography";
+export { default as AnimatedProgressBar } from "./ui/AnimatedProgressBar";
 export { ExpandableCalendarComponent } from "./ui/ExpandableCalendarComponent";
 export { SemicircularProgress } from "./ui/SemicircularProgress";
 export { MacroProgressCard } from "./ui/MacroProgressCard";

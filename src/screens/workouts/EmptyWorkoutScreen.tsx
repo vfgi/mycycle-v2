@@ -1,39 +1,22 @@
 import React, { useState } from "react";
-import { VStack, HStack, Text, Image, ScrollView } from "@gluestack-ui/themed";
-import { TouchableOpacity } from "react-native";
+import { VStack, Text, Image, ScrollView } from "@gluestack-ui/themed";
 import { FIXED_COLORS } from "../../theme/colors";
 import { useTranslation } from "../../hooks/useTranslation";
 import { useAuth } from "../../contexts/AuthContext";
 import { CustomButton } from "../../components";
 import { PremiumUpgradeDrawer } from "../../components";
-import { useNavigation } from "@react-navigation/native";
-import { CompositeNavigationProp } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../navigation/AppNavigator";
-
-type NavigationProp = CompositeNavigationProp<
-  StackNavigationProp<RootStackParamList, "Main">,
-  StackNavigationProp<RootStackParamList>
->;
 
 interface EmptyWorkoutScreenProps {
   onCreateCustom: () => void;
-  onCreateWithAI: () => void;
 }
 
 export const EmptyWorkoutScreen: React.FC<EmptyWorkoutScreenProps> = ({
   onCreateCustom,
-  onCreateWithAI,
 }) => {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const navigation = useNavigation<NavigationProp>();
   const isPremium = user?.is_premium || false;
   const [isUpgradeDrawerOpen, setIsUpgradeDrawerOpen] = useState(false);
-
-  const handleCreateCustom = () => {
-    navigation.navigate("WorkoutSetup");
-  };
 
   return (
     <ScrollView
@@ -113,7 +96,7 @@ export const EmptyWorkoutScreen: React.FC<EmptyWorkoutScreenProps> = ({
 
             <CustomButton
               text={t("workouts.startCreating")}
-              onPress={handleCreateCustom}
+              onPress={onCreateCustom}
               bg={FIXED_COLORS.primary[600]}
             />
           </VStack>
@@ -148,9 +131,7 @@ export const EmptyWorkoutScreen: React.FC<EmptyWorkoutScreenProps> = ({
               text={
                 isPremium ? t("workouts.startWithAI") : t("workouts.goPremium")
               }
-              onPress={
-                isPremium ? onCreateWithAI : () => setIsUpgradeDrawerOpen(true)
-              }
+              onPress={() => setIsUpgradeDrawerOpen(true)}
               bg={FIXED_COLORS.primary[600]}
             />
 
