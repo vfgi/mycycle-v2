@@ -1,20 +1,27 @@
 {
   "expo": {
-    "name": "MyCycleHT",
-    "slug": "MyCycleHT",
+    "name": "MyCycle",
+    "slug": "MyCycle",
     "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "scheme": "mycycle",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#161616"
+      "backgroundColor": "#000000"
     },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.mycycleht.app",
+      "splash": {
+        "image": "./assets/splash-icon.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#000000"
+      },
+      "supportsTablet": false,
+      "bundleIdentifier": "com.mycycle.trttracker",
+      "buildNumber": "3",
       "infoPlist": {
         "SKAdNetworkItems": [
           {
@@ -166,38 +173,59 @@
           }
         ],
         "ITSAppUsesNonExemptEncryption": false,
-        "UIBackgroundModes": ["remote-notification"],
-        "NSUserNotificationAlertStyle": "alert",
-        "NSLocalNotificationUsageDescription": "This app uses notifications to remind you about your workouts and meals.",
-        "NSUserNotificationsUsageDescription": "This app needs permission to send notifications about your workouts and reminders."
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to let you select a profile image.",
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoadsForMedia": true,
+          "NSAllowsArbitraryLoadsInWebContent": true
+        },
+        "NSLocalNotificationUsageDescription": "This app needs access to your local notifications to let you know when to remind you your medications and supplements.",
+        "UIBackgroundModes": [
+          "remote-notification"
+        ],
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLName": "facebook",
+            "CFBundleURLSchemes": [
+              "fb1506051177065150"
+            ]
+          }
+        ],
+        "FacebookAppID": "1506051177065150",
+        "FacebookClientToken": "",
+        "FacebookDisplayName": "MyCycleHealthTracker"
       }
     },
     "android": {
-      "package": "com.mycycleht.app",
+      "versionCode": 1,
+      "package": "com.mycycle.app",
+      "splash": {
+        "image": "./assets/splash-icon.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#000000"
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#161616"
-      },
-      "edgeToEdgeEnabled": false,
-      "predictiveBackGestureEnabled": false,
-      "navigationBar": {
-        "backgroundColor": "#161616",
-        "style": "light",
-        "visible": true,
-        "barStyle": "light-content"
-      },
-      "statusBar": {
-        "backgroundColor": "#161616",
-        "barStyle": "light-content",
-        "translucent": false
+        "backgroundColor": "#000000"
       },
       "permissions": [
-        "RECEIVE_BOOT_COMPLETED",
-        "VIBRATE",
-        "WAKE_LOCK",
-        "SCHEDULE_EXACT_ALARM",
-        "USE_EXACT_ALARM",
         "POST_NOTIFICATIONS"
+      ],
+      "edgeToEdgeEnabled": true,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "1506051177065150.app.link"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
       ]
     },
     "web": {
@@ -208,6 +236,14 @@
     "plugins": [
       "expo-router",
       "expo-updates",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "15.1"
+          }
+        }
+      ],
       [
         "expo-notifications",
         {
@@ -224,11 +260,19 @@
         }
       ],
       [
+        "react-native-fbsdk-next",
+        {
+          "appID": "1506051177065150",
+          "clientToken": "",
+          "displayName": "MyCycle"
+        }
+      ],
+      [
         "onesignal-expo-plugin",
         {
-          "mode": "development",
+          "mode": "production",
           "devTeam": "2532D63Q8G",
-          "iPhoneDeploymentTarget": "11.0"
+          "iPhoneDeploymentTarget": "15.1"
         }
       ]
     ],
