@@ -105,9 +105,9 @@ export const Step3WorkoutSummary: React.FC<Step3WorkoutSummaryProps> = ({
                       <SelectedExerciseItem
                         key={exercise.id}
                         exercise={exercise}
-                        sets={exerciseConfigs[exercise.id]?.sets || "3"}
-                        reps={exerciseConfigs[exercise.id]?.reps || "12"}
-                        weight={exerciseConfigs[exercise.id]?.weight || "0"}
+                        sets={exerciseConfigs[exercise.id]?.sets ?? "3"}
+                        reps={exerciseConfigs[exercise.id]?.reps ?? "12"}
+                        weight={exerciseConfigs[exercise.id]?.weight ?? "0"}
                         onUpdateSets={(exerciseId, sets) =>
                           onUpdateSets(exerciseId, sets)
                         }

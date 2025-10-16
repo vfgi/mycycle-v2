@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, Alert } from "react-native";
+import {
+  ScrollView,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { VStack } from "@gluestack-ui/themed";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { SafeContainer } from "../../components";
@@ -422,26 +427,36 @@ export const WorkoutSetupScreen: React.FC = () => {
 
   return (
     <SafeContainer paddingTop={0} paddingBottom={0} paddingHorizontal={0}>
-      <ScrollView style={{ flex: 1 }}>
-        <VStack flex={1} p="$6" space="lg">
-          <SetupHeader />
-          <StepIndicator
-            currentStep={currentStep}
-            totalSteps={totalSteps}
-            onStepPress={handleStepChange}
-          />
-          {renderCurrentStep()}
-          <NavigationButtons
-            currentStep={currentStep}
-            totalSteps={totalSteps}
-            onBack={handleBack}
-            onContinue={handleContinue}
-            isContinueDisabled={!isStepValid() || isCreating}
-            isLoading={isCreating}
-            isEditing={isEditing}
-          />
-        </VStack>
-      </ScrollView>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+      >
+        <ScrollView
+          style={{ flex: 1 }}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ paddingBottom: 100 }}
+        >
+          <VStack flex={1} p="$6" space="lg">
+            <SetupHeader />
+            <StepIndicator
+              currentStep={currentStep}
+              totalSteps={totalSteps}
+              onStepPress={handleStepChange}
+            />
+            {renderCurrentStep()}
+            <NavigationButtons
+              currentStep={currentStep}
+              totalSteps={totalSteps}
+              onBack={handleBack}
+              onContinue={handleContinue}
+              isContinueDisabled={!isStepValid() || isCreating}
+              isLoading={isCreating}
+              isEditing={isEditing}
+            />
+          </VStack>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeContainer>
   );
 };

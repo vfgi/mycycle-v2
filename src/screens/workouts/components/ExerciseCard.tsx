@@ -10,6 +10,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { FIXED_COLORS } from "../../../theme/colors";
 import { useTranslation } from "../../../hooks/useTranslation";
+import { useUnits } from "../../../contexts/UnitsContext";
 import { TrainingExercise } from "../../../types/training";
 import { ExerciseVideoModal } from "./ExerciseVideoModal";
 
@@ -23,6 +24,8 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
   onPlayPress,
 }) => {
   const { t } = useTranslation();
+  const { unitSystem } = useUnits();
+  const weightUnit = unitSystem === "imperial" ? "lbs" : "kg";
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
   const handleImagePress = () => {
@@ -203,7 +206,8 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
                   fontSize="$md"
                   fontWeight="$bold"
                 >
-                  {exercise.weight ?? 0}kg
+                  {exercise.weight ?? 0}
+                  {weightUnit}
                 </Text>
               </Box>
             </HStack>

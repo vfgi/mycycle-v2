@@ -24,6 +24,7 @@ import { notificationStorage } from "../../services/notificationStorage";
 import { useNavigation } from "@react-navigation/native";
 import { CreateReminderModal } from "./CreateReminderModal";
 import { useOneSignal } from "../../hooks/useOneSignal";
+import { useLegacyNotifications } from "../../hooks/useLegacyNotifications";
 
 export const NotificationsScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -35,6 +36,14 @@ export const NotificationsScreen: React.FC = () => {
     enableNotifications,
     disableNotifications,
   } = useOneSignal();
+  const {
+    legacyNotifications,
+    isLoading: isLoadingLegacy,
+    loadLegacyNotifications,
+    cancelLegacyNotification,
+    cancelAllLegacyNotifications,
+    getTriggerDescription,
+  } = useLegacyNotifications();
   const [notifications, setNotifications] = useState<LocalNotification[]>([]);
   const [settings, setSettings] = useState<NotificationSettings>({
     pushEnabled: true,
@@ -98,6 +107,62 @@ export const NotificationsScreen: React.FC = () => {
             } catch (error) {
               console.error("Error deleting notification:", error);
               showError(t("notifications.deleteError"));
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleDeleteLegacyNotification = async (notificationId: string) => {
+    Alert.alert(
+      t("notifications.deleteLegacyTitle"),
+      t("notifications.deleteLegacyMessage"),
+      [
+        { text: t("common.cancel"), style: "cancel" },
+        {
+          text: t("common.delete"),
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const success = await cancelLegacyNotification(notificationId);
+              if (success) {
+                showSuccess(t("notifications.legacyDeleteSuccess"));
+              } else {
+                showError(t("notifications.legacyDeleteError"));
+              }
+            } catch (error) {
+              console.error("Error deleting legacy notification:", error);
+              showError(t("notifications.legacyDeleteError"));
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleDeleteAllLegacyNotifications = async () => {
+    Alert.alert(
+      t("notifications.deleteAllLegacyTitle"),
+      t("notifications.deleteAllLegacyMessage", {
+        count: legacyNotifications.length,
+      }),
+      [
+        { text: t("common.cancel"), style: "cancel" },
+        {
+          text: t("common.delete"),
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const success = await cancelAllLegacyNotifications();
+              if (success) {
+                showSuccess(t("notifications.allLegacyDeleteSuccess"));
+              } else {
+                showError(t("notifications.allLegacyDeleteError"));
+              }
+            } catch (error) {
+              console.error("Error deleting all legacy notifications:", error);
+              showError(t("notifications.allLegacyDeleteError"));
             }
           },
         },
@@ -346,6 +411,101 @@ export const NotificationsScreen: React.FC = () => {
               notifications.map(renderNotificationItem)
             )}
           </VStack>
+
+          {/* Legacy Notifications Section */}
+          {legacyNotifications.length > 0 && (
+            <VStack space="md" mt="$6">
+              <HStack alignItems="center" justifyContent="space-between">
+                <VStack flex={1}>
+                  <Text
+                    color={FIXED_COLORS.warning[400]}
+                    fontSize="$sm"
+                    fontWeight="$semibold"
+                    textTransform="uppercase"
+                  >
+                    ⚠️ {t("notifications.legacyNotifications")} (
+                    {legacyNotifications.length})
+                  </Text>
+                  <Text
+                    color={FIXED_COLORS.text[500]}
+                    fontSize="$xs"
+                    mt="$1"
+                  >
+                    {t("notifications.legacyNotificationsDesc")}
+                  </Text>
+                </VStack>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  borderColor={FIXED_COLORS.error[600]}
+                  onPress={handleDeleteAllLegacyNotifications}
+                >
+                  <ButtonText color={FIXED_COLORS.error[600]}>
+                    {t("notifications.deleteAllLegacy")}
+                  </ButtonText>
+                </Button>
+              </HStack>
+
+              {legacyNotifications.map((notification) => (
+                <VStack
+                  key={notification.identifier}
+                  bg={FIXED_COLORS.background[800]}
+                  borderRadius="$lg"
+                  borderWidth={1}
+                  borderColor={FIXED_COLORS.warning[700]}
+                  p="$4"
+                >
+                  <HStack alignItems="center" justifyContent="space-between">
+                    <VStack flex={1} space="xs">
+                      <Text
+                        color={FIXED_COLORS.text[50]}
+                        fontSize="$md"
+                        fontWeight="$semibold"
+                      >
+                        {notification.content.title}
+                      </Text>
+                      <Text color={FIXED_COLORS.text[400]} fontSize="$sm">
+                        {notification.content.body}
+                      </Text>
+                      <Text
+                        color={FIXED_COLORS.warning[400]}
+                        fontSize="$xs"
+                        fontWeight="$medium"
+                      >
+                        {getTriggerDescription(notification.trigger)}
+                      </Text>
+                      {notification.content.data && (
+                        <Text
+                          color={FIXED_COLORS.text[500]}
+                          fontSize="$xs"
+                          fontStyle="italic"
+                        >
+                          {notification.content.data.medicationId
+                            ? `Medicamento ID: ${notification.content.data.medicationId}`
+                            : notification.content.data.supplementId
+                              ? `Suplemento ID: ${notification.content.data.supplementId}`
+                              : ""}
+                        </Text>
+                      )}
+                    </VStack>
+
+                    <Pressable
+                      onPress={() =>
+                        handleDeleteLegacyNotification(notification.identifier)
+                      }
+                      p="$2"
+                    >
+                      <Ionicons
+                        name="trash-outline"
+                        size={20}
+                        color={FIXED_COLORS.error[500]}
+                      />
+                    </Pressable>
+                  </HStack>
+                </VStack>
+              ))}
+            </VStack>
+          )}
         </VStack>
       </ScrollView>
 

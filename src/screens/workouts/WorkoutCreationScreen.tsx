@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import { VStack, Text } from "@gluestack-ui/themed";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -272,9 +272,9 @@ export const WorkoutCreationScreen: React.FC = () => {
       case 0:
         return (
           <ScrollView
-            style={{ flex: 1 }}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 100 }}
+            contentContainerStyle={{ paddingBottom: 150 }}
+            keyboardShouldPersistTaps="handled"
           >
             <Step2ExerciseSelection
               selectedDays={["workout"]}
@@ -295,9 +295,9 @@ export const WorkoutCreationScreen: React.FC = () => {
       case 1:
         return (
           <ScrollView
-            style={{ flex: 1 }}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 100 }}
+            contentContainerStyle={{ paddingBottom: 150 }}
+            keyboardShouldPersistTaps="handled"
           >
             <Step3WorkoutSummary
               selectedDays={["workout"]}
@@ -320,42 +320,48 @@ export const WorkoutCreationScreen: React.FC = () => {
 
   return (
     <SafeContainer paddingTop={0} paddingBottom={24} paddingHorizontal={16}>
-      <VStack flex={1}>
-        <VStack p="$6" space="md" alignItems="center">
-          <Text
-            color={FIXED_COLORS.text[50]}
-            fontSize="$2xl"
-            fontWeight="$bold"
-            textAlign="center"
-          >
-            {isEditing
-              ? t("workouts.editWorkout")
-              : t("workouts.createWorkout")}
-          </Text>
-          <Text
-            color={FIXED_COLORS.text[300]}
-            fontSize="$md"
-            textAlign="center"
-            lineHeight="$md"
-          >
-            {t("workouts.createWorkoutSubtitle")}
-          </Text>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+      >
+        <VStack flex={1}>
+          <VStack p="$6" space="md" alignItems="center">
+            <Text
+              color={FIXED_COLORS.text[50]}
+              fontSize="$2xl"
+              fontWeight="$bold"
+              textAlign="center"
+            >
+              {isEditing
+                ? t("workouts.editWorkout")
+                : t("workouts.createWorkout")}
+            </Text>
+            <Text
+              color={FIXED_COLORS.text[300]}
+              fontSize="$md"
+              textAlign="center"
+              lineHeight="$md"
+            >
+              {t("workouts.createWorkoutSubtitle")}
+            </Text>
+          </VStack>
+
+          <StepIndicator currentStep={currentStep} totalSteps={totalSteps} />
+
+          <VStack flex={1}>{renderStep()}</VStack>
+
+          <NavigationButtons
+            currentStep={currentStep}
+            totalSteps={totalSteps}
+            onBack={handleBack}
+            onContinue={handleNext}
+            isContinueDisabled={false}
+            isLoading={isCreating}
+            isEditing={isEditing}
+          />
         </VStack>
-
-        <StepIndicator currentStep={currentStep} totalSteps={totalSteps} />
-
-        <VStack flex={1}>{renderStep()}</VStack>
-
-        <NavigationButtons
-          currentStep={currentStep}
-          totalSteps={totalSteps}
-          onBack={handleBack}
-          onContinue={handleNext}
-          isContinueDisabled={false}
-          isLoading={isCreating}
-          isEditing={isEditing}
-        />
-      </VStack>
+      </KeyboardAvoidingView>
     </SafeContainer>
   );
 };

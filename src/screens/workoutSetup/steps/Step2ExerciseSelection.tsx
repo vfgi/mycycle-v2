@@ -424,9 +424,9 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
                   onUpdateSets={handleUpdateSetsLocal}
                   onUpdateReps={handleUpdateRepsLocal}
                   onUpdateWeight={handleUpdateWeightLocal}
-                  sets={exerciseConfigs[exercise.id]?.sets || "3"}
-                  reps={exerciseConfigs[exercise.id]?.reps || "12"}
-                  weight={exerciseConfigs[exercise.id]?.weight || "0"}
+                  sets={exerciseConfigs[exercise.id]?.sets ?? "3"}
+                  reps={exerciseConfigs[exercise.id]?.reps ?? "12"}
+                  weight={exerciseConfigs[exercise.id]?.weight ?? "0"}
                 />
               ))}
             </VStack>
