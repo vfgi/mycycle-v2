@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, Alert } from "react-native";
 import {
   VStack,
   HStack,
@@ -11,19 +11,25 @@ import {
 } from "@gluestack-ui/themed";
 import { TouchableWithoutFeedback, Keyboard } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { SafeContainer, FloatingTextInput } from "../../components";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { SafeContainer, FloatingTextInput, AdBanner } from "../../components";
 import { FIXED_COLORS } from "../../theme/colors";
 import { useTranslation } from "../../hooks/useTranslation";
+import { useAuth } from "../../contexts/AuthContext";
+import { useToast } from "../../hooks/useToast";
 import { SimpleMealCard } from "./components/meals/SimpleMealCard";
 import { MealDetailsDrawer } from "./components/meals/MealDetailsDrawer";
-import { getMockDietPlan } from "./components/meals/mockData";
+import { mealsService } from "../../services/mealsService";
 import { Meal } from "./components/meals/types";
 
 export const MealsManagementScreen: React.FC = () => {
   const navigation = useNavigation();
   const { t } = useTranslation();
-  const [dietPlan, setDietPlan] = useState(getMockDietPlan());
+  const { user } = useAuth();
+  const { showSuccess, showError } = useToast();
+  const isPremium = user?.is_premium || false;
+  const [meals, setMeals] = useState<Meal[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [maxCalories, setMaxCalories] = useState("");
@@ -32,9 +38,50 @@ export const MealsManagementScreen: React.FC = () => {
     "active"
   );
 
+  useFocusEffect(
+    React.useCallback(() => {
+      loadMeals();
+    }, [])
+  );
+
+  const loadMeals = async () => {
+    try {
+      setIsLoading(true);
+      const data = await mealsService.getMeals();
+      const mealsWithDefaults = data.map((meal) => {
+        const totals = mealsService.calculateMealTotals(meal);
+        const ingredientsWithUnit = meal.ingredients.map((ing) => ({
+          ...ing,
+          unit: "g" as const,
+        }));
+
+        return {
+          ...meal,
+          ingredients: ingredientsWithUnit,
+          active: true,
+          is_consumed: false,
+          calories: totals.calories,
+          protein: totals.protein,
+          carbs: totals.carbs,
+          fat: totals.fat,
+          fiber: totals.fiber,
+          meal_type: "lunch" as const,
+          time: "12:00",
+          image: require("../../../assets/images/calculatorcalories.avif"),
+        };
+      });
+      setMeals(mealsWithDefaults);
+    } catch (error) {
+      console.error("Error loading meals:", error);
+      setMeals([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Filtrar refeições baseado no filtro, calorias máximas e ingredientes
   const filteredMeals = useMemo(() => {
-    return dietPlan.meals.filter((meal) => {
+    return meals.filter((meal) => {
       const matchesFilter =
         (filterStatus === "active" && meal.active) ||
         (filterStatus === "inactive" && !meal.active);
@@ -53,7 +100,7 @@ export const MealsManagementScreen: React.FC = () => {
 
       return matchesFilter && matchesCalories && matchesIngredients;
     });
-  }, [dietPlan.meals, filterStatus, maxCalories, searchIngredients]);
+  }, [meals, filterStatus, maxCalories, searchIngredients]);
 
   const handleMealPress = (meal: Meal) => {
     setSelectedMeal(meal);
@@ -61,19 +108,44 @@ export const MealsManagementScreen: React.FC = () => {
   };
 
   const handleToggleActive = (mealId: string) => {
-    setDietPlan((prev) => ({
-      ...prev,
-      meals: prev.meals.map((meal) =>
+    setMeals((prev) =>
+      prev.map((meal) =>
         meal.id === mealId ? { ...meal, active: !meal.active } : meal
-      ),
-    }));
+      )
+    );
   };
 
-  const handleDeleteMeal = (mealId: string) => {
-    setDietPlan((prev) => ({
-      ...prev,
-      meals: prev.meals.filter((meal) => meal.id !== mealId),
-    }));
+  const handleDeleteMeal = async (mealId: string) => {
+    Alert.alert(
+      t("nutrition.meals.deleteTitle"),
+      t("nutrition.meals.deleteMessage"),
+      [
+        { text: t("common.cancel"), style: "cancel" },
+        {
+          text: t("common.delete"),
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const success = await mealsService.deleteMeal(mealId);
+
+              if (success) {
+                setMeals((prev) => prev.filter((meal) => meal.id !== mealId));
+                showSuccess(t("nutrition.meals.deleteSuccess"));
+
+                if (selectedMeal?.id === mealId) {
+                  handleCloseDrawer();
+                }
+              } else {
+                showError(t("nutrition.meals.deleteError"));
+              }
+            } catch (error) {
+              console.error("Error deleting meal:", error);
+              showError(t("nutrition.meals.deleteError"));
+            }
+          },
+        },
+      ]
+    );
   };
 
   const handleCloseDrawer = () => {
@@ -82,13 +154,13 @@ export const MealsManagementScreen: React.FC = () => {
   };
 
   const activeMealsCount = useMemo(
-    () => dietPlan.meals.filter((meal) => meal.active).length,
-    [dietPlan.meals]
+    () => meals.filter((meal) => meal.active).length,
+    [meals]
   );
 
   const inactiveMealsCount = useMemo(
-    () => dietPlan.meals.filter((meal) => !meal.active).length,
-    [dietPlan.meals]
+    () => meals.filter((meal) => !meal.active).length,
+    [meals]
   );
 
   const filterOptions = [
@@ -113,6 +185,13 @@ export const MealsManagementScreen: React.FC = () => {
           paddingHorizontal={12}
         >
           <VStack flex={1} space="lg">
+            {/* Ad Banner */}
+            {!isPremium && (
+              <Box mb="$2">
+                <AdBanner size="BANNER" maxHeight={60} isPremium={isPremium} />
+              </Box>
+            )}
+
             {/* Estatísticas */}
             <HStack justifyContent="space-around">
               <VStack alignItems="center">
@@ -121,7 +200,7 @@ export const MealsManagementScreen: React.FC = () => {
                   fontSize="$xl"
                   fontWeight="$bold"
                 >
-                  {dietPlan.meals.length}
+                  {meals.length}
                 </Text>
                 <Text
                   color={FIXED_COLORS.text[400]}
@@ -311,6 +390,11 @@ export const MealsManagementScreen: React.FC = () => {
         meal={selectedMeal}
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
+        showActions={true}
+        onToggleActive={() =>
+          selectedMeal && handleToggleActive(selectedMeal.id)
+        }
+        onDelete={() => selectedMeal && handleDeleteMeal(selectedMeal.id)}
       />
     </>
   );

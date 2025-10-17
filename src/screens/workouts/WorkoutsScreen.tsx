@@ -11,10 +11,11 @@ import { trainingService } from "../../services/trainingService";
 import { TrainingPlanResponse, TrainingExercise } from "../../types/training";
 import { WorkoutStatsCard } from "./components/WorkoutStatsCard";
 import { MuscleCards } from "./components/MuscleCards";
-import { ExerciseList } from "./components/ExerciseList";
+import { TodayWorkoutsList } from "./components/TodayWorkoutsList";
 import { PlanExercisesList } from "./components/PlanExercisesList";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../contexts/AuthContext";
+import { Workout } from "../../types/training";
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -26,7 +27,7 @@ export const WorkoutsScreen: React.FC = () => {
     []
   );
   const [isLoading, setIsLoading] = useState(true);
-  const [todayExercises, setTodayExercises] = useState<TrainingExercise[]>([]);
+  const [todayWorkouts, setTodayWorkouts] = useState<Workout[]>([]);
   const navigation = useNavigation<NavigationProp>();
 
   // Carregar planos quando a tela receber foco
@@ -42,17 +43,16 @@ export const WorkoutsScreen: React.FC = () => {
       const plans = await trainingService.getTrainingPlans();
       setTrainingPlans(plans);
 
-      // Extrair exercícios de hoje
+      // Extrair treinos de hoje
       const today = getCurrentDayKey();
-      const todayWorkouts = plans
+      const workoutsToday = plans
         .flatMap((plan) => plan.workouts)
         .filter((workout) => workout.weekDays.includes(today));
 
-      const exercises = todayWorkouts.flatMap((workout) => workout.exercises);
-      setTodayExercises(exercises);
+      setTodayWorkouts(workoutsToday);
     } catch (error) {
       setTrainingPlans([]);
-      setTodayExercises([]);
+      setTodayWorkouts([]);
     } finally {
       setIsLoading(false);
     }
@@ -97,16 +97,15 @@ export const WorkoutsScreen: React.FC = () => {
     navigation.navigate("AllTrainingPlans");
   };
 
-  const handleExercisePlay = (exercise: TrainingExercise) => {
-    console.log("🎯 [EXERCISE] Playing exercise:", exercise.name);
-    // TODO: Implementar navegação para tela de execução do exercício
-  };
+  const handleStartWorkout = (workout: Workout) => {};
+
+  const handleExercisePlay = (exercise: TrainingExercise) => {};
 
   // Dados das tabs usando o padrão AnimatedTabs
   const tabData = [
     {
       id: "today",
-      title: t("workouts.todayExercises"),
+      title: t("workouts.todayWorkouts"),
       icon: (
         <Ionicons
           name="today-outline"
@@ -115,9 +114,9 @@ export const WorkoutsScreen: React.FC = () => {
         />
       ),
       content: (
-        <ExerciseList
-          exercises={todayExercises}
-          onExercisePlay={handleExercisePlay}
+        <TodayWorkoutsList
+          workouts={todayWorkouts}
+          onStartWorkout={handleStartWorkout}
         />
       ),
     },

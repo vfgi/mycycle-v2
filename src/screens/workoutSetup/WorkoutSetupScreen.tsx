@@ -290,7 +290,6 @@ export const WorkoutSetupScreen: React.FC = () => {
               imageURL: exercise.previewImage || "",
             };
 
-            console.log(`📝 [EXERCISE ${index + 1}]`, exerciseData);
             return exerciseData;
           }) || [];
 
@@ -311,26 +310,17 @@ export const WorkoutSetupScreen: React.FC = () => {
         workouts,
       };
 
-      console.log(
-        "🎯 [TRAINING PLAN DATA]",
-        JSON.stringify(trainingPlanData, null, 2)
-      );
-
       if (isEditing && editPlan) {
-        console.log("✏️ [UPDATE] Atualizando plano:", editPlan.id);
         await trainingService.updateTrainingPlan(editPlan.id, trainingPlanData);
         showSuccess(t("workoutSetup.planUpdated"));
       } else {
-        console.log("➕ [CREATE] Criando novo plano");
         await trainingService.createTrainingPlan(trainingPlanData);
         showSuccess(t("workoutSetup.planCreated"));
       }
 
-      console.log("✅ [SUCCESS] Plano salvo! Voltando para tela anterior...");
       navigation.goBack();
     } catch (error) {
-      console.error("❌ [ERROR] Erro ao salvar plano de treino:", error);
-      console.error("❌ [ERROR] Detalhes:", JSON.stringify(error, null, 2));
+      console.error("Error creating training plan:", error);
       showError(
         isEditing
           ? t("workoutSetup.planUpdateError")

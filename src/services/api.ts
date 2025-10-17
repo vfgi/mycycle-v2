@@ -57,25 +57,17 @@ class ApiService {
           data = await response.json();
         } catch (e) {
           // Se falhar o parse, deixa data como null
-          console.log(
-            "⚠️ [ApiService] Response sem JSON body (provavelmente 204)"
-          );
         }
       }
 
       if (!response.ok) {
         // Se for erro 401 (Unauthorized), tentar refresh token primeiro
         if (response.status === 401 && !this.isRefreshing) {
-          console.log(
-            "🔄 [ApiService] 401 detected, attempting token refresh..."
-          );
-
           try {
             this.isRefreshing = true;
             const refreshToken = await tokenStorage.getRefreshToken();
 
             if (refreshToken) {
-              console.log("🌐 [ApiService] Refreshing token...");
               const refreshResponse = await authService.refreshToken(
                 refreshToken
               );
@@ -84,10 +76,6 @@ class ApiService {
               await tokenStorage.setTokens(
                 refreshResponse.access_token,
                 refreshResponse.refresh_token
-              );
-
-              console.log(
-                "✅ [ApiService] Token refreshed, retrying original request..."
               );
 
               // Tentar novamente a requisição original com o novo token
@@ -105,29 +93,20 @@ class ApiService {
               const retryData = await retryResponse.json();
 
               if (retryResponse.ok) {
-                console.log("✅ [ApiService] Retry successful");
                 return { data: retryData };
               } else {
-                console.log("❌ [ApiService] Retry failed, clearing tokens");
                 await tokenStorage.clearAll();
               }
             } else {
-              console.log(
-                "❌ [ApiService] No refresh token available, clearing tokens"
-              );
               await tokenStorage.clearAll();
             }
           } catch (refreshError) {
-            console.error(
-              "❌ [ApiService] Token refresh failed:",
-              refreshError
-            );
+            console.error("Token refresh failed:", refreshError);
             await tokenStorage.clearAll();
           } finally {
             this.isRefreshing = false;
           }
         } else if (response.status === 401) {
-          // Se já está refreshing ou falhou, limpar tokens
           await tokenStorage.clearAll();
         }
 
@@ -139,7 +118,7 @@ class ApiService {
 
       return { data };
     } catch (error) {
-      console.error("API Request Error:", error);
+      console.error("Error making API request:", error);
       return {
         error: error instanceof Error ? error.message : "Erro de conexão",
       };
@@ -168,7 +147,6 @@ class ApiService {
     body: any,
     headers?: Record<string, string>
   ): Promise<ApiResponse<T>> {
-    // Implementar timeout específico para PUT
     const timeoutPromise = new Promise<never>((_, reject) => {
       setTimeout(() => {
         reject(new Error("PUT request timeout"));

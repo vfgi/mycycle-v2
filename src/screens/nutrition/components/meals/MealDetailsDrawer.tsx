@@ -1,11 +1,19 @@
 import React from "react";
 import { ImageBackground, ScrollView } from "react-native";
-import { VStack, HStack, Text, Box, Pressable } from "@gluestack-ui/themed";
+import {
+  VStack,
+  HStack,
+  Text,
+  Box,
+  Pressable,
+  Switch,
+} from "@gluestack-ui/themed";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { CustomDrawer } from "../../../../components";
 import { FIXED_COLORS } from "../../../../theme/colors";
 import { useTranslation } from "../../../../hooks/useTranslation";
+import { useUnits } from "../../../../contexts/UnitsContext";
 import { Meal } from "./types";
 
 interface MealDetailsDrawerProps {
@@ -26,8 +34,14 @@ export const MealDetailsDrawer: React.FC<MealDetailsDrawerProps> = ({
   onDelete,
 }) => {
   const { t } = useTranslation();
+  const { convertMacronutrient, getMacroUnit } = useUnits();
 
   if (!meal) return null;
+
+  const proteinConverted = convertMacronutrient(meal.protein || 0);
+  const carbsConverted = convertMacronutrient(meal.carbs || 0);
+  const fatConverted = convertMacronutrient(meal.fat || 0);
+  const unit = getMacroUnit();
 
   const getMealTypeIcon = () => {
     switch (meal.meal_type) {
@@ -63,7 +77,11 @@ export const MealDetailsDrawer: React.FC<MealDetailsDrawerProps> = ({
 
   return (
     <CustomDrawer isOpen={isOpen} onClose={onClose} minHeight={650}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ flex: 1, width: "100%" }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 20 }}
+      >
         <VStack space="lg">
           {/* Header com imagem */}
           <Box borderRadius="$lg" overflow="hidden">
@@ -173,7 +191,8 @@ export const MealDetailsDrawer: React.FC<MealDetailsDrawerProps> = ({
                   fontSize="$lg"
                   fontWeight="$bold"
                 >
-                  {meal.protein}g
+                  {proteinConverted.value.toFixed(1)}
+                  {unit}
                 </Text>
                 <Text
                   color={FIXED_COLORS.text[400]}
@@ -197,7 +216,8 @@ export const MealDetailsDrawer: React.FC<MealDetailsDrawerProps> = ({
                   fontSize="$lg"
                   fontWeight="$bold"
                 >
-                  {meal.carbs}g
+                  {carbsConverted.value.toFixed(1)}
+                  {unit}
                 </Text>
                 <Text
                   color={FIXED_COLORS.text[400]}
@@ -221,7 +241,8 @@ export const MealDetailsDrawer: React.FC<MealDetailsDrawerProps> = ({
                   fontSize="$lg"
                   fontWeight="$bold"
                 >
-                  {meal.fat}g
+                  {fatConverted.value.toFixed(1)}
+                  {unit}
                 </Text>
                 <Text
                   color={FIXED_COLORS.text[400]}
@@ -245,54 +266,63 @@ export const MealDetailsDrawer: React.FC<MealDetailsDrawerProps> = ({
             </Text>
 
             <VStack space="sm">
-              {meal.ingredients.map((ingredient, index) => (
-                <HStack
-                  key={index}
-                  bg={FIXED_COLORS.background[800]}
-                  borderRadius="$md"
-                  p="$3"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <VStack flex={1}>
-                    <Text
-                      color={FIXED_COLORS.text[50]}
-                      fontSize="$md"
-                      fontWeight="$medium"
-                    >
-                      {ingredient.name}
-                    </Text>
-                    {ingredient.category && (
+              {meal.ingredients.map((ingredient, index) => {
+                const quantityConverted = convertMacronutrient(
+                  ingredient.quantity || 0
+                );
+                const caloriesForQuantity = ingredient.calories_per_unit
+                  ? Math.round(
+                      (ingredient.calories_per_unit * ingredient.quantity) / 100
+                    )
+                  : 0;
+
+                return (
+                  <HStack
+                    key={index}
+                    bg={FIXED_COLORS.background[800]}
+                    borderRadius="$md"
+                    p="$3"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <VStack flex={1}>
                       <Text
-                        color={FIXED_COLORS.text[400]}
-                        fontSize="$xs"
+                        color={FIXED_COLORS.text[50]}
+                        fontSize="$md"
                         fontWeight="$medium"
                       >
-                        {ingredient.category}
+                        {ingredient.name}
                       </Text>
-                    )}
-                  </VStack>
+                      {ingredient.category && (
+                        <Text
+                          color={FIXED_COLORS.text[400]}
+                          fontSize="$xs"
+                          fontWeight="$medium"
+                          numberOfLines={1}
+                        >
+                          {ingredient.category}
+                        </Text>
+                      )}
+                    </VStack>
 
-                  <VStack alignItems="flex-end">
-                    <Text
-                      color={FIXED_COLORS.text[50]}
-                      fontSize="$sm"
-                      fontWeight="$semibold"
-                    >
-                      {ingredient.quantity} {ingredient.unit}
-                    </Text>
-                    {ingredient.calories_per_unit && (
-                      <Text color={FIXED_COLORS.text[400]} fontSize="$xs">
-                        {Math.round(
-                          (ingredient.calories_per_unit * ingredient.quantity) /
-                            100
-                        )}{" "}
-                        kcal
+                    <VStack alignItems="flex-end">
+                      <Text
+                        color={FIXED_COLORS.text[50]}
+                        fontSize="$sm"
+                        fontWeight="$semibold"
+                      >
+                        {quantityConverted.value.toFixed(1)}
+                        {unit}
                       </Text>
-                    )}
-                  </VStack>
-                </HStack>
-              ))}
+                      {caloriesForQuantity > 0 && (
+                        <Text color={FIXED_COLORS.text[400]} fontSize="$xs">
+                          {caloriesForQuantity} kcal
+                        </Text>
+                      )}
+                    </VStack>
+                  </HStack>
+                );
+              })}
             </VStack>
           </VStack>
 
@@ -419,27 +449,13 @@ export const MealDetailsDrawer: React.FC<MealDetailsDrawerProps> = ({
               </Text>
 
               <VStack space="sm">
-                {/* Botão Ativar/Desativar */}
-                <Pressable
-                  onPress={onToggleActive}
-                  bg={
-                    meal.active
-                      ? FIXED_COLORS.warning[600]
-                      : FIXED_COLORS.success[600]
-                  }
+                {/* Switch Ativar/Desativar */}
+                <Box
+                  bg={FIXED_COLORS.background[800]}
                   borderRadius="$md"
                   p="$4"
                 >
-                  <HStack
-                    alignItems="center"
-                    space="md"
-                    justifyContent="center"
-                  >
-                    <Ionicons
-                      name={meal.active ? "pause" : "play"}
-                      size={20}
-                      color={FIXED_COLORS.text[50]}
-                    />
+                  <HStack alignItems="center" justifyContent="space-between">
                     <Text
                       color={FIXED_COLORS.text[50]}
                       fontSize="$md"
@@ -449,8 +465,18 @@ export const MealDetailsDrawer: React.FC<MealDetailsDrawerProps> = ({
                         ? t("nutrition.meals.deactivate")
                         : t("nutrition.meals.activate")}
                     </Text>
+                    <Switch
+                      value={meal.active}
+                      onValueChange={onToggleActive}
+                      size="md"
+                      trackColor={{
+                        false: FIXED_COLORS.background[600],
+                        true: FIXED_COLORS.success[500],
+                      }}
+                      thumbColor={FIXED_COLORS.text[50]}
+                    />
                   </HStack>
-                </Pressable>
+                </Box>
 
                 {/* Botão Excluir */}
                 <Pressable

@@ -7,8 +7,6 @@ import {
   Text,
   TextInputProps,
   PixelRatio,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -167,50 +165,46 @@ export default function FloatingTextInput(
   });
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={[styles.outerContainer]}>
-        <View
-          onTouchStart={() => inputRef?.current?.focus()}
-          style={[styles.container, props?.containerStyle]}
+    <View style={[styles.outerContainer]}>
+      <View
+        onTouchStart={() => inputRef?.current?.focus()}
+        style={[styles.container, props?.containerStyle]}
+      >
+        <Animated.Text
+          style={[
+            styles.label,
+            labelStyle,
+            { backgroundColor: props.backgroundColor },
+          ]}
         >
-          {/* Apply the animated label style which now includes dynamic top */}
-          <Animated.Text
-            style={[
-              styles.label, // Base label styles (position absolute, etc.)
-              labelStyle, // Animated styles (top, transform, color)
-              { backgroundColor: props.backgroundColor }, // Background for notch effect
-            ]}
-          >
-            {props?.label}
-          </Animated.Text>
-          <TextInput
-            accessibilityLabel={props.label}
-            ref={inputRef}
-            clearButtonMode="always"
-            keyboardAppearance="dark"
-            style={[
-              styles.input, // Base input styles (must NOT include height if props.style might override it)
-              {
-                // Apply dynamic height and other styles
-                height: inputHeight,
-                color: props.valueColor,
-                backgroundColor: props?.backgroundColor ?? "transparent",
-                borderColor: getBorderColor(),
-              },
-              props?.style,
-            ]}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            {...props}
-          />
-        </View>
-        {props?.isError && (
-          <Text style={[styles.errorText, { color: "#F65936" }]}>
-            {props?.errorMessage}
-          </Text>
-        )}
+          {props?.label}
+        </Animated.Text>
+        <TextInput
+          accessibilityLabel={props.label}
+          ref={inputRef}
+          clearButtonMode="always"
+          keyboardAppearance="dark"
+          style={[
+            styles.input,
+            {
+              height: inputHeight,
+              color: props.valueColor,
+              backgroundColor: props?.backgroundColor ?? "transparent",
+              borderColor: getBorderColor(),
+            },
+            props?.style,
+          ]}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          {...props}
+        />
       </View>
-    </TouchableWithoutFeedback>
+      {props?.isError && (
+        <Text style={[styles.errorText, { color: "#F65936" }]}>
+          {props?.errorMessage}
+        </Text>
+      )}
+    </View>
   );
 }
 

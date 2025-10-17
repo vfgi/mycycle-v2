@@ -61,23 +61,18 @@ export class TrainingService {
     id: string,
     trainingPlan: Partial<CreateTrainingPlanRequest>
   ): Promise<TrainingPlanResponse> {
-    console.log("🔄 [API] PUT /training-plans/" + id);
-    console.log("🔄 [API] Body:", JSON.stringify(trainingPlan, null, 2));
-
     const response = await apiService.put<TrainingPlanResponse>(
       `/training-plans/${id}`,
       trainingPlan
     );
 
-    console.log("📥 [API] Response:", JSON.stringify(response, null, 2));
-
     if (response.error) {
-      console.error("❌ [API] Error:", response.error);
+      console.error("Error updating training plan:", response.error);
       throw new Error(response.error);
     }
 
     if (!response.data) {
-      console.error("❌ [API] No data in response");
+      console.error("No data in response");
       throw new Error("Resposta inválida do servidor");
     }
 
@@ -85,18 +80,12 @@ export class TrainingService {
   }
 
   async deleteTrainingPlan(id: string): Promise<void> {
-    console.log("🗑️ [API] DELETE /training-plans/" + id);
-
     const response = await apiService.delete<void>(`/training-plans/${id}`);
 
-    console.log("📥 [API] Delete Response:", response);
-
     if (response.error) {
-      console.error("❌ [API] Delete Error:", response.error);
+      console.error("Error deleting training plan:", response.error);
       throw new Error(response.error);
     }
-
-    console.log("✅ [API] Plano excluído com sucesso");
   }
 
   async activateTrainingPlan(id: string): Promise<TrainingPlanResponse> {

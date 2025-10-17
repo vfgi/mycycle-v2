@@ -17,12 +17,15 @@ import { ExerciseVideoModal } from "./ExerciseVideoModal";
 interface ExerciseCardProps {
   exercise: TrainingExercise;
   onPlayPress?: (exercise: TrainingExercise) => void;
+  showPlayButton?: boolean;
 }
 
 export const ExerciseCard: React.FC<ExerciseCardProps> = ({
   exercise,
   onPlayPress,
+  showPlayButton = true,
 }) => {
+  const shouldShowPlayButton = showPlayButton && onPlayPress;
   const { t } = useTranslation();
   const { unitSystem } = useUnits();
   const weightUnit = unitSystem === "imperial" ? "lbs" : "kg";
@@ -130,7 +133,9 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
             <HStack
               space="sm"
               flexWrap="wrap"
-              justifyContent={onPlayPress ? "flex-start" : "space-between"}
+              justifyContent={
+                shouldShowPlayButton ? "flex-start" : "space-between"
+              }
             >
               <Box
                 bg={FIXED_COLORS.background[700]}
@@ -138,8 +143,8 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
                 px="$3"
                 py="$2"
                 alignItems="center"
-                minWidth={onPlayPress ? "$10" : "$16"}
-                flex={onPlayPress ? undefined : 1}
+                minWidth={shouldShowPlayButton ? "$10" : "$16"}
+                flex={shouldShowPlayButton ? undefined : 1}
               >
                 <Text
                   color={FIXED_COLORS.text[400]}
@@ -164,8 +169,8 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
                 px="$3"
                 py="$2"
                 alignItems="center"
-                minWidth={onPlayPress ? "$10" : "$16"}
-                flex={onPlayPress ? undefined : 1}
+                minWidth={shouldShowPlayButton ? "$10" : "$16"}
+                flex={shouldShowPlayButton ? undefined : 1}
               >
                 <Text
                   color={FIXED_COLORS.text[400]}
@@ -190,8 +195,8 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
                 px="$3"
                 py="$2"
                 alignItems="center"
-                minWidth={onPlayPress ? "$10" : "$16"}
-                flex={onPlayPress ? undefined : 1}
+                minWidth={shouldShowPlayButton ? "$10" : "$16"}
+                flex={shouldShowPlayButton ? undefined : 1}
               >
                 <Text
                   color={FIXED_COLORS.text[400]}
@@ -214,7 +219,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
           </VStack>
 
           {/* Botão Play - Condicional */}
-          {onPlayPress && (
+          {shouldShowPlayButton && (
             <Pressable
               onPress={() => onPlayPress?.(exercise)}
               bg={FIXED_COLORS.primary[600]}

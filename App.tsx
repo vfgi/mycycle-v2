@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AppNavigator } from "./src/navigation/AppNavigator";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { UnitsProvider } from "./src/contexts/UnitsContext";
@@ -23,19 +24,21 @@ export default function App() {
   }, []);
 
   return (
-    <SafeAreaProvider>
-      <GluestackUIProvider config={config}>
-        <UnitsProvider>
-          <AuthProvider>
-            <AppNavigator />
-          </AuthProvider>
-        </UnitsProvider>
-        <StatusBar
-          style="light"
-          backgroundColor="transparent"
-          translucent={true}
-        />
-      </GluestackUIProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <GluestackUIProvider config={config}>
+          <UnitsProvider>
+            <AuthProvider>
+              <AppNavigator />
+            </AuthProvider>
+          </UnitsProvider>
+          <StatusBar
+            style="light"
+            backgroundColor="transparent"
+            translucent={true}
+          />
+        </GluestackUIProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

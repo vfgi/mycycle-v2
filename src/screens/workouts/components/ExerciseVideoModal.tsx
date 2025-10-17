@@ -77,7 +77,7 @@ export const ExerciseVideoModal: React.FC<ExerciseVideoModalProps> = ({
                   {exercise.muscle_group}
                 </Text>
 
-                {exercise.instructions && (
+                {/* {exercise.instructions && (
                   <Text
                     color={FIXED_COLORS.text[300]}
                     fontSize="$sm"
@@ -86,7 +86,7 @@ export const ExerciseVideoModal: React.FC<ExerciseVideoModalProps> = ({
                   >
                     {exercise.instructions}
                   </Text>
-                )}
+                )} */}
               </VStack>
             </VStack>
           ) : (

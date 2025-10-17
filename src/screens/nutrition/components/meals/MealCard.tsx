@@ -5,6 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { FIXED_COLORS } from "../../../../theme/colors";
 import { useTranslation } from "../../../../hooks/useTranslation";
+import { useUnits } from "../../../../contexts/UnitsContext";
 import { Meal } from "./types";
 
 interface MealCardProps {
@@ -19,6 +20,12 @@ export const MealCard: React.FC<MealCardProps> = ({
   onToggleConsumed,
 }) => {
   const { t } = useTranslation();
+  const { convertMacronutrient, getMacroUnit } = useUnits();
+
+  const proteinConverted = convertMacronutrient(meal.protein || 0);
+  const carbsConverted = convertMacronutrient(meal.carbs || 0);
+  const fatConverted = convertMacronutrient(meal.fat || 0);
+  const unit = getMacroUnit();
 
   const getMealTypeIcon = () => {
     switch (meal.meal_type) {
@@ -169,7 +176,8 @@ export const MealCard: React.FC<MealCardProps> = ({
                   fontSize="$md"
                   fontWeight="$semibold"
                 >
-                  {meal.protein}g
+                  {proteinConverted.value.toFixed(1)}
+                  {unit}
                 </Text>
                 <Text
                   color="rgba(255, 255, 255, 0.8)"
@@ -186,7 +194,8 @@ export const MealCard: React.FC<MealCardProps> = ({
                   fontSize="$md"
                   fontWeight="$semibold"
                 >
-                  {meal.carbs}g
+                  {carbsConverted.value.toFixed(1)}
+                  {unit}
                 </Text>
                 <Text
                   color="rgba(255, 255, 255, 0.8)"
@@ -203,7 +212,8 @@ export const MealCard: React.FC<MealCardProps> = ({
                   fontSize="$md"
                   fontWeight="$semibold"
                 >
-                  {meal.fat}g
+                  {fatConverted.value.toFixed(1)}
+                  {unit}
                 </Text>
                 <Text
                   color="rgba(255, 255, 255, 0.8)"

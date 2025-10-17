@@ -1,8 +1,16 @@
 import React from "react";
-import { VStack, HStack, Text, Box, Pressable } from "@gluestack-ui/themed";
+import {
+  VStack,
+  HStack,
+  Text,
+  Box,
+  Pressable,
+  Switch,
+} from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { FIXED_COLORS } from "../../../../theme/colors";
 import { useTranslation } from "../../../../hooks/useTranslation";
+import { useUnits } from "../../../../contexts/UnitsContext";
 import { Meal } from "./types";
 
 interface SimpleMealCardProps {
@@ -19,6 +27,12 @@ export const SimpleMealCard: React.FC<SimpleMealCardProps> = ({
   onDelete,
 }) => {
   const { t } = useTranslation();
+  const { convertMacronutrient, getMacroUnit } = useUnits();
+
+  const proteinConverted = convertMacronutrient(meal.protein || 0);
+  const carbsConverted = convertMacronutrient(meal.carbs || 0);
+  const fatConverted = convertMacronutrient(meal.fat || 0);
+  const unit = getMacroUnit();
 
   const getMealTypeIcon = () => {
     switch (meal.meal_type) {
@@ -106,38 +120,28 @@ export const SimpleMealCard: React.FC<SimpleMealCardProps> = ({
             </VStack>
 
             {/* Botões de ação */}
-            <HStack space="xs" ml="$3">
-              <Pressable
-                onPress={onToggleActive}
-                bg={
-                  meal.active
-                    ? FIXED_COLORS.warning[600]
-                    : FIXED_COLORS.success[600]
-                }
-                borderRadius="$full"
-                p="$2"
-                borderWidth={meal.active ? 0 : 2}
-                borderColor={
-                  meal.active ? "transparent" : FIXED_COLORS.success[400]
-                }
-                shadowColor={
-                  meal.active ? "transparent" : FIXED_COLORS.success[600]
-                }
-                shadowOffset={
-                  meal.active
-                    ? { width: 0, height: 0 }
-                    : { width: 0, height: 2 }
-                }
-                shadowOpacity={meal.active ? 0 : 0.3}
-                shadowRadius={meal.active ? 0 : 4}
-                elevation={meal.active ? 0 : 4}
-              >
-                <Ionicons
-                  name={meal.active ? "pause" : "play"}
-                  size={16}
-                  color={FIXED_COLORS.text[50]}
+            <HStack space="md" ml="$3" alignItems="center">
+              <HStack space="xs" alignItems="center">
+                <Text
+                  color={FIXED_COLORS.text[300]}
+                  fontSize="$xs"
+                  fontWeight="$medium"
+                >
+                  {meal.active
+                    ? t("nutrition.meals.active")
+                    : t("nutrition.meals.inactive")}
+                </Text>
+                <Switch
+                  value={meal.active}
+                  onValueChange={onToggleActive}
+                  size="sm"
+                  trackColor={{
+                    false: FIXED_COLORS.background[600],
+                    true: FIXED_COLORS.success[500],
+                  }}
+                  thumbColor={FIXED_COLORS.text[50]}
                 />
-              </Pressable>
+              </HStack>
 
               <Pressable
                 onPress={onDelete}
@@ -196,7 +200,8 @@ export const SimpleMealCard: React.FC<SimpleMealCardProps> = ({
                 fontSize="$sm"
                 fontWeight="$semibold"
               >
-                {meal.protein}g
+                {proteinConverted.value.toFixed(1)}
+                {unit}
               </Text>
               <Text
                 color={FIXED_COLORS.text[400]}
@@ -213,7 +218,8 @@ export const SimpleMealCard: React.FC<SimpleMealCardProps> = ({
                 fontSize="$sm"
                 fontWeight="$semibold"
               >
-                {meal.carbs}g
+                {carbsConverted.value.toFixed(1)}
+                {unit}
               </Text>
               <Text
                 color={FIXED_COLORS.text[400]}
@@ -230,7 +236,8 @@ export const SimpleMealCard: React.FC<SimpleMealCardProps> = ({
                 fontSize="$sm"
                 fontWeight="$semibold"
               >
-                {meal.fat}g
+                {fatConverted.value.toFixed(1)}
+                {unit}
               </Text>
               <Text
                 color={FIXED_COLORS.text[400]}

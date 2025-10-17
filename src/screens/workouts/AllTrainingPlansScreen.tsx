@@ -54,10 +54,7 @@ export const AllTrainingPlansScreen: React.FC = () => {
     }
   };
 
-  const handleExercisePlay = (exercise: TrainingExercise) => {
-    console.log("🎯 [EXERCISE] Playing exercise:", exercise.name);
-    // TODO: Implementar navegação para tela de execução do exercício
-  };
+  const handleExercisePlay = (exercise: TrainingExercise) => {};
 
   const handleDeletePlan = (plan: TrainingPlanResponse) => {
     if (trainingPlans.length === 1) {
@@ -78,11 +75,8 @@ export const AllTrainingPlansScreen: React.FC = () => {
 
     try {
       setIsDeleting(true);
-      console.log("🗑️ [DELETE] Excluindo plano:", planToDelete.id);
 
       await trainingService.deleteTrainingPlan(planToDelete.id);
-
-      console.log("✅ [DELETE] Plano excluído! Recarregando lista...");
 
       // Recarregar a lista completa da API
       await loadTrainingPlans();
@@ -91,7 +85,7 @@ export const AllTrainingPlansScreen: React.FC = () => {
       setDeleteModalOpen(false);
       setPlanToDelete(null);
     } catch (error) {
-      console.error("❌ [DELETE ERROR] Erro ao excluir plano:", error);
+      console.error("Error deleting plan:", error);
       showError(t("workouts.deletePlanError"));
     } finally {
       setIsDeleting(false);
@@ -105,7 +99,6 @@ export const AllTrainingPlansScreen: React.FC = () => {
   };
 
   const handleCreateNewPlan = () => {
-    console.log("🎯 [CREATE PLAN] Navegando para EmptyWorkout");
     navigation.navigate("EmptyWorkout");
   };
 
@@ -124,7 +117,6 @@ export const AllTrainingPlansScreen: React.FC = () => {
   };
 
   const handleEditPlan = (plan: TrainingPlanResponse) => {
-    console.log("🎯 [EDIT PLAN] Editando plano:", plan.name);
     navigation.navigate("WorkoutSetup", { editPlan: plan });
   };
 

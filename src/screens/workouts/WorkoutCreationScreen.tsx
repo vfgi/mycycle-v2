@@ -48,8 +48,6 @@ export const WorkoutCreationScreen: React.FC = () => {
   // Inicializar dados quando estiver editando
   useEffect(() => {
     if (editWorkout) {
-      console.log("✏️ [EDIT] Preenchendo dados do treino:", editWorkout);
-
       // Mapear exercícios para o formato Exercise
       const exercises: Exercise[] = editWorkout.exercises.map((ex, index) => ({
         id: `${ex.name}-${index}`,
@@ -193,11 +191,6 @@ export const WorkoutCreationScreen: React.FC = () => {
   const handleCreateWorkout = async () => {
     try {
       setIsCreating(true);
-      console.log(
-        isEditing
-          ? "✏️ [UPDATE] Atualizando treino..."
-          : "💾 [CREATE] Criando treino..."
-      );
 
       const exercises = (selectedWorkoutExercises["workout"] || []).map(
         (exercise, index) => {
@@ -232,31 +225,17 @@ export const WorkoutCreationScreen: React.FC = () => {
         exercises,
       };
 
-      console.log(
-        isEditing
-          ? "📤 [UPDATE] Dados do treino:"
-          : "📤 [CREATE] Dados do treino:",
-        workoutData
-      );
-
       if (isEditing && editWorkout) {
         await workoutsService.updateWorkout(editWorkout.id, workoutData as any);
-        console.log("✅ [UPDATE] Treino atualizado com sucesso!");
         showSuccess(t("workouts.workoutUpdated"));
       } else {
         await workoutsService.createWorkout(workoutData as any);
-        console.log("✅ [CREATE] Treino criado com sucesso!");
         showSuccess(t("workouts.workoutCreated"));
       }
 
       navigation.goBack();
     } catch (error) {
-      console.error(
-        isEditing
-          ? "❌ [UPDATE ERROR] Erro ao atualizar treino:"
-          : "❌ [CREATE ERROR] Erro ao criar treino:",
-        error
-      );
+      console.error("Error creating workout:", error);
       showError(
         isEditing
           ? t("workouts.workoutUpdateError")

@@ -34,7 +34,6 @@ export const AllWorkoutsScreen: React.FC = () => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log("🔄 [FOCUS] AllWorkoutsScreen ganhou foco, recarregando...");
       loadWorkouts();
     }, [])
   );
@@ -42,12 +41,10 @@ export const AllWorkoutsScreen: React.FC = () => {
   const loadWorkouts = async () => {
     try {
       setIsLoading(true);
-      console.log("📥 [GET] Carregando treinos...");
       const workoutsData = await workoutsService.getWorkouts();
-      console.log("✅ [GET] Treinos carregados:", workoutsData.length);
       setWorkouts(workoutsData || []);
     } catch (error) {
-      console.error("❌ [GET ERROR] Erro ao carregar treinos:", error);
+      console.error("Error loading workouts:", error);
       showError(t("workouts.loadWorkoutsError"));
       setWorkouts([]);
     } finally {
@@ -55,12 +52,9 @@ export const AllWorkoutsScreen: React.FC = () => {
     }
   };
 
-  const handleExercisePlay = (exercise: any) => {
-    console.log("🎯 [EXERCISE] Playing exercise:", exercise.name);
-  };
+  const handleExercisePlay = (exercise: any) => {};
 
   const handleCreateWorkout = () => {
-    console.log("➕ [CREATE] Navegando para criação de treino");
     navigation.navigate("WorkoutCreation");
   };
 
@@ -97,12 +91,10 @@ export const AllWorkoutsScreen: React.FC = () => {
   };
 
   const handleEditWorkout = (workout: WorkoutSession) => {
-    console.log("✏️ [EDIT] Editando treino:", workout.id);
     navigation.navigate("WorkoutCreation", { editWorkout: workout });
   };
 
   const handleDeleteWorkout = (workout: WorkoutSession) => {
-    console.log("🗑️ [DELETE] Preparando para excluir treino:", workout.id);
     setWorkoutToDelete(workout);
     setDeleteModalOpen(true);
   };
@@ -112,11 +104,8 @@ export const AllWorkoutsScreen: React.FC = () => {
 
     try {
       setIsDeleting(true);
-      console.log("🗑️ [DELETE] Excluindo treino:", workoutToDelete.id);
 
       await workoutsService.deleteWorkout(workoutToDelete.id);
-
-      console.log("✅ [DELETE] Treino excluído! Recarregando lista...");
 
       await loadWorkouts();
 
@@ -124,7 +113,7 @@ export const AllWorkoutsScreen: React.FC = () => {
       setDeleteModalOpen(false);
       setWorkoutToDelete(null);
     } catch (error) {
-      console.error("❌ [DELETE ERROR] Erro ao excluir treino:", error);
+      console.error("Error deleting workout:", error);
       showError(t("workouts.deleteWorkoutError"));
     } finally {
       setIsDeleting(false);

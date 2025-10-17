@@ -426,11 +426,7 @@ export const NotificationsScreen: React.FC = () => {
                     ⚠️ {t("notifications.legacyNotifications")} (
                     {legacyNotifications.length})
                   </Text>
-                  <Text
-                    color={FIXED_COLORS.text[500]}
-                    fontSize="$xs"
-                    mt="$1"
-                  >
+                  <Text color={FIXED_COLORS.text[500]} fontSize="$xs" mt="$1">
                     {t("notifications.legacyNotificationsDesc")}
                   </Text>
                 </VStack>
@@ -483,8 +479,8 @@ export const NotificationsScreen: React.FC = () => {
                           {notification.content.data.medicationId
                             ? `Medicamento ID: ${notification.content.data.medicationId}`
                             : notification.content.data.supplementId
-                              ? `Suplemento ID: ${notification.content.data.supplementId}`
-                              : ""}
+                            ? `Suplemento ID: ${notification.content.data.supplementId}`
+                            : ""}
                         </Text>
                       )}
                     </VStack>

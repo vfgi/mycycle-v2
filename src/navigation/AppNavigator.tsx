@@ -17,7 +17,9 @@ import { WorkoutCreationScreen } from "../screens/workouts/WorkoutCreationScreen
 import { AllWorkoutsScreen } from "../screens/workouts/AllWorkoutsScreen";
 import { AllTrainingPlansScreen } from "../screens/workouts/AllTrainingPlansScreen";
 import { EmptyWorkoutScreen } from "../screens/workouts/EmptyWorkoutScreen";
+import { ActiveWorkoutScreen } from "../screens/workouts/ActiveWorkoutScreen";
 import { MealsManagementScreen } from "../screens/nutrition/MealsManagementScreen";
+import { CreateMealScreen } from "../screens/nutrition/CreateMealScreen";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../hooks/useToast";
 import { useTranslation } from "../hooks/useTranslation";
@@ -47,7 +49,9 @@ export type RootStackParamList = {
   AllWorkouts: undefined;
   AllTrainingPlans: undefined;
   EmptyWorkout: undefined;
+  ActiveWorkout: undefined;
   MealsManagement: undefined;
+  CreateMeal: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -113,6 +117,7 @@ export const AppNavigator: React.FC = () => {
                 headerShown: true,
                 title: t("settings.title"),
                 headerBackTitleVisible: false,
+                headerBackTitle: "",
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -143,6 +148,7 @@ export const AppNavigator: React.FC = () => {
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
                 headerBackTitleVisible: false,
+                headerBackTitle: "",
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -156,6 +162,7 @@ export const AppNavigator: React.FC = () => {
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
                 headerBackTitleVisible: false,
+                headerBackTitle: "",
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -169,6 +176,7 @@ export const AppNavigator: React.FC = () => {
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
                 headerBackTitleVisible: false,
+                headerBackTitle: "",
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -182,6 +190,7 @@ export const AppNavigator: React.FC = () => {
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
                 headerBackTitleVisible: false,
+                headerBackTitle: "",
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -195,6 +204,7 @@ export const AppNavigator: React.FC = () => {
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
                 headerBackTitleVisible: false,
+                headerBackTitle: "",
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -208,6 +218,7 @@ export const AppNavigator: React.FC = () => {
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
                 headerBackTitleVisible: false,
+                headerBackTitle: "",
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -221,6 +232,7 @@ export const AppNavigator: React.FC = () => {
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
                 headerBackTitleVisible: false,
+                headerBackTitle: "",
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -234,6 +246,7 @@ export const AppNavigator: React.FC = () => {
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
                 headerBackTitleVisible: false,
+                headerBackTitle: "",
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -247,6 +260,7 @@ export const AppNavigator: React.FC = () => {
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
                 headerBackTitleVisible: false,
+                headerBackTitle: "",
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -260,6 +274,21 @@ export const AppNavigator: React.FC = () => {
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
                 headerBackTitleVisible: false,
+                headerBackTitle: "",
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+              })}
+            />
+            <Stack.Screen
+              name="ActiveWorkout"
+              component={ActiveWorkoutScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                headerTitle: () => <HeaderLogo />,
+                headerBackTitleVisible: false,
+                headerBackTitle: "",
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
@@ -273,10 +302,28 @@ export const AppNavigator: React.FC = () => {
                 headerShown: true,
                 headerTitle: () => <HeaderLogo />,
                 headerBackTitleVisible: false,
+                headerBackTitle: "",
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
                 headerTintColor: FIXED_COLORS.text[50],
+              })}
+            />
+            <Stack.Screen
+              name="CreateMeal"
+              component={CreateMealScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                title: t("nutrition.meals.createMeal"),
+                headerBackTitleVisible: false,
+                headerBackTitle: "",
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+                headerTitleStyle: {
+                  fontWeight: "bold",
+                },
               })}
             />
           </>
