@@ -233,6 +233,9 @@
       "deleteMessage": "¿Estás seguro de que deseas eliminar esta comida? Esta acción no se puede deshacer.",
       "deleteSuccess": "¡Comida eliminada con éxito!",
       "deleteError": "Error al eliminar comida. Inténtalo de nuevo.",
+      "activatedSuccess": "¡Comida activada con éxito!",
+      "deactivatedSuccess": "¡Comida desactivada con éxito!",
+      "updateError": "Error al actualizar comida. Inténtalo de nuevo.",
       "types": {
         "breakfast": "Desayuno",
         "snack": "Merienda",
@@ -727,7 +730,6 @@
       "saturday": "Sábado",
       "sunday": "Domingo"
     },
-    "loadWorkoutsError": "Error al cargar entrenamientos",
     "neverExecuted": "Nunca ejecutado",
     "noExercisesInWorkout": "Ningún ejercicio en este entrenamiento",
     "planActivated": "Plan activado con éxito",
@@ -1381,6 +1383,27 @@
       "exercisesExecutedTitle": "Ejercicios Realizados Este Día",
       "exerciseRegistered": "ejercicio registrado",
       "exercisesRegistered": "ejercicios registrados",
+      "finish": {
+        "title": "Finalizar Entrenamiento",
+        "subtitle": "Estás a punto de finalizar este entrenamiento",
+        "exercisesCompleted": "Ejercicios Completados",
+        "progress": "Progreso",
+        "warning": "Atención",
+        "description": "Al finalizar, este entrenamiento se guardará en tu historial y los datos temporales serán eliminados. Esta acción no se puede deshacer.",
+        "confirm": "Finalizar",
+        "saving": "Guardando...",
+        "success": "¡Entrenamiento guardado en el historial con éxito!",
+        "error": "Error al finalizar entrenamiento",
+        "saveError": "Error al guardar entrenamiento en el historial"
+      },
+      "dev": {
+        "clearData": "DEV: Limpiar Datos",
+        "clearDataMessage": "¿Estás seguro de que deseas limpiar todos los datos del entrenamiento activo?",
+        "clear": "Limpiar",
+        "clearSuccess": "¡Datos del entrenamiento limpiados!",
+        "clearError": "Error al limpiar datos",
+        "clearButton": "DEV: Limpiar Datos del Entrenamiento"
+      },
       "totalDuration": "total",
       "weight": "Peso",
       "sets": "Series",

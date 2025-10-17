@@ -18,6 +18,7 @@ export interface Meal {
   id: string;
   name: string;
   description: string;
+  is_active: boolean;
   ingredients: Ingredient[];
 }
 
@@ -73,6 +74,27 @@ class MealsService {
     } catch (error) {
       console.error("Error in deleteMeal:", error);
       return false;
+    }
+  }
+
+  async updateMealStatus(
+    mealId: string,
+    isActive: boolean
+  ): Promise<Meal | null> {
+    try {
+      const response = await apiService.patch<Meal>(`/meals/${mealId}`, {
+        is_active: isActive,
+      });
+
+      if (response.error) {
+        console.error("Error updating meal status:", response.error);
+        return null;
+      }
+
+      return response.data || null;
+    } catch (error) {
+      console.error("Error in updateMealStatus:", error);
+      return null;
     }
   }
 

@@ -233,6 +233,9 @@
       "deleteMessage": "Tem a certeza que deseja eliminar esta refeição? Esta ação não pode ser desfeita.",
       "deleteSuccess": "Refeição eliminada com sucesso!",
       "deleteError": "Erro ao eliminar refeição. Tente novamente.",
+      "activatedSuccess": "Refeição activada com sucesso!",
+      "deactivatedSuccess": "Refeição desactivada com sucesso!",
+      "updateError": "Erro ao actualizar refeição. Tente novamente.",
       "types": {
         "breakfast": "Pequeno-almoço",
         "snack": "Lanche",
@@ -727,7 +730,6 @@
       "saturday": "Sábado",
       "sunday": "Domingo"
     },
-    "loadWorkoutsError": "Erro ao carregar treinos",
     "neverExecuted": "Nunca executado",
     "noExercisesInWorkout": "Nenhum exercício neste treino",
     "planActivated": "Plano ativado com sucesso",
@@ -1381,6 +1383,27 @@
       "exercisesExecutedTitle": "Exercícios Executados Neste Dia",
       "exerciseRegistered": "exercício registado",
       "exercisesRegistered": "exercícios registados",
+      "finish": {
+        "title": "Finalizar Treino",
+        "subtitle": "Está prestes a finalizar este treino",
+        "exercisesCompleted": "Exercícios Concluídos",
+        "progress": "Progresso",
+        "warning": "Atenção",
+        "description": "Ao finalizar, este treino será guardado no seu histórico e os dados temporários serão removidos. Esta ação não pode ser desfeita.",
+        "confirm": "Finalizar",
+        "saving": "A guardar...",
+        "success": "Treino guardado no histórico com sucesso!",
+        "error": "Erro ao finalizar treino",
+        "saveError": "Erro ao guardar treino no histórico"
+      },
+      "dev": {
+        "clearData": "DEV: Limpar Dados",
+        "clearDataMessage": "Tem a certeza de que deseja limpar todos os dados do treino ativo?",
+        "clear": "Limpar",
+        "clearSuccess": "Dados do treino limpos!",
+        "clearError": "Erro ao limpar dados",
+        "clearButton": "DEV: Limpar Dados do Treino"
+      },
       "totalDuration": "total",
       "weight": "Carga",
       "sets": "Séries",

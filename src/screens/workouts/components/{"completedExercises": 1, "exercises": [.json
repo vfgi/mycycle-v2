@@ -1,0 +1,162 @@
+{
+    "completedExercises": 1,
+    "exercises": [
+        {
+            "category": "Força",
+            "difficulty": "Intermediário",
+            "equipment": "Sem equipamento",
+            "imageURL": "https://mycycle-general-dev.s3.us-east-1.amazonaws.com/workout-exercises/previews/0890b165-5888-4aaa-9e4d-588e445ce0bf.jpg",
+            "instructions": "Veja o vídeo de demonstração no app.",
+            "muscle_group": "Peitoral",
+            "name": "workouts.crossoverDePeitoralSuperiorComCabo",
+            "order": 1,
+            "reps": 12,
+            "sets": 3,
+            "videoURL": "https://mycycle-general.s3.us-east-1.amazonaws.com/workout-exercises/base/b44d5e2ea150dc3b5ac87740cea0f757-Crossover%20de%20peitoral%20superior%20com%20cabo.gif",
+            "weight": 10
+        },
+        {
+            "category": "Força",
+            "difficulty": "Intermediário",
+            "equipment": "Sem equipamento",
+            "imageURL": "https://mycycle-general-dev.s3.us-east-1.amazonaws.com/workout-exercises/previews/8bff501f-c39a-4568-8240-0d33e0872da2.jpg",
+            "instructions": "Veja o vídeo de demonstração no app.",
+            "muscle_group": "Peitoral",
+            "name": "workouts.crossoverNaAlavanca",
+            "order": 2,
+            "reps": 12,
+            "sets": 3,
+            "videoURL": "https://mycycle-general.s3.us-east-1.amazonaws.com/workout-exercises/base/c916e268b33ce65156cdaf0312a60a62-Crossover%20na%20Alavanca.gif",
+            "weight": 10
+        },
+        {
+            "category": "Força",
+            "difficulty": "Intermediário",
+            "equipment": "Sem equipamento",
+            "imageURL": "https://mycycle-general-dev.s3.us-east-1.amazonaws.com/workout-exercises/previews/a2b2db33-08a2-4b44-abd7-bcd53e706af2.jpg",
+            "instructions": "Veja o vídeo de demonstração no app.",
+            "muscle_group": "Peitoral",
+            "name": "workouts.crossOverPoliaAlta",
+            "order": 3,
+            "reps": 12,
+            "sets": 3,
+            "videoURL": "https://mycycle-general.s3.us-east-1.amazonaws.com/workout-exercises/base/a72bfcf063531209e1661ed614d8adb3-Cross%20over%20polia%20Alta.gif",
+            "weight": 10
+        },
+        {
+            "category": "Força",
+            "difficulty": "Intermediário",
+            "equipment": "Sem equipamento",
+            "imageURL": "https://mycycle-general-dev.s3.us-east-1.amazonaws.com/workout-exercises/previews/3b528e42-8d03-458b-a5c6-0a644b919893.jpg",
+            "instructions": "Veja o vídeo de demonstração no app.",
+            "muscle_group": "Ombros",
+            "name": "workouts.desenvolvimentoArnold",
+            "order": 4,
+            "reps": 12,
+            "sets": 3,
+            "videoURL": "https://mycycle-general.s3.us-east-1.amazonaws.com/workout-exercises/base/62cfff95fbad2755972e3a07e0fd3516-Desenvolvimento%20Arnold.gif",
+            "weight": 10
+        },
+        {
+            "category": "Força",
+            "difficulty": "Intermediário",
+            "equipment": "Sem equipamento",
+            "imageURL": "https://mycycle-general-dev.s3.us-east-1.amazonaws.com/workout-exercises/previews/5ebdf20a-7007-4b04-a49d-14bfdf59be81.jpg",
+            "instructions": "Veja o vídeo de demonstração no app.",
+            "muscle_group": "Biceps",
+            "name": "workouts.roscaAlternadaComBarra",
+            "order": 5,
+            "reps": 12,
+            "sets": 3,
+            "videoURL": "https://mycycle-general.s3.us-east-1.amazonaws.com/workout-exercises/base/0c24f4e865cb67e1e9fa7b61fb6cc7ec-Rosca%20alternada%20com%20barra.gif",
+            "weight": 10
+        },
+        {
+            "category": "Força",
+            "difficulty": "Intermediário",
+            "equipment": "Sem equipamento",
+            "imageURL": "https://mycycle-general-dev.s3.us-east-1.amazonaws.com/workout-exercises/previews/38acd6c5-51f9-4d61-9fe2-61e11686c5da.jpg",
+            "instructions": "Veja o vídeo de demonstração no app.",
+            "muscle_group": "Biceps",
+            "name": "workouts.roscaAlternadaComHalteresSentado",
+            "order": 6,
+            "reps": 12,
+            "sets": 3,
+            "videoURL": "https://mycycle-general.s3.us-east-1.amazonaws.com/workout-exercises/base/b678f5a94a1b8247efaadb321dc1d1eb-Rosca%20alternada%20com%20halteres%20sentado.gif",
+            "weight": 10
+        }
+    ],
+    "progress": [
+        {
+            "averageRestTime": 3,
+            "completed": true,
+            "completedAt": "2025-10-17T18:00:21.860Z",
+            "completedSets": 3,
+            "exerciseId": "workouts.crossoverDePeitoralSuperiorComCabo-0",
+            "exerciseName": "workouts.crossoverDePeitoralSuperiorComCabo",
+            "restTimes": [Array
+            ],
+            "totalExecutionTime": 7,
+            "totalSets": 3
+        },
+        {
+            "averageRestTime": 0,
+            "completed": false,
+            "completedSets": 0,
+            "exerciseId": "workouts.crossoverNaAlavanca-1",
+            "exerciseName": "workouts.crossoverNaAlavanca",
+            "restTimes": [Array
+            ],
+            "totalExecutionTime": 0,
+            "totalSets": 3
+        },
+        {
+            "averageRestTime": 0,
+            "completed": false,
+            "completedSets": 0,
+            "exerciseId": "workouts.crossOverPoliaAlta-2",
+            "exerciseName": "workouts.crossOverPoliaAlta",
+            "restTimes": [Array
+            ],
+            "totalExecutionTime": 0,
+            "totalSets": 3
+        },
+        {
+            "averageRestTime": 0,
+            "completed": false,
+            "completedSets": 0,
+            "exerciseId": "workouts.desenvolvimentoArnold-3",
+            "exerciseName": "workouts.desenvolvimentoArnold",
+            "restTimes": [Array
+            ],
+            "totalExecutionTime": 0,
+            "totalSets": 3
+        },
+        {
+            "averageRestTime": 0,
+            "completed": false,
+            "completedSets": 0,
+            "exerciseId": "workouts.roscaAlternadaComBarra-4",
+            "exerciseName": "workouts.roscaAlternadaComBarra",
+            "restTimes": [Array
+            ],
+            "totalExecutionTime": 0,
+            "totalSets": 3
+        },
+        {
+            "averageRestTime": 0,
+            "completed": false,
+            "completedSets": 0,
+            "exerciseId": "workouts.roscaAlternadaComHalteresSentado-5",
+            "exerciseName": "workouts.roscaAlternadaComHalteresSentado",
+            "restTimes": [Array
+            ],
+            "totalExecutionTime": 0,
+            "totalSets": 3
+        }
+    ],
+    "startTime": "2025-10-17T17:59:53.243Z",
+    "startedAt": "2025-10-17T17:59:54.310Z",
+    "totalExercises": 6,
+    "workoutName": "Peitoral - Ombros - Biceps"
+}

@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { VStack, Text, HStack, Pressable, Button, ButtonText } from "@gluestack-ui/themed";
+import {
+  VStack,
+  Text,
+  HStack,
+  Pressable,
+  Button,
+  ButtonText,
+} from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { FIXED_COLORS } from "../../../../theme/colors";
@@ -35,7 +42,7 @@ export const MealsList: React.FC<MealsListProps> = ({ onViewAll }) => {
         const totals = mealsService.calculateMealTotals(meal);
         return {
           ...meal,
-          active: true,
+          active: meal.is_active,
           is_consumed: false,
           calories: totals.calories,
           protein: totals.protein,

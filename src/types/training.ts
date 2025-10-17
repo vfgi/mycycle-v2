@@ -14,6 +14,7 @@ export interface TrainingExercise {
 }
 
 export interface Workout {
+  id: string;
   name: string;
   description?: string;
   weekDays: string[];

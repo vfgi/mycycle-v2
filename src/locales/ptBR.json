@@ -233,6 +233,9 @@
       "deleteMessage": "Tem certeza que deseja excluir esta refeição? Esta ação não pode ser desfeita.",
       "deleteSuccess": "Refeição excluída com sucesso!",
       "deleteError": "Erro ao excluir refeição. Tente novamente.",
+      "activatedSuccess": "Refeição ativada com sucesso!",
+      "deactivatedSuccess": "Refeição desativada com sucesso!",
+      "updateError": "Erro ao atualizar refeição. Tente novamente.",
       "types": {
         "breakfast": "Café da Manhã",
         "snack": "Lanche",
@@ -727,7 +730,6 @@
       "saturday": "Sábado",
       "sunday": "Domingo"
     },
-    "loadWorkoutsError": "Erro ao carregar treinos",
     "neverExecuted": "Nunca executado",
     "noExercisesInWorkout": "Nenhum exercício neste treino",
     "planActivated": "Plano ativado com sucesso",
@@ -1380,6 +1382,27 @@
       "createWorkout": "Crie seu primeiro treino para começar a acompanhar seu progresso",
       "exercisesExecutedTitle": "Exercícios Executados Neste Dia",
       "exerciseRegistered": "exercício registrado",
+      "finish": {
+        "title": "Finalizar Treino",
+        "subtitle": "Você está prestes a finalizar este treino",
+        "exercisesCompleted": "Exercícios Concluídos",
+        "progress": "Progresso",
+        "warning": "Atenção",
+        "description": "Ao finalizar, este treino será salvo no seu histórico e os dados temporários serão removidos. Esta ação não pode ser desfeita.",
+        "confirm": "Finalizar",
+        "saving": "Salvando...",
+        "success": "Treino salvo no histórico com sucesso!",
+        "error": "Erro ao finalizar treino",
+        "saveError": "Erro ao salvar treino no histórico"
+      },
+      "dev": {
+        "clearData": "DEV: Limpar Dados",
+        "clearDataMessage": "Tem certeza que deseja limpar todos os dados do treino ativo?",
+        "clear": "Limpar",
+        "clearSuccess": "Dados do treino limpos!",
+        "clearError": "Erro ao limpar dados",
+        "clearButton": "DEV: Limpar Dados do Treino"
+      },
       "exercisesRegistered": "exercícios registrados",
       "totalDuration": "total",
       "weight": "Carga",

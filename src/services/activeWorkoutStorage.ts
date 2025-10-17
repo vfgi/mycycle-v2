@@ -16,7 +16,7 @@ export interface ExerciseProgress {
 }
 
 export interface ActiveWorkout {
-  workoutId?: string;
+  workoutId: string;
   workoutName: string;
   startTime: string;
   startedAt?: string;
@@ -236,6 +236,15 @@ class ActiveWorkoutStorage {
     } catch (error) {
       console.error("Error finishing active workout:", error);
       return null;
+    }
+  }
+
+  async updateActiveWorkout(workout: ActiveWorkout): Promise<void> {
+    try {
+      await AsyncStorage.setItem(ACTIVE_WORKOUT_KEY, JSON.stringify(workout));
+    } catch (error) {
+      console.error("Error updating active workout:", error);
+      throw error;
     }
   }
 

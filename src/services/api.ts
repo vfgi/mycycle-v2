@@ -171,6 +171,18 @@ class ApiService {
       headers,
     });
   }
+
+  async patch<T>(
+    endpoint: string,
+    body: any,
+    headers?: Record<string, string>
+  ): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+      headers,
+    });
+  }
 }
 
 export const apiService = new ApiService();

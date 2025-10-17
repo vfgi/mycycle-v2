@@ -46,7 +46,13 @@ export const WorkoutsScreen: React.FC = () => {
       // Extrair treinos de hoje
       const today = getCurrentDayKey();
       const workoutsToday = plans
-        .flatMap((plan) => plan.workouts)
+        .flatMap((plan) =>
+          plan.workouts.map((workout, index) => ({
+            ...workout,
+            id: `${plan.id}-workout-${index}`, // Gerar ID único baseado no plano + índice
+            planId: plan.id, // Manter referência ao plano
+          }))
+        )
         .filter((workout) => workout.weekDays.includes(today));
 
       setTodayWorkouts(workoutsToday);

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { VStack, Box, Text } from "@gluestack-ui/themed";
+import { VStack, Box, Text, Pressable } from "@gluestack-ui/themed";
 import { Alert } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { FIXED_COLORS } from "../../theme/colors";
 import { useTranslation } from "../../hooks/useTranslation";
 import { SafeContainer, AdBanner } from "../../components";
+import { FinishWorkoutModal } from "../../components/FinishWorkoutModal";
 import {
   ExerciseVideoModal,
   ActiveWorkoutProgressCard,
@@ -17,11 +19,14 @@ import {
 } from "../../services/activeWorkoutStorage";
 import { TrainingExercise } from "../../types/training";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { workoutHistoryService } from "../../services/workoutHistoryService";
+import { useToast } from "../../hooks/useToast";
 
 export const ActiveWorkoutScreen: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const navigation = useNavigation();
+  const { showSuccess, showError } = useToast();
   const isPremium = user?.is_premium || false;
 
   const [activeWorkout, setActiveWorkout] = useState<ActiveWorkout | null>(
@@ -43,6 +48,8 @@ export const ActiveWorkoutScreen: React.FC = () => {
   );
   const [showExerciseDrawer, setShowExerciseDrawer] = useState(false);
   const [currentSet, setCurrentSet] = useState(1);
+  const [showFinishModal, setShowFinishModal] = useState(false);
+  const [isSavingWorkout, setIsSavingWorkout] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -209,21 +216,76 @@ export const ActiveWorkoutScreen: React.FC = () => {
   };
 
   const handleFinishWorkout = () => {
-    Alert.alert(
-      t("workouts.finishWorkout"),
-      t("workouts.finishWorkoutConfirmation"),
-      [
-        { text: t("common.cancel"), style: "cancel" },
-        {
-          text: t("workouts.finish"),
-          style: "destructive",
-          onPress: async () => {
+    setShowFinishModal(true);
+  };
+
+  const handleConfirmFinishWorkout = async () => {
+    if (!activeWorkout?.workoutId) {
+      showError(t("workout.finish.error"));
+      return;
+    }
+
+    try {
+      setIsSavingWorkout(true);
+
+      // Transformar dados do treino ativo para o formato da API
+      const historyData =
+        workoutHistoryService.transformActiveWorkoutToHistoryData(
+          activeWorkout
+        );
+
+      // Console.log dos dados que serão enviados para a API
+      console.log("=== DADOS ENVIADOS PARA A API ===");
+      console.log("workoutId:", activeWorkout.workoutId);
+      console.log("historyData:", JSON.stringify(historyData, null, 2));
+      console.log("=================================");
+
+      // Salvar no histórico
+      const success = await workoutHistoryService.saveWorkoutHistory(
+        activeWorkout.workoutId,
+        historyData
+      );
+
+      if (success) {
+        // Limpar dados temporários da storage
+        await activeWorkoutStorage.deleteActiveWorkout();
+
+        showSuccess(t("workout.finish.success"));
+        setShowFinishModal(false);
+        navigation.goBack();
+      } else {
+        showError(t("workout.finish.saveError"));
+      }
+    } catch (error) {
+      console.error("Error saving workout history:", error);
+      showError(t("workout.finish.saveError"));
+    } finally {
+      setIsSavingWorkout(false);
+    }
+  };
+
+  const handleCancelFinishWorkout = () => {
+    setShowFinishModal(false);
+  };
+
+  const handleClearWorkoutData = async () => {
+    Alert.alert(t("workout.dev.clearData"), t("workout.dev.clearDataMessage"), [
+      { text: t("common.cancel"), style: "cancel" },
+      {
+        text: t("workout.dev.clear"),
+        style: "destructive",
+        onPress: async () => {
+          try {
             await activeWorkoutStorage.deleteActiveWorkout();
+            showSuccess(t("workout.dev.clearSuccess"));
             navigation.goBack();
-          },
+          } catch (error) {
+            console.error("Error clearing workout data:", error);
+            showError(t("workout.dev.clearError"));
+          }
         },
-      ]
-    );
+      },
+    ]);
   };
 
   if (isLoading || !activeWorkout) {
@@ -257,8 +319,32 @@ export const ActiveWorkoutScreen: React.FC = () => {
             startedAt={activeWorkout.startedAt}
             finishedAt={activeWorkout.finishedAt}
             onStartWorkout={handleStartWorkout}
-            onCompleteWorkout={handleCompleteWorkout}
+            onCompleteWorkout={handleFinishWorkout}
           />
+        </Box>
+
+        {/* DEV: Clear Workout Data Button */}
+        <Box px="$4" mb="$4">
+          <Pressable
+            onPress={handleClearWorkoutData}
+            bg={FIXED_COLORS.error[500]}
+            px="$4"
+            py="$3"
+            borderRadius="$lg"
+            flexDirection="row"
+            alignItems="center"
+            justifyContent="center"
+            gap="$2"
+          >
+            <Ionicons name="trash" size={18} color={FIXED_COLORS.text[50]} />
+            <Text
+              color={FIXED_COLORS.text[50]}
+              fontSize="$sm"
+              fontWeight="$bold"
+            >
+              {t("workout.dev.clearButton")}
+            </Text>
+          </Pressable>
         </Box>
 
         {/* Exercises List */}
@@ -294,6 +380,17 @@ export const ActiveWorkoutScreen: React.FC = () => {
         exerciseIndex={activeExerciseIndex ?? 0}
         currentSet={currentSet}
         onSetComplete={handleSetComplete}
+      />
+
+      {/* Finish Workout Modal */}
+      <FinishWorkoutModal
+        isOpen={showFinishModal}
+        onClose={handleCancelFinishWorkout}
+        onConfirm={handleConfirmFinishWorkout}
+        isLoading={isSavingWorkout}
+        workoutName={activeWorkout.workoutName}
+        completedExercises={activeWorkout.completedExercises}
+        totalExercises={activeWorkout.totalExercises}
       />
     </SafeContainer>
   );

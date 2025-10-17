@@ -58,7 +58,7 @@ export const MealsManagementScreen: React.FC = () => {
         return {
           ...meal,
           ingredients: ingredientsWithUnit,
-          active: true,
+          active: meal.is_active,
           is_consumed: false,
           calories: totals.calories,
           protein: totals.protein,
@@ -107,12 +107,40 @@ export const MealsManagementScreen: React.FC = () => {
     setIsDrawerOpen(true);
   };
 
-  const handleToggleActive = (mealId: string) => {
-    setMeals((prev) =>
-      prev.map((meal) =>
-        meal.id === mealId ? { ...meal, active: !meal.active } : meal
-      )
-    );
+  const handleToggleActive = async (mealId: string) => {
+    try {
+      const meal = meals.find((m) => m.id === mealId);
+      if (!meal) return;
+
+      const updatedMeal = await mealsService.updateMealStatus(
+        mealId,
+        !meal.active
+      );
+
+      if (updatedMeal) {
+        setMeals((prev) =>
+          prev.map((m) =>
+            m.id === mealId
+              ? {
+                  ...m,
+                  active: updatedMeal.is_active,
+                  is_active: updatedMeal.is_active,
+                }
+              : m
+          )
+        );
+        showSuccess(
+          updatedMeal.is_active
+            ? t("nutrition.meals.activatedSuccess")
+            : t("nutrition.meals.deactivatedSuccess")
+        );
+      } else {
+        showError(t("nutrition.meals.updateError"));
+      }
+    } catch (error) {
+      console.error("Error updating meal status:", error);
+      showError(t("nutrition.meals.updateError"));
+    }
   };
 
   const handleDeleteMeal = async (mealId: string) => {
