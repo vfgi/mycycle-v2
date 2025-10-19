@@ -16,6 +16,22 @@ import { MealDetailsDrawer } from "./MealDetailsDrawer";
 import { mealsService } from "../../../../services/mealsService";
 import { Meal } from "./types";
 
+// Função para obter a imagem baseada no tipo de refeição
+const getMealImage = (mealType: string) => {
+  switch (mealType) {
+    case "breakfast":
+      return require("../../../../../assets/images/food/breakfast.jpg");
+    case "lunch":
+      return require("../../../../../assets/images/food/lunch.jpg");
+    case "dinner":
+      return require("../../../../../assets/images/food/dinner.jpg");
+    case "snack":
+      return require("../../../../../assets/images/food/snacks.jpg");
+    default:
+      return require("../../../../../assets/images/food/lunch.jpg");
+  }
+};
+
 interface MealsListProps {
   onViewAll?: () => void;
 }
@@ -49,9 +65,13 @@ export const MealsList: React.FC<MealsListProps> = ({ onViewAll }) => {
           carbs: totals.carbs,
           fat: totals.fat,
           fiber: totals.fiber,
-          meal_type: "lunch",
+          meal_type: "lunch" as const,
           time: "12:00",
-          image: require("../../../../../assets/images/calculatorcalories.avif"),
+          image: getMealImage("lunch"),
+          ingredients: meal.ingredients.map((ingredient) => ({
+            ...ingredient,
+            unit: "g", // Default unit
+          })),
         };
       });
       setMeals(mealsWithDefaults);

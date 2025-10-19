@@ -142,6 +142,7 @@ export const TodayWorkoutsList: React.FC<TodayWorkoutsListProps> = ({
                       color={FIXED_COLORS.text[50]}
                       fontSize="$lg"
                       fontWeight="$bold"
+                      numberOfLines={1}
                     >
                       {workout.name}
                     </Text>

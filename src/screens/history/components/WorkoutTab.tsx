@@ -1,32 +1,72 @@
-import React, { useState } from "react";
-import { VStack, Text, Box } from "@gluestack-ui/themed";
+import React, { useState, useEffect } from "react";
+import { VStack, HStack, Text, Box } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 import { FIXED_COLORS } from "../../../theme/colors";
 import { useTranslation } from "../../../hooks/useTranslation";
+import { useAuth } from "../../../contexts/AuthContext";
 import {
   ExpandableCalendarComponent,
   WorkoutGoalCard,
 } from "../../../components";
-import { workoutMockData, WorkoutExercisesList } from "./workout";
+import { WorkoutExercisesList } from "./workout";
+import {
+  workoutsService,
+  WorkoutHistoryEntry,
+} from "../../../services/workoutsService";
+import { formatDuration } from "../../../utils";
 
 export const WorkoutTab: React.FC = () => {
   const { t } = useTranslation();
+  const { user } = useAuth();
 
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+  const [workoutHistory, setWorkoutHistory] = useState<WorkoutHistoryEntry[]>(
+    []
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [datesWithWorkouts, setDatesWithWorkouts] = useState<Set<string>>(
+    new Set()
+  );
+
+  useEffect(() => {
+    if (user?.id && selectedDate) {
+      loadWorkoutHistory();
+    }
+  }, [selectedDate, user?.id]);
+
+  const loadWorkoutHistory = async () => {
+    if (!user?.id) return;
+
+    try {
+      setIsLoading(true);
+      const history = await workoutsService.getWorkoutHistoryByDay(
+        user.id,
+        selectedDate
+      );
+      setWorkoutHistory(history);
+
+      // Adicionar data ao conjunto de datas com treinos
+      if (history.length > 0) {
+        setDatesWithWorkouts((prev) => new Set(prev).add(selectedDate));
+      }
+    } catch (error) {
+      console.error("Error loading workout history:", error);
+      setWorkoutHistory([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleDayPress = (day: any) => {
     setSelectedDate(day.dateString);
   };
 
-  const selectedExercises =
-    workoutMockData[selectedDate as keyof typeof workoutMockData] || [];
-
   const getMarkedDates = () => {
     const marked: any = {};
-    Object.keys(workoutMockData).forEach((date) => {
+    datesWithWorkouts.forEach((date) => {
       marked[date] = {
         marked: true,
         dotColor: FIXED_COLORS.primary[500],
@@ -35,11 +75,41 @@ export const WorkoutTab: React.FC = () => {
     return marked;
   };
 
-  // Calcular estatísticas do dia
-  const totalExercises = selectedExercises.length;
-  const totalDuration = selectedExercises.reduce(
-    (sum, exercise) => sum + exercise.duration,
+  // Calcular estatísticas do dia - usar dados do workout_data
+  const completedExercises = workoutHistory.reduce(
+    (sum, entry) => sum + entry.workout_data.completed_exercises,
     0
+  );
+  const totalExercisesGoal = workoutHistory.reduce(
+    (sum, entry) => sum + entry.workout_data.total_exercises,
+    0
+  );
+  const totalDuration = workoutHistory.reduce(
+    (sum, entry) => sum + (entry.workout_data.total_duration_seconds || 0),
+    0
+  );
+  const progressPercentage =
+    workoutHistory.length > 0
+      ? Math.round(
+          workoutHistory.reduce(
+            (sum, entry) => sum + entry.workout_data.progress_percentage,
+            0
+          ) / workoutHistory.length
+        )
+      : 0;
+
+  // Converter histórico para formato compatível com WorkoutExercisesList
+  const selectedExercises = workoutHistory.flatMap((entry) =>
+    entry.workout_data.exercises_completed.map((exercise) => ({
+      name: exercise.name,
+      muscle_group: exercise.muscle_group,
+      sets: exercise.sets_completed,
+      reps: exercise.reps_completed[0] || 0,
+      weight: exercise.weight_used[0] || 0,
+      duration: Math.round(exercise.execution_time_seconds / 60),
+      completed: true,
+      workoutName: entry.workout_data.workout_name,
+    }))
   );
 
   return (
@@ -53,15 +123,38 @@ export const WorkoutTab: React.FC = () => {
           showsVerticalScrollIndicator={false}
           style={{ paddingTop: 16, paddingHorizontal: 16 }}
         >
-          {selectedExercises.length > 0 ? (
+          {isLoading ? (
+            <Box
+              bg={FIXED_COLORS.background[800]}
+              borderRadius="$lg"
+              p="$4"
+              borderWidth={1}
+              borderColor={FIXED_COLORS.background[700]}
+            >
+              <VStack alignItems="center" space="sm">
+                <Ionicons
+                  name="refresh-outline"
+                  size={32}
+                  color={FIXED_COLORS.primary[500]}
+                />
+                <Text
+                  color={FIXED_COLORS.text[400]}
+                  fontSize="$sm"
+                  textAlign="center"
+                >
+                  {t("common.loading")}
+                </Text>
+              </VStack>
+            </Box>
+          ) : selectedExercises.length > 0 ? (
             <VStack space="md">
               {/* Card de meta de exercícios */}
               <WorkoutGoalCard
                 title={t("history.workout.title")}
-                currentExercises={totalExercises}
-                goalExercises={6} // Meta padrão
-                currentDuration={totalDuration}
-                goalDuration={45} // Meta padrão
+                currentExercises={completedExercises}
+                goalExercises={totalExercisesGoal}
+                currentDuration={formatDuration(totalDuration)}
+                goalDuration={45}
                 colors={[
                   FIXED_COLORS.primary[700],
                   FIXED_COLORS.secondary[400],

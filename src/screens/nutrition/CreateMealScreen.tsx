@@ -159,9 +159,9 @@ export const CreateMealScreen: React.FC = () => {
   return (
     <SafeContainer paddingTop={12} paddingBottom={0} paddingHorizontal={0}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 80}
       >
         <ScrollView
           showsVerticalScrollIndicator={false}

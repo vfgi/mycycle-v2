@@ -7,10 +7,15 @@ import {
   Input,
   InputField,
   Pressable,
-  ScrollView,
 } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
-import { ActivityIndicator, Keyboard } from "react-native";
+import {
+  ActivityIndicator,
+  Keyboard,
+  FlatList,
+  View,
+  StyleSheet,
+} from "react-native";
 import { FIXED_COLORS } from "../../../theme/colors";
 import { useTranslation } from "../../../hooks/useTranslation";
 import { useUnits } from "../../../contexts/UnitsContext";
@@ -167,47 +172,54 @@ export const IngredientSearchBar: React.FC<IngredientSearchBarProps> = ({
 
           {/* Results Dropdown - Abre para cima */}
           {showDropdown && (
-            <Box
-              position="absolute"
-              bottom="$full"
-              left={0}
-              right={0}
-              mb="$2"
-              bg={FIXED_COLORS.background[800]}
-              borderRadius="$lg"
-              borderWidth={1}
-              borderColor={FIXED_COLORS.background[600]}
-              maxHeight={300}
-              zIndex={10000}
-              shadowColor="$black"
-              shadowOffset={{ width: 0, height: -4 }}
-              shadowOpacity={0.3}
-              shadowRadius={8}
-              elevation={8}
+            <View
+              style={{
+                position: "absolute",
+                bottom: "100%",
+                left: 0,
+                right: 0,
+                marginBottom: 8,
+                backgroundColor: FIXED_COLORS.background[800],
+                borderRadius: 12,
+                borderWidth: 1,
+                borderColor: FIXED_COLORS.background[600],
+                height: 300,
+                zIndex: 10000,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: -4 },
+                shadowOpacity: 0.3,
+                shadowRadius: 8,
+                elevation: 8,
+                overflow: "hidden",
+              }}
             >
-              <ScrollView
-                showsVerticalScrollIndicator={true}
-                nestedScrollEnabled={true}
-                keyboardShouldPersistTaps="handled"
-              >
-                {isSearching && results.length === 0 ? (
-                  <Box p="$4" alignItems="center">
-                    <ActivityIndicator
-                      size="small"
-                      color={FIXED_COLORS.primary[500]}
-                    />
-                    <Text color={FIXED_COLORS.text[400]} fontSize="$xs" mt="$2">
-                      {t("common.loading")}
-                    </Text>
-                  </Box>
-                ) : results.length === 0 ? (
-                  <Box p="$4" alignItems="center">
-                    <Text color={FIXED_COLORS.text[400]} fontSize="$sm">
-                      {t("nutrition.meals.noResultsFound")}
-                    </Text>
-                  </Box>
-                ) : (
-                  results.map((ingredient) => {
+              {isSearching && results.length === 0 ? (
+                <Box p="$4" alignItems="center">
+                  <ActivityIndicator
+                    size="small"
+                    color={FIXED_COLORS.primary[500]}
+                  />
+                  <Text color={FIXED_COLORS.text[400]} fontSize="$xs" mt="$2">
+                    {t("common.loading")}
+                  </Text>
+                </Box>
+              ) : results.length === 0 ? (
+                <Box p="$4" alignItems="center">
+                  <Text color={FIXED_COLORS.text[400]} fontSize="$sm">
+                    {t("nutrition.meals.noResultsFound")}
+                  </Text>
+                </Box>
+              ) : (
+                <FlatList
+                  data={results}
+                  keyExtractor={(item) => item.id}
+                  showsVerticalScrollIndicator={true}
+                  nestedScrollEnabled={true}
+                  keyboardShouldPersistTaps="handled"
+                  style={{ flex: 1 }}
+                  contentContainerStyle={{ paddingBottom: 10 }}
+                  removeClippedSubviews={false}
+                  renderItem={({ item: ingredient }) => {
                     const proteinConverted = convertMacronutrient(
                       ingredient.protein || 0
                     );
@@ -223,7 +235,6 @@ export const IngredientSearchBar: React.FC<IngredientSearchBarProps> = ({
 
                     return (
                       <Pressable
-                        key={ingredient.id}
                         onPress={() => handleSelectIngredient(ingredient)}
                         p="$3"
                         borderBottomWidth={1}
@@ -286,10 +297,10 @@ export const IngredientSearchBar: React.FC<IngredientSearchBarProps> = ({
                         </VStack>
                       </Pressable>
                     );
-                  })
-                )}
-              </ScrollView>
-            </Box>
+                  }}
+                />
+              )}
+            </View>
           )}
         </Box>
       </VStack>

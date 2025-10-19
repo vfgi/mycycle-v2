@@ -82,6 +82,8 @@ export const BottomTabNavigator: React.FC = () => {
       navigation.navigate("Goals");
     } else if (item === "calendar") {
       navigation.navigate("Calendar");
+    } else if (item === "medications") {
+      navigation.navigate("Medications");
     }
   };
 

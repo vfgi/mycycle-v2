@@ -251,6 +251,82 @@
     "supplements": {
       "title": "Supplements",
       "description": "Organize your supplements and optimize your supplementation",
+      "header": {
+        "title": "Vitamins and Supplements",
+        "description": "Organize your supplements and optimize your supplementation",
+        "createButton": "New Supplement"
+      },
+      "supplements": "Supplements",
+      "create": "Create",
+      "viewAll": "View All",
+      "noSupplements": "No supplements found",
+      "dosage": "Dosage",
+      "frequency": "Frequency",
+      "categories": {
+        "protein": "Protein",
+        "vitamin": "Vitamin",
+        "mineral": "Mineral",
+        "preworkout": "Pre-workout",
+        "other": "Other"
+      },
+      "create": {
+        "title": "Create Supplement",
+        "description": "Add a new supplement to your routine",
+        "name": "Name",
+        "namePlaceholder": "Ex: Whey Protein",
+        "brand": "Brand",
+        "brandPlaceholder": "Ex: Optimum Nutrition",
+        "category": "Category",
+        "categoryPlaceholder": "Select category",
+        "dosage": "Dosage",
+        "dosagePlaceholder": "Ex: 30g",
+        "frequency": "Frequency",
+        "frequencyPlaceholder": "Ex: 2x daily",
+        "description": "Description",
+        "descriptionPlaceholder": "Describe the supplement...",
+        "createButton": "Create Supplement"
+      },
+      "details": {
+        "information": "Information",
+        "category": "Category",
+        "dosage": "Dosage",
+        "frequency": "Frequency",
+        "nutrition": "Nutritional Information",
+        "description": "Description",
+        "actions": "Actions",
+        "active": "Active",
+        "delete": "Delete"
+      },
+      "errors": {
+        "nameRequired": "Name is required",
+        "dosageRequired": "Dosage is required",
+        "frequencyRequired": "Frequency is required",
+        "createError": "Error creating supplement"
+      },
+      "success": {
+        "created": "Supplement created successfully"
+      },
+      "taken": "Taken",
+      "markAsTaken": "Mark as Taken",
+      "management": {
+        "title": "Manage Supplements",
+        "description": "Manage all your supplements in one place",
+        "searchPlaceholder": "Search supplements...",
+        "noSupplements": "No supplements found",
+        "noResults": "No results found",
+        "active": "Active",
+        "inactive": "Inactive",
+        "total": "Total"
+      },
+      "activatedSuccess": "Supplement activated successfully",
+      "deactivatedSuccess": "Supplement deactivated successfully",
+      "updateError": "Error updating supplement",
+      "delete": {
+        "title": "Delete Supplement",
+        "message": "Are you sure you want to delete the supplement \"{name}\"? This action cannot be undone."
+      },
+      "deleteSuccess": "Supplement deleted successfully",
+      "deleteError": "Error deleting supplement",
       "comingSoonDescription": "Complete supplement management system with reminders and personalized recommendations.",
       "featuresTitle": "Features in Development",
       "features": {
@@ -1376,12 +1452,15 @@
       "description": "Track your completed workouts and weekly progress",
       "duration": "Duration",
       "exercises": "Exercises",
+      "exercisesCompleted": "Exercises Completed",
+      "progress": "Progress",
       "calories": "Calories",
       "completed": "Completed",
       "incomplete": "Incomplete",
       "createWorkout": "Create your first workout to start tracking your progress",
       "exercisesExecutedTitle": "Exercises Performed This Day",
       "exerciseRegistered": "exercise registered",
+      "noDataForDate": "No workouts performed on this day",
       "exercisesRegistered": "exercises registered",
       "finish": {
         "title": "Finish Workout",
@@ -1495,6 +1574,64 @@
       "consumption": "Consumption",
       "workout": "Workout",
       "overview": "Overview"
+    }
+  },
+  "medications": {
+    "header": {
+      "title": "Medications",
+      "description": "Manage your medications and reminders",
+      "createButton": "New Medication"
+    },
+    "medications": "Medications",
+    "viewAll": "View All",
+    "noMedications": "No medications found",
+    "dosage": "Dosage",
+    "frequency": "Frequency",
+    "timeOfDay": "Times",
+    "timesPerDay": "times/day",
+    "taken": "Taken",
+    "markAsTaken": "Mark as Taken",
+    "categories": {
+      "analgesic": "Analgesic",
+      "antibiotic": "Antibiotic",
+      "vitamin": "Vitamin",
+      "antiinflammatory": "Anti-inflammatory",
+      "other": "Other"
+    },
+    "management": {
+      "title": "Manage Medications",
+      "description": "Manage all your medications",
+      "searchPlaceholder": "Search medications",
+      "noMedications": "No medications registered",
+      "noResults": "No results found",
+      "active": "Active",
+      "inactive": "Inactive",
+      "total": "Total"
+    },
+    "create": {
+      "title": "New Medication",
+      "description": "Register a new medication"
+    },
+    "activatedSuccess": "Medication activated successfully",
+    "deactivatedSuccess": "Medication deactivated successfully",
+    "updateError": "Error updating medication",
+    "delete": {
+      "title": "Delete Medication",
+      "message": "Are you sure you want to delete the medication {{name}}?"
+    },
+    "deleteSuccess": "Medication deleted successfully",
+    "deleteError": "Error deleting medication",
+    "details": {
+      "information": "Information",
+      "category": "Category",
+      "dosage": "Dosage",
+      "frequency": "Frequency",
+      "description": "Description",
+      "notes": "Notes",
+      "actions": "Actions",
+      "active": "Active",
+      "inactive": "Inactive",
+      "delete": "Delete Medication"
     }
   }
 }

@@ -82,7 +82,7 @@ class WorkoutHistoryService {
         const exercise = activeWorkout.exercises[exerciseIndex];
 
         return {
-          exercise_id: progress.exerciseId, // Gerar UUID válido para cada exercício
+          exercise_id: exercise?.id || progress.exerciseId, // Usar o ID real do exercício da API
           name: progress.exerciseName,
           muscle_group: exercise?.muscle_group || "Não especificado",
           sets_completed: progress.completedSets,

@@ -8,7 +8,7 @@ interface WorkoutGoalCardProps {
   title: string;
   currentExercises: number;
   goalExercises?: number;
-  currentDuration: number;
+  currentDuration: number | string;
   goalDuration?: number;
   colors?: string[];
   icon?: React.ReactNode;
@@ -32,10 +32,10 @@ export const WorkoutGoalCard: React.FC<WorkoutGoalCardProps> = ({
     (currentExercises / safeGoalExercises) * 100,
     100
   );
-  const durationPercentage = Math.min(
-    (currentDuration / safeGoalDuration) * 100,
-    100
-  );
+  const durationPercentage =
+    typeof currentDuration === "number"
+      ? Math.min((currentDuration / safeGoalDuration) * 100, 100)
+      : 0;
 
   return (
     <LinearGradient
@@ -128,14 +128,6 @@ export const WorkoutGoalCard: React.FC<WorkoutGoalCardProps> = ({
             >
               {t("history.workout.duration")}
             </Text>
-            <Text
-              color={FIXED_COLORS.background[0]}
-              fontSize="$xs"
-              opacity={0.7}
-              textAlign="center"
-            >
-              {t("common.goal")}: {safeGoalDuration}min
-            </Text>
           </VStack>
         </HStack>
 
@@ -150,14 +142,16 @@ export const WorkoutGoalCard: React.FC<WorkoutGoalCardProps> = ({
               {t("history.workout.exercises")}: {exercisesPercentage.toFixed(0)}
               % {t("common.ofGoal")}
             </Text>
-            <Text
-              color={FIXED_COLORS.background[0]}
-              fontSize="$xs"
-              opacity={0.8}
-            >
-              {t("history.workout.duration")}: {durationPercentage.toFixed(0)}%{" "}
-              {t("common.ofGoal")}
-            </Text>
+            {!goalDuration && (
+              <Text
+                color={FIXED_COLORS.background[0]}
+                fontSize="$xs"
+                opacity={0.8}
+              >
+                {t("history.workout.duration")}: {durationPercentage.toFixed(0)}
+                % {t("common.ofGoal")}
+              </Text>
+            )}
           </HStack>
         </VStack>
       </VStack>

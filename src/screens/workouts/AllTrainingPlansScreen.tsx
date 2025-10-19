@@ -104,7 +104,8 @@ export const AllTrainingPlansScreen: React.FC = () => {
 
   const handleToggleActivePlan = async (plan: TrainingPlanResponse) => {
     try {
-      await trainingService.activateTrainingPlan(plan.id);
+      // Inverter o status atual do plano
+      await trainingService.updateTrainingPlanStatus(plan.id, !plan.is_active);
       await loadTrainingPlans();
       showSuccess(
         plan.is_active

@@ -84,6 +84,11 @@ export const Menu: React.FC<MenuProps> = ({
       label: t("navigation.calendar"),
     },
     {
+      key: "medications",
+      icon: "medkit-outline",
+      label: t("medications.header.title"),
+    },
+    {
       key: "settings",
       icon: "settings-outline",
       label: t("navigation.settings"),

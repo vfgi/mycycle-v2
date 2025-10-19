@@ -40,16 +40,16 @@ export const WorkoutsScreen: React.FC = () => {
   const loadTrainingPlans = async () => {
     try {
       setIsLoading(true);
-      const plans = await trainingService.getTrainingPlans();
+      const plans = await trainingService.getTrainingPlans(true); // Buscar apenas planos ativos
       setTrainingPlans(plans);
 
       // Extrair treinos de hoje
       const today = getCurrentDayKey();
       const workoutsToday = plans
         .flatMap((plan) =>
-          plan.workouts.map((workout, index) => ({
+          plan.workouts.map((workout) => ({
             ...workout,
-            id: `${plan.id}-workout-${index}`, // Gerar ID único baseado no plano + índice
+            id: workout.id, // Usar o ID real do workout que vem da API
             planId: plan.id, // Manter referência ao plano
           }))
         )
@@ -87,12 +87,14 @@ export const WorkoutsScreen: React.FC = () => {
     weeklyCompleted: 3, // Treinos completados esta semana (mock)
   };
 
-  // Obter todos os workouts do plano ativo
+  // Obter todos os workouts de todos os planos ativos
   const getActivePlanWorkouts = () => {
-    const activePlan = trainingPlans.find((plan) => plan.is_active);
-    if (!activePlan) return [];
+    // Retornar workouts de todos os planos ativos, não apenas o primeiro
+    const activeWorkouts = trainingPlans
+      .filter((plan) => plan.is_active)
+      .flatMap((plan) => plan.workouts);
 
-    return activePlan.workouts;
+    return activeWorkouts;
   };
 
   const handleViewAllWorkouts = () => {

@@ -25,9 +25,10 @@ export class TrainingService {
     return response.data;
   }
 
-  async getTrainingPlans(): Promise<TrainingPlanResponse[]> {
+  async getTrainingPlans(isActive?: boolean): Promise<TrainingPlanResponse[]> {
+    const queryParam = isActive !== undefined ? `?is_active=${isActive}` : "";
     const response = await apiService.get<TrainingPlanResponse[]>(
-      "/training-plans"
+      `/training-plans${queryParam}`
     );
 
     if (response.error) {
@@ -92,6 +93,26 @@ export class TrainingService {
     const response = await apiService.put<TrainingPlanResponse>(
       `/training-plans/${id}`,
       { is_active: true }
+    );
+
+    if (response.error) {
+      throw new Error(response.error);
+    }
+
+    if (!response.data) {
+      throw new Error("Resposta inválida do servidor");
+    }
+
+    return response.data;
+  }
+
+  async updateTrainingPlanStatus(
+    id: string,
+    isActive: boolean
+  ): Promise<TrainingPlanResponse> {
+    const response = await apiService.patch<TrainingPlanResponse>(
+      `/training-plans/${id}`,
+      { is_active: isActive }
     );
 
     if (response.error) {

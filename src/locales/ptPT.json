@@ -251,6 +251,82 @@
     "supplements": {
       "title": "Suplementos",
       "description": "Organize os seus suplementos e optimize a sua suplementação",
+      "header": {
+        "title": "Vitaminas e Suplementos",
+        "description": "Organize os seus suplementos e optimize a sua suplementação",
+        "createButton": "Novo Suplemento"
+      },
+      "supplements": "Suplementos",
+      "create": "Criar",
+      "viewAll": "Ver Todos",
+      "noSupplements": "Nenhum suplemento encontrado",
+      "dosage": "Dosagem",
+      "frequency": "Frequência",
+      "categories": {
+        "protein": "Proteína",
+        "vitamin": "Vitamina",
+        "mineral": "Mineral",
+        "preworkout": "Pré-treino",
+        "other": "Outros"
+      },
+      "create": {
+        "title": "Criar Suplemento",
+        "description": "Adicione um novo suplemento à sua rotina",
+        "name": "Nome",
+        "namePlaceholder": "Ex: Whey Protein",
+        "brand": "Marca",
+        "brandPlaceholder": "Ex: Optimum Nutrition",
+        "category": "Categoria",
+        "categoryPlaceholder": "Selecione a categoria",
+        "dosage": "Dosagem",
+        "dosagePlaceholder": "Ex: 30g",
+        "frequency": "Frequência",
+        "frequencyPlaceholder": "Ex: 2x ao dia",
+        "description": "Descrição",
+        "descriptionPlaceholder": "Descreva o suplemento...",
+        "createButton": "Criar Suplemento"
+      },
+      "details": {
+        "information": "Informações",
+        "category": "Categoria",
+        "dosage": "Dosagem",
+        "frequency": "Frequência",
+        "nutrition": "Informações Nutricionais",
+        "description": "Descrição",
+        "actions": "Ações",
+        "active": "Ativo",
+        "delete": "Excluir"
+      },
+      "errors": {
+        "nameRequired": "Nome é obrigatório",
+        "dosageRequired": "Dosagem é obrigatória",
+        "frequencyRequired": "Frequência é obrigatória",
+        "createError": "Erro ao criar suplemento"
+      },
+      "success": {
+        "created": "Suplemento criado com sucesso"
+      },
+      "taken": "Tomado",
+      "markAsTaken": "Marcar como Tomado",
+      "management": {
+        "title": "Gerir Suplementos",
+        "description": "Gira todos os seus suplementos num só lugar",
+        "searchPlaceholder": "Procurar suplementos...",
+        "noSupplements": "Nenhum suplemento encontrado",
+        "noResults": "Nenhum resultado encontrado",
+        "active": "Activos",
+        "inactive": "Inactivos",
+        "total": "Total"
+      },
+      "activatedSuccess": "Suplemento activado com sucesso",
+      "deactivatedSuccess": "Suplemento desactivado com sucesso",
+      "updateError": "Erro ao actualizar suplemento",
+      "delete": {
+        "title": "Eliminar Suplemento",
+        "message": "Tem a certeza de que quer eliminar o suplemento \"{name}\"? Esta acção não pode ser desfeita."
+      },
+      "deleteSuccess": "Suplemento eliminado com sucesso",
+      "deleteError": "Erro ao eliminar suplemento",
       "comingSoonDescription": "Sistema completo de gestão de suplementos com lembretes e recomendações personalizadas.",
       "featuresTitle": "Recursos em Desenvolvimento",
       "features": {
@@ -1495,6 +1571,64 @@
       "consumption": "Consumo",
       "workout": "Treino",
       "overview": "Visão Geral"
+    }
+  },
+  "medications": {
+    "header": {
+      "title": "Medicamentos",
+      "description": "Gerir os seus medicamentos e lembretes",
+      "createButton": "Novo Medicamento"
+    },
+    "medications": "Medicamentos",
+    "viewAll": "Ver Todos",
+    "noMedications": "Nenhum medicamento encontrado",
+    "dosage": "Dosagem",
+    "frequency": "Frequência",
+    "timeOfDay": "Horários",
+    "timesPerDay": "vezes/dia",
+    "taken": "Tomado",
+    "markAsTaken": "Marcar como Tomado",
+    "categories": {
+      "analgesic": "Analgésico",
+      "antibiotic": "Antibiótico",
+      "vitamin": "Vitamina",
+      "antiinflammatory": "Anti-inflamatório",
+      "other": "Outro"
+    },
+    "management": {
+      "title": "Gerir Medicamentos",
+      "description": "Gerir todos os seus medicamentos",
+      "searchPlaceholder": "Pesquisar medicamentos",
+      "noMedications": "Nenhum medicamento registado",
+      "noResults": "Nenhum resultado encontrado",
+      "active": "Activos",
+      "inactive": "Inactivos",
+      "total": "Total"
+    },
+    "create": {
+      "title": "Novo Medicamento",
+      "description": "Registar um novo medicamento"
+    },
+    "activatedSuccess": "Medicamento activado com sucesso",
+    "deactivatedSuccess": "Medicamento desactivado com sucesso",
+    "updateError": "Erro ao actualizar medicamento",
+    "delete": {
+      "title": "Eliminar Medicamento",
+      "message": "Tem a certeza que deseja eliminar o medicamento {{name}}?"
+    },
+    "deleteSuccess": "Medicamento eliminado com sucesso",
+    "deleteError": "Erro ao eliminar medicamento",
+    "details": {
+      "information": "Informações",
+      "category": "Categoria",
+      "dosage": "Dosagem",
+      "frequency": "Frequência",
+      "description": "Descrição",
+      "notes": "Observações",
+      "actions": "Acções",
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "delete": "Eliminar Medicamento"
     }
   }
 }

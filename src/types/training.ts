@@ -1,4 +1,5 @@
 export interface TrainingExercise {
+  id: string;
   name: string;
   category?: string;
   muscle_group: string;

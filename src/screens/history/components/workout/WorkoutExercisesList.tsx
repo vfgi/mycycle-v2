@@ -3,6 +3,7 @@ import { VStack, HStack, Text } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { FIXED_COLORS } from "../../../../theme/colors";
 import { useTranslation } from "../../../../hooks/useTranslation";
+import { formatDuration } from "../../../../utils";
 import { WorkoutExercise } from "./types";
 import { WorkoutExerciseCard } from "./WorkoutExerciseCard";
 
@@ -22,8 +23,8 @@ export const WorkoutExercisesList: React.FC<WorkoutExercisesListProps> = ({
   const completedExercises = exercises.filter(
     (exercise) => exercise.completed
   ).length;
-  const totalDuration = exercises.reduce(
-    (sum, exercise) => sum + exercise.duration,
+  const totalDurationSeconds = exercises.reduce(
+    (sum, exercise) => sum + (exercise.duration * 60),
     0
   );
 
@@ -58,7 +59,7 @@ export const WorkoutExercisesList: React.FC<WorkoutExercisesListProps> = ({
         </Text>
 
         <Text color={FIXED_COLORS.text[400]} fontSize="$xs">
-          • {totalDuration}min {t("history.workout.totalDuration")}
+          • {formatDuration(totalDurationSeconds)} {t("history.workout.totalDuration")}
         </Text>
       </HStack>
 

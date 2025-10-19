@@ -20,6 +20,13 @@ import { EmptyWorkoutScreen } from "../screens/workouts/EmptyWorkoutScreen";
 import { ActiveWorkoutScreen } from "../screens/workouts/ActiveWorkoutScreen";
 import { MealsManagementScreen } from "../screens/nutrition/MealsManagementScreen";
 import { CreateMealScreen } from "../screens/nutrition/CreateMealScreen";
+import { SupplementsManagementScreen } from "../screens/nutrition/SupplementsManagementScreen";
+import {
+  MedicationsScreen,
+  MedicationsManagementScreen,
+  CreateMedicationScreen,
+} from "../screens/medications";
+import { CreateSupplementScreen } from "../screens/nutrition/components/supplements/CreateSupplementScreen";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../hooks/useToast";
 import { useTranslation } from "../hooks/useTranslation";
@@ -52,6 +59,11 @@ export type RootStackParamList = {
   ActiveWorkout: undefined;
   MealsManagement: undefined;
   CreateMeal: undefined;
+  SupplementsManagement: undefined;
+  CreateSupplement: undefined;
+  Medications: undefined;
+  MedicationsManagement: undefined;
+  CreateMedication: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -315,6 +327,88 @@ export const AppNavigator: React.FC = () => {
               options={({ route }) => ({
                 headerShown: true,
                 title: t("nutrition.meals.createMeal"),
+                headerBackTitleVisible: false,
+                headerBackTitle: "",
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+                headerTitleStyle: {
+                  fontWeight: "bold",
+                },
+              })}
+            />
+            <Stack.Screen
+              name="SupplementsManagement"
+              component={SupplementsManagementScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                headerTitle: () => <HeaderLogo />,
+                headerBackTitleVisible: false,
+                headerBackTitle: "",
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+              })}
+            />
+            <Stack.Screen
+              name="CreateSupplement"
+              component={CreateSupplementScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                title: t("nutrition.supplements.create.title"),
+                headerBackTitleVisible: false,
+                headerBackTitle: "",
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+                headerTitleStyle: {
+                  fontWeight: "bold",
+                },
+              })}
+            />
+            <Stack.Screen
+              name="Medications"
+              component={MedicationsScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                title: t("medications.header.title"),
+                headerBackTitleVisible: false,
+                headerBackTitle: "",
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+                headerTitleStyle: {
+                  fontWeight: "bold",
+                },
+              })}
+            />
+            <Stack.Screen
+              name="MedicationsManagement"
+              component={MedicationsManagementScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                title: t("medications.management.title"),
+                headerBackTitleVisible: false,
+                headerBackTitle: "",
+                headerStyle: {
+                  backgroundColor: FIXED_COLORS.background[800],
+                },
+                headerTintColor: FIXED_COLORS.text[50],
+                headerTitleStyle: {
+                  fontWeight: "bold",
+                },
+              })}
+            />
+            <Stack.Screen
+              name="CreateMedication"
+              component={CreateMedicationScreen}
+              options={({ route }) => ({
+                headerShown: true,
+                title: t("medications.create.title"),
                 headerBackTitleVisible: false,
                 headerBackTitle: "",
                 headerStyle: {

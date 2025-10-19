@@ -16,6 +16,22 @@ import { useTranslation } from "../../../../hooks/useTranslation";
 import { useUnits } from "../../../../contexts/UnitsContext";
 import { Meal } from "./types";
 
+// Função para obter a imagem baseada no tipo de refeição
+const getMealImage = (mealType: string) => {
+  switch (mealType) {
+    case "breakfast":
+      return require("../../../../../assets/images/food/breakfast.jpg");
+    case "lunch":
+      return require("../../../../../assets/images/food/lunch.jpg");
+    case "dinner":
+      return require("../../../../../assets/images/food/dinner.jpg");
+    case "snack":
+      return require("../../../../../assets/images/food/snacks.jpg");
+    default:
+      return require("../../../../../assets/images/food/lunch.jpg");
+  }
+};
+
 interface MealDetailsDrawerProps {
   meal: Meal | null;
   isOpen: boolean;
@@ -86,7 +102,7 @@ export const MealDetailsDrawer: React.FC<MealDetailsDrawerProps> = ({
           {/* Header com imagem */}
           <Box borderRadius="$lg" overflow="hidden">
             <ImageBackground
-              source={meal.image}
+              source={getMealImage(meal.meal_type)}
               style={{
                 width: "100%",
                 height: 200,

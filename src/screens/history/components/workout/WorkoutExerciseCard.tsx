@@ -3,6 +3,7 @@ import { VStack, HStack, Text, Box } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { FIXED_COLORS } from "../../../../theme/colors";
 import { useTranslation } from "../../../../hooks/useTranslation";
+import { formatDuration } from "../../../../utils";
 import { WorkoutExercise } from "./types";
 
 interface WorkoutExerciseCardProps {
@@ -57,7 +58,7 @@ export const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
               fontWeight="$semibold"
               numberOfLines={1}
             >
-              {exercise.name}
+              {t(`exercises.${exercise.name}`)}
             </Text>
             <HStack alignItems="center" space="xs">
               <Text color={FIXED_COLORS.text[400]} fontSize="$xs">
