@@ -39,13 +39,9 @@
       "passwordsDoNotMatch": "As senhas não coincidem",
       "signupError": "Erro ao criar conta",
       "signupSuccess": "Conta criada com sucesso",
-      "genericError": "Ocorreu um erro inesperado. Tente novamente."
-    },
-    "common": {
+      "genericError": "Ocorreu um erro inesperado. Tente novamente.",
       "dontHaveAccount": "Não tem uma conta?",
-      "alreadyHaveAccount": "Já tem uma conta?",
-      "signup": "Cadastre-se",
-      "signin": "Entrar"
+      "alreadyHaveAccount": "Já tem uma conta?"
     },
     "forgotPassword": {
       "instructions": "Digite seu e-mail para receber as instruções de recuperação de senha",
@@ -82,6 +78,7 @@
     "cancel": "Cancelar",
     "confirm": "Confirmar",
     "save": "Salvar",
+    "saving": "Salvando...",
     "edit": "Editar",
     "delete": "Excluir",
     "deleting": "Excluindo...",
@@ -90,7 +87,9 @@
     "previous": "Anterior",
     "goal": "Meta",
     "ofGoal": "da meta",
-    "completed": "Concluído"
+    "completed": "Concluído",
+    "signup": "Cadastre-se",
+    "signin": "Entrar"
   },
   "weekDays": {
     "sunday": {
@@ -257,7 +256,6 @@
         "createButton": "Novo Suplemento"
       },
       "supplements": "Suplementos",
-      "create": "Criar",
       "viewAll": "Ver Todos",
       "noSupplements": "Nenhum suplemento encontrado",
       "dosage": "Dosagem",
@@ -271,7 +269,13 @@
       },
       "create": {
         "title": "Criar Suplemento",
-        "description": "Adicione um novo suplemento à sua rotina",
+        "description": "Preencha os dados para criar um novo suplemento",
+        "basicInfo": "Informações Básicas",
+        "nutritionalInfo": "Informações Nutricionais",
+        "reminders": "Lembretes",
+        "addReminder": "Adicionar",
+        "noReminders": "Nenhum lembrete configurado",
+        "selectTime": "Selecionar Horário",
         "name": "Nome",
         "namePlaceholder": "Ex: Whey Protein",
         "brand": "Marca",
@@ -280,11 +284,29 @@
         "categoryPlaceholder": "Selecione a categoria",
         "dosage": "Dosagem",
         "dosagePlaceholder": "Ex: 30g",
+        "amount": "Dosagem",
         "frequency": "Frequência",
         "frequencyPlaceholder": "Ex: 2x ao dia",
+        "protein": "Proteína (g)",
+        "carbohydrates": "Carboidratos (g)",
+        "calories": "Calorias (kcal)",
         "description": "Descrição",
         "descriptionPlaceholder": "Descreva o suplemento...",
-        "createButton": "Criar Suplemento"
+        "placeholders": {
+          "name": "Ex: Whey Protein",
+          "amount": "Ex: 30g",
+          "frequency": "Ex: 2x ao dia",
+          "protein": "Ex: 25",
+          "carbohydrates": "Ex: 5",
+          "calories": "Ex: 120",
+          "description": "Descreva o suplemento..."
+        },
+        "createButton": "Criar Suplemento",
+        "updateButton": "Atualizar Suplemento"
+      },
+      "edit": {
+        "title": "Editar Suplemento",
+        "description": "Atualize as informações do suplemento"
       },
       "details": {
         "information": "Informações",
@@ -300,11 +322,14 @@
       "errors": {
         "nameRequired": "Nome é obrigatório",
         "dosageRequired": "Dosagem é obrigatória",
+        "amountRequired": "Dosagem é obrigatória",
         "frequencyRequired": "Frequência é obrigatória",
-        "createError": "Erro ao criar suplemento"
+        "createError": "Erro ao criar suplemento",
+        "updateError": "Erro ao atualizar suplemento"
       },
       "success": {
-        "created": "Suplemento criado com sucesso"
+        "created": "Suplemento criado com sucesso",
+        "updated": "Suplemento atualizado com sucesso"
       },
       "taken": "Tomado",
       "markAsTaken": "Marcar como Tomado",
@@ -1486,8 +1511,7 @@
       "totalDuration": "total",
       "weight": "Carga",
       "sets": "Séries",
-      "rest": "Descanso",
-      "noDataForDate": "Nenhum exercício registrado para esta data"
+      "rest": "Descanso"
     },
     "weight": {
       "title": "Histórico de Peso",
@@ -1610,7 +1634,44 @@
     },
     "create": {
       "title": "Novo Medicamento",
-      "description": "Cadastre um novo medicamento"
+      "description": "Cadastre um novo medicamento",
+      "name": "Nome",
+      "amount": "Dosagem",
+      "frequency": "Frequência",
+      "protein": "Proteína",
+      "carbohydrates": "Carboidratos",
+      "calories": "Calorias",
+      "description": "Descrição",
+      "createButton": "Criar Medicamento",
+      "updateButton": "Atualizar Medicamento",
+      "placeholders": {
+        "name": "Ex: Vitamina D",
+        "amount": "Ex: 1000 UI",
+        "frequency": "Ex: 1x ao dia",
+        "protein": "Ex: 0",
+        "carbohydrates": "Ex: 0",
+        "calories": "Ex: 0",
+        "description": "Informações adicionais sobre o medicamento"
+      },
+      "reminders": "Lembretes",
+      "addReminder": "Adicionar",
+      "noReminders": "Nenhum lembrete adicionado",
+      "selectTime": "Selecione o horário"
+    },
+    "edit": {
+      "title": "Editar Medicamento",
+      "description": "Atualize as informações do medicamento"
+    },
+    "errors": {
+      "nameRequired": "Nome é obrigatório",
+      "amountRequired": "Dosagem é obrigatória",
+      "frequencyRequired": "Frequência é obrigatória",
+      "createError": "Erro ao criar medicamento",
+      "updateError": "Erro ao atualizar medicamento"
+    },
+    "success": {
+      "created": "Medicamento criado com sucesso",
+      "updated": "Medicamento atualizado com sucesso"
     },
     "activatedSuccess": "Medicamento ativado com sucesso",
     "deactivatedSuccess": "Medicamento desativado com sucesso",

@@ -43,5 +43,19 @@ export interface CreateTrainingPlanRequest {
   name: string;
   description?: string;
   is_active: boolean;
-  workouts: Workout[];
+  workouts: Array<{
+    id?: string;
+    name: string;
+    description?: string;
+    weekDays: string[];
+    exercises: Omit<TrainingExercise, "id">[];
+  }>;
+}
+
+export interface TrainingPlansWithCounters {
+  trainingPlans: TrainingPlanResponse[];
+  counters: {
+    workoutsExecutedThisWeek: number;
+    exercisesExecutedToday: number;
+  };
 }

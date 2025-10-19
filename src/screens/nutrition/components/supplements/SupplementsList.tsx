@@ -11,6 +11,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { FIXED_COLORS } from "../../../../theme/colors";
 import { useTranslation } from "../../../../hooks/useTranslation";
+import { supplementsService } from "../../../../services/supplementsService";
 import { SupplementCard } from "./SupplementCard";
 import { SupplementDetailsDrawer } from "./SupplementDetailsDrawer";
 import { Supplement } from "./types";
@@ -55,46 +56,30 @@ export const SupplementsList: React.FC<SupplementsListProps> = ({
   const loadSupplements = async () => {
     try {
       setIsLoading(true);
-      // TODO: Implementar serviço de suplementos
-      const mockSupplements: Supplement[] = [
-        {
-          id: "1",
-          name: "Whey Protein",
-          description: "Proteína em pó para recuperação muscular",
-          brand: "Optimum Nutrition",
-          category: "protein",
-          dosage: "30g",
-          frequency: "2x ao dia",
-          is_active: true,
-          is_taken: false,
-          image: getSupplementImage("protein"),
-          nutrients: {
-            protein: 24,
-            carbs: 3,
-            fat: 1,
-            calories: 120,
-          },
-        },
-        {
-          id: "2",
-          name: "Multivitamínico",
-          description: "Complexo vitamínico completo",
-          brand: "Centrum",
-          category: "vitamin",
-          dosage: "1 cápsula",
-          frequency: "1x ao dia",
-          is_active: true,
-          is_taken: false,
-          image: getSupplementImage("vitamin"),
-        },
-      ];
+      const data = await supplementsService.getSupplements();
 
-      const supplementsWithDefaults = mockSupplements.map((supplement) => ({
+      const supplementsWithDefaults = data.map((supplement) => ({
         ...supplement,
-        image: getSupplementImage(supplement.category),
+        dosage: supplement.amount,
+        is_taken: false,
+        image: getSupplementImage("protein"),
+        nutrients:
+          supplement.protein || supplement.carbohydrates || supplement.calories
+            ? {
+                protein: supplement.protein
+                  ? parseInt(supplement.protein)
+                  : undefined,
+                carbs: supplement.carbohydrates
+                  ? parseInt(supplement.carbohydrates)
+                  : undefined,
+                calories: supplement.calories
+                  ? parseInt(supplement.calories)
+                  : undefined,
+              }
+            : undefined,
       }));
 
-      setSupplements(supplementsWithDefaults);
+      setSupplements(supplementsWithDefaults as any);
     } catch (error) {
       console.error("Error loading supplements:", error);
       setSupplements([]);

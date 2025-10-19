@@ -80,7 +80,7 @@ class ActiveWorkoutStorage {
       const activeWorkout: ActiveWorkout = {
         workoutId: (workout as any).id,
         workoutName: workout.name,
-        startTime: new Date().toISOString(),
+        startTime: "",
         exercises: workout.exercises,
         progress: workout.exercises.map((exercise, index) => ({
           exerciseId: `${exercise.name}-${index}`,
@@ -206,7 +206,9 @@ class ActiveWorkoutStorage {
       const activeWorkout = await this.getActiveWorkout();
       if (!activeWorkout) return null;
 
-      activeWorkout.startedAt = new Date().toISOString();
+      const now = new Date().toISOString();
+      activeWorkout.startedAt = now;
+      activeWorkout.startTime = now;
 
       await AsyncStorage.setItem(
         ACTIVE_WORKOUT_KEY,
@@ -270,7 +272,7 @@ class ActiveWorkoutStorage {
   async getElapsedTime(): Promise<number> {
     try {
       const activeWorkout = await this.getActiveWorkout();
-      if (!activeWorkout) return 0;
+      if (!activeWorkout || !activeWorkout.startTime) return 0;
 
       const startTime = new Date(activeWorkout.startTime).getTime();
       const currentTime = new Date().getTime();

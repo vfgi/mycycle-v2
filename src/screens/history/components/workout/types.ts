@@ -3,7 +3,7 @@ export interface WorkoutExercise {
   name: string;
   muscle: string;
   weight: number;
-  duration: number; // em minutos
+  duration: number; // em segundos
   sets: number;
   reps: number;
   restTime: number; // em segundos

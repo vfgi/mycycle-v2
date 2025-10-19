@@ -234,12 +234,6 @@ export const ActiveWorkoutScreen: React.FC = () => {
           activeWorkout
         );
 
-      // Console.log dos dados que serão enviados para a API
-      console.log("=== DADOS ENVIADOS PARA A API ===");
-      console.log("workoutId:", activeWorkout.workoutId);
-      console.log("historyData:", JSON.stringify(historyData, null, 2));
-      console.log("=================================");
-
       // Salvar no histórico
       const success = await workoutHistoryService.saveWorkoutHistory(
         activeWorkout.workoutId,

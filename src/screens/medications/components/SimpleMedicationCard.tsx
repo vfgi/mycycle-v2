@@ -16,6 +16,7 @@ interface SimpleMedicationCardProps {
   medication: Medication;
   onPress: () => void;
   onToggleActive: () => void;
+  onEdit: () => void;
   onDelete: () => void;
 }
 
@@ -23,6 +24,7 @@ export const SimpleMedicationCard: React.FC<SimpleMedicationCardProps> = ({
   medication,
   onPress,
   onToggleActive,
+  onEdit,
   onDelete,
 }) => {
   const { t } = useTranslation();
@@ -51,7 +53,9 @@ export const SimpleMedicationCard: React.FC<SimpleMedicationCardProps> = ({
         mb="$3"
         borderWidth={1}
         borderColor={
-          medication.is_active ? FIXED_COLORS.success[600] : FIXED_COLORS.warning[600]
+          medication.is_active
+            ? FIXED_COLORS.success[600]
+            : FIXED_COLORS.warning[600]
         }
         width="$full"
       >
@@ -135,6 +139,19 @@ export const SimpleMedicationCard: React.FC<SimpleMedicationCardProps> = ({
               </HStack>
 
               <Pressable
+                onPress={onEdit}
+                bg={FIXED_COLORS.background[700]}
+                borderRadius="$md"
+                p="$2"
+              >
+                <Ionicons
+                  name="create-outline"
+                  size={18}
+                  color={FIXED_COLORS.primary[400]}
+                />
+              </Pressable>
+
+              <Pressable
                 onPress={onDelete}
                 bg={FIXED_COLORS.error[600]}
                 borderRadius="$full"
@@ -209,4 +226,3 @@ export const SimpleMedicationCard: React.FC<SimpleMedicationCardProps> = ({
     </Pressable>
   );
 };
-

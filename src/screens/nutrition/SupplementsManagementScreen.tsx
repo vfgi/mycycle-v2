@@ -14,6 +14,7 @@ import { FIXED_COLORS } from "../../theme/colors";
 import { useTranslation } from "../../hooks/useTranslation";
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../hooks/useToast";
+import { supplementsService } from "../../services/supplementsService";
 import { SimpleSupplementCard } from "./components/supplements/SimpleSupplementCard";
 import { SupplementDetailsDrawer } from "./components/supplements/SupplementDetailsDrawer";
 import { Supplement } from "./components/supplements/types";
@@ -43,49 +44,30 @@ export const SupplementsManagementScreen: React.FC = () => {
   const loadSupplements = async () => {
     try {
       setIsLoading(true);
-      // TODO: Implementar serviço de suplementos
-      const mockSupplements: Supplement[] = [
-        {
-          id: "1",
-          name: "Whey Protein",
-          description: "Proteína em pó para recuperação muscular",
-          brand: "Optimum Nutrition",
-          category: "protein",
-          dosage: "30g",
-          frequency: "2x ao dia",
-          is_active: true,
-          is_taken: false,
-          nutrients: {
-            protein: 24,
-            carbs: 3,
-            fat: 1,
-            calories: 120,
-          },
-        },
-        {
-          id: "2",
-          name: "Multivitamínico",
-          description: "Complexo vitamínico completo",
-          brand: "Centrum",
-          category: "vitamin",
-          dosage: "1 cápsula",
-          frequency: "1x ao dia",
-          is_active: true,
-          is_taken: false,
-        },
-        {
-          id: "3",
-          name: "Creatina",
-          description: "Suplemento para força e massa muscular",
-          brand: "Universal Nutrition",
-          category: "protein",
-          dosage: "5g",
-          frequency: "1x ao dia",
-          is_active: false,
-          is_taken: false,
-        },
-      ];
-      setSupplements(mockSupplements);
+      const data = await supplementsService.getSupplements();
+
+      const supplementsWithDefaults = data.map((supplement) => ({
+        ...supplement,
+        dosage: supplement.amount,
+        category: "protein" as const,
+        is_taken: false,
+        nutrients:
+          supplement.protein || supplement.carbohydrates || supplement.calories
+            ? {
+                protein: supplement.protein
+                  ? parseInt(supplement.protein)
+                  : undefined,
+                carbs: supplement.carbohydrates
+                  ? parseInt(supplement.carbohydrates)
+                  : undefined,
+                calories: supplement.calories
+                  ? parseInt(supplement.calories)
+                  : undefined,
+              }
+            : undefined,
+      }));
+
+      setSupplements(supplementsWithDefaults as any);
     } catch (error) {
       console.error("Error loading supplements:", error);
       setSupplements([]);
@@ -132,10 +114,22 @@ export const SupplementsManagementScreen: React.FC = () => {
     setIsDrawerOpen(true);
   };
 
+  const handleEditSupplement = (supplement: Supplement) => {
+    navigation.navigate("CreateSupplement" as never, { supplement } as never);
+  };
+
   const handleToggleActive = async (supplement: Supplement) => {
     try {
-      // TODO: Implementar chamada para API
-      console.log("Toggle active:", supplement.id, !supplement.is_active);
+      const supplementData = {
+        ...supplement,
+        amount: supplement.dosage || supplement.amount,
+      };
+
+      await supplementsService.updateSupplementStatus(
+        supplement.id,
+        supplementData as any,
+        !supplement.is_active
+      );
 
       setSupplements((prev) =>
         prev.map((s) =>
@@ -168,8 +162,7 @@ export const SupplementsManagementScreen: React.FC = () => {
           style: "destructive",
           onPress: async () => {
             try {
-              // TODO: Implementar chamada para API
-              console.log("Delete supplement:", supplement.id);
+              await supplementsService.deleteSupplement(supplement.id);
 
               setSupplements((prev) =>
                 prev.filter((s) => s.id !== supplement.id)
@@ -367,6 +360,7 @@ export const SupplementsManagementScreen: React.FC = () => {
                         supplement={supplement}
                         onPress={() => handleSupplementPress(supplement)}
                         onToggleActive={() => handleToggleActive(supplement)}
+                        onEdit={() => handleEditSupplement(supplement)}
                         onDelete={() => handleDeleteSupplement(supplement)}
                       />
                     ))}

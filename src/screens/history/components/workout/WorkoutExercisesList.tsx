@@ -24,7 +24,7 @@ export const WorkoutExercisesList: React.FC<WorkoutExercisesListProps> = ({
     (exercise) => exercise.completed
   ).length;
   const totalDurationSeconds = exercises.reduce(
-    (sum, exercise) => sum + (exercise.duration * 60),
+    (sum, exercise) => sum + exercise.duration,
     0
   );
 
@@ -59,7 +59,8 @@ export const WorkoutExercisesList: React.FC<WorkoutExercisesListProps> = ({
         </Text>
 
         <Text color={FIXED_COLORS.text[400]} fontSize="$xs">
-          • {formatDuration(totalDurationSeconds)} {t("history.workout.totalDuration")}
+          • {formatDuration(totalDurationSeconds)}{" "}
+          {t("history.workout.totalDuration")}
         </Text>
       </HStack>
 

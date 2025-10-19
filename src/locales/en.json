@@ -82,6 +82,7 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "save": "Save",
+    "saving": "Saving...",
     "edit": "Edit",
     "delete": "Delete",
     "deleting": "Deleting...",
@@ -257,7 +258,6 @@
         "createButton": "New Supplement"
       },
       "supplements": "Supplements",
-      "create": "Create",
       "viewAll": "View All",
       "noSupplements": "No supplements found",
       "dosage": "Dosage",
@@ -271,7 +271,13 @@
       },
       "create": {
         "title": "Create Supplement",
-        "description": "Add a new supplement to your routine",
+        "description": "Fill in the details to create a new supplement",
+        "basicInfo": "Basic Information",
+        "nutritionalInfo": "Nutritional Information",
+        "reminders": "Reminders",
+        "addReminder": "Add",
+        "noReminders": "No reminders configured",
+        "selectTime": "Select Time",
         "name": "Name",
         "namePlaceholder": "Ex: Whey Protein",
         "brand": "Brand",
@@ -280,11 +286,29 @@
         "categoryPlaceholder": "Select category",
         "dosage": "Dosage",
         "dosagePlaceholder": "Ex: 30g",
+        "amount": "Dosage",
         "frequency": "Frequency",
         "frequencyPlaceholder": "Ex: 2x daily",
+        "protein": "Protein (g)",
+        "carbohydrates": "Carbohydrates (g)",
+        "calories": "Calories (kcal)",
         "description": "Description",
         "descriptionPlaceholder": "Describe the supplement...",
-        "createButton": "Create Supplement"
+        "placeholders": {
+          "name": "Ex: Whey Protein",
+          "amount": "Ex: 30g",
+          "frequency": "Ex: 2x daily",
+          "protein": "Ex: 25",
+          "carbohydrates": "Ex: 5",
+          "calories": "Ex: 120",
+          "description": "Describe the supplement..."
+        },
+        "createButton": "Create Supplement",
+        "updateButton": "Update Supplement"
+      },
+      "edit": {
+        "title": "Edit Supplement",
+        "description": "Update supplement information"
       },
       "details": {
         "information": "Information",
@@ -300,11 +324,14 @@
       "errors": {
         "nameRequired": "Name is required",
         "dosageRequired": "Dosage is required",
+        "amountRequired": "Dosage is required",
         "frequencyRequired": "Frequency is required",
-        "createError": "Error creating supplement"
+        "createError": "Error creating supplement",
+        "updateError": "Error updating supplement"
       },
       "success": {
-        "created": "Supplement created successfully"
+        "created": "Supplement created successfully",
+        "updated": "Supplement updated successfully"
       },
       "taken": "Taken",
       "markAsTaken": "Mark as Taken",
@@ -1486,8 +1513,7 @@
       "totalDuration": "total",
       "weight": "Weight",
       "sets": "Sets",
-      "rest": "Rest",
-      "noDataForDate": "No exercises recorded for this date"
+      "rest": "Rest"
     },
     "weight": {
       "title": "Weight History",
@@ -1610,7 +1636,44 @@
     },
     "create": {
       "title": "New Medication",
-      "description": "Register a new medication"
+      "description": "Register a new medication",
+      "name": "Name",
+      "amount": "Dosage",
+      "frequency": "Frequency",
+      "protein": "Protein",
+      "carbohydrates": "Carbohydrates",
+      "calories": "Calories",
+      "description": "Description",
+      "createButton": "Create Medication",
+      "updateButton": "Update Medication",
+      "placeholders": {
+        "name": "Ex: Vitamin D",
+        "amount": "Ex: 1000 IU",
+        "frequency": "Ex: 1x daily",
+        "protein": "Ex: 0",
+        "carbohydrates": "Ex: 0",
+        "calories": "Ex: 0",
+        "description": "Additional information about the medication"
+      },
+      "reminders": "Reminders",
+      "addReminder": "Add",
+      "noReminders": "No reminders added",
+      "selectTime": "Select time"
+    },
+    "edit": {
+      "title": "Edit Medication",
+      "description": "Update medication information"
+    },
+    "errors": {
+      "nameRequired": "Name is required",
+      "amountRequired": "Dosage is required",
+      "frequencyRequired": "Frequency is required",
+      "createError": "Error creating medication",
+      "updateError": "Error updating medication"
+    },
+    "success": {
+      "created": "Medication created successfully",
+      "updated": "Medication updated successfully"
     },
     "activatedSuccess": "Medication activated successfully",
     "deactivatedSuccess": "Medication deactivated successfully",

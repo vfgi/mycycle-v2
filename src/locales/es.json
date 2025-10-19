@@ -82,6 +82,7 @@
     "cancel": "Cancelar",
     "confirm": "Confirmar",
     "save": "Guardar",
+    "saving": "Guardando...",
     "edit": "Editar",
     "delete": "Eliminar",
     "deleting": "Eliminando...",
@@ -257,7 +258,6 @@
         "createButton": "Nuevo Suplemento"
       },
       "supplements": "Suplementos",
-      "create": "Crear",
       "viewAll": "Ver Todos",
       "noSupplements": "No se encontraron suplementos",
       "dosage": "Dosis",
@@ -271,7 +271,13 @@
       },
       "create": {
         "title": "Crear Suplemento",
-        "description": "Añade un nuevo suplemento a tu rutina",
+        "description": "Completa los datos para crear un nuevo suplemento",
+        "basicInfo": "Información Básica",
+        "nutritionalInfo": "Información Nutricional",
+        "reminders": "Recordatorios",
+        "addReminder": "Agregar",
+        "noReminders": "No hay recordatorios configurados",
+        "selectTime": "Seleccionar Hora",
         "name": "Nombre",
         "namePlaceholder": "Ej: Whey Protein",
         "brand": "Marca",
@@ -280,11 +286,29 @@
         "categoryPlaceholder": "Selecciona categoría",
         "dosage": "Dosis",
         "dosagePlaceholder": "Ej: 30g",
+        "amount": "Dosis",
         "frequency": "Frecuencia",
         "frequencyPlaceholder": "Ej: 2x al día",
+        "protein": "Proteína (g)",
+        "carbohydrates": "Carbohidratos (g)",
+        "calories": "Calorías (kcal)",
         "description": "Descripción",
         "descriptionPlaceholder": "Describe el suplemento...",
-        "createButton": "Crear Suplemento"
+        "placeholders": {
+          "name": "Ej: Whey Protein",
+          "amount": "Ej: 30g",
+          "frequency": "Ej: 2x al día",
+          "protein": "Ej: 25",
+          "carbohydrates": "Ej: 5",
+          "calories": "Ej: 120",
+          "description": "Describe el suplemento..."
+        },
+        "createButton": "Crear Suplemento",
+        "updateButton": "Actualizar Suplemento"
+      },
+      "edit": {
+        "title": "Editar Suplemento",
+        "description": "Actualiza la información del suplemento"
       },
       "details": {
         "information": "Información",
@@ -300,11 +324,14 @@
       "errors": {
         "nameRequired": "El nombre es obligatorio",
         "dosageRequired": "La dosis es obligatoria",
+        "amountRequired": "La dosis es obligatoria",
         "frequencyRequired": "La frecuencia es obligatoria",
-        "createError": "Error al crear suplemento"
+        "createError": "Error al crear suplemento",
+        "updateError": "Error al actualizar suplemento"
       },
       "success": {
-        "created": "Suplemento creado exitosamente"
+        "created": "Suplemento creado exitosamente",
+        "updated": "Suplemento actualizado exitosamente"
       },
       "taken": "Tomado",
       "markAsTaken": "Marcar como Tomado",
@@ -1607,7 +1634,44 @@
     },
     "create": {
       "title": "Nuevo Medicamento",
-      "description": "Registra un nuevo medicamento"
+      "description": "Registra un nuevo medicamento",
+      "name": "Nombre",
+      "amount": "Dosificación",
+      "frequency": "Frecuencia",
+      "protein": "Proteína",
+      "carbohydrates": "Carbohidratos",
+      "calories": "Calorías",
+      "description": "Descripción",
+      "createButton": "Crear Medicamento",
+      "updateButton": "Actualizar Medicamento",
+      "placeholders": {
+        "name": "Ej: Vitamina D",
+        "amount": "Ej: 1000 UI",
+        "frequency": "Ej: 1x al día",
+        "protein": "Ej: 0",
+        "carbohydrates": "Ej: 0",
+        "calories": "Ej: 0",
+        "description": "Información adicional sobre el medicamento"
+      },
+      "reminders": "Recordatorios",
+      "addReminder": "Agregar",
+      "noReminders": "No hay recordatorios agregados",
+      "selectTime": "Seleccionar hora"
+    },
+    "edit": {
+      "title": "Editar Medicamento",
+      "description": "Actualizar información del medicamento"
+    },
+    "errors": {
+      "nameRequired": "El nombre es obligatorio",
+      "amountRequired": "La dosificación es obligatoria",
+      "frequencyRequired": "La frecuencia es obligatoria",
+      "createError": "Error al crear medicamento",
+      "updateError": "Error al actualizar medicamento"
+    },
+    "success": {
+      "created": "Medicamento creado con éxito",
+      "updated": "Medicamento actualizado con éxito"
     },
     "activatedSuccess": "Medicamento activado con éxito",
     "deactivatedSuccess": "Medicamento desactivado con éxito",

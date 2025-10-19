@@ -104,6 +104,66 @@ export class NotificationService {
     }
   }
 
+  // Schedule daily recurring notification (for supplements, medications, etc)
+  async scheduleDailyNotification(
+    notification: LocalNotification,
+    hour: number,
+    minute: number
+  ): Promise<string> {
+    try {
+      const permissions = await this.getPermissions();
+      if (!permissions.granted) {
+        throw new Error("Notification permissions not granted");
+      }
+
+      const notificationId = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: notification.title,
+          body: notification.body,
+          data: notification.data || {},
+          sound: true,
+          priority: Notifications.AndroidNotificationPriority.HIGH,
+        },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
+          hour: hour,
+          minute: minute,
+          repeats: true,
+        },
+      });
+
+      // Calcular a próxima ocorrência para salvar no storage
+      const now = new Date();
+      const nextOccurrence = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        hour,
+        minute,
+        0,
+        0
+      );
+
+      // Se o horário já passou hoje, agendar para amanhã
+      if (nextOccurrence <= now) {
+        nextOccurrence.setDate(nextOccurrence.getDate() + 1);
+      }
+
+      // Save to storage with correct scheduledTime
+      const notificationWithId = {
+        ...notification,
+        id: notificationId,
+        scheduledTime: nextOccurrence,
+      };
+      await notificationStorage.saveNotification(notificationWithId);
+
+      return notificationId;
+    } catch (error) {
+      console.error("Error scheduling daily notification:", error);
+      throw error;
+    }
+  }
+
   async cancelNotification(notificationId: string): Promise<void> {
     try {
       await Notifications.cancelScheduledNotificationAsync(notificationId);

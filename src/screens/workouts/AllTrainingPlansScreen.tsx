@@ -43,8 +43,8 @@ export const AllTrainingPlansScreen: React.FC = () => {
   const loadTrainingPlans = async () => {
     try {
       setIsLoading(true);
-      const plansData = await trainingService.getTrainingPlans();
-      setTrainingPlans(plansData || []);
+      const response = await trainingService.getTrainingPlans();
+      setTrainingPlans(response.trainingPlans || []);
     } catch (error) {
       console.error("Erro ao carregar planos de treino:", error);
       showError(t("workouts.loadPlansError"));

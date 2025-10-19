@@ -28,6 +28,10 @@ export const WorkoutsScreen: React.FC = () => {
   );
   const [isLoading, setIsLoading] = useState(true);
   const [todayWorkouts, setTodayWorkouts] = useState<Workout[]>([]);
+  const [counters, setCounters] = useState({
+    workoutsExecutedThisWeek: 0,
+    exercisesExecutedToday: 0,
+  });
   const navigation = useNavigation<NavigationProp>();
 
   // Carregar planos quando a tela receber foco
@@ -40,17 +44,18 @@ export const WorkoutsScreen: React.FC = () => {
   const loadTrainingPlans = async () => {
     try {
       setIsLoading(true);
-      const plans = await trainingService.getTrainingPlans(true); // Buscar apenas planos ativos
-      setTrainingPlans(plans);
+      const response = await trainingService.getTrainingPlans(true);
+      setTrainingPlans(response.trainingPlans);
+      setCounters(response.counters);
 
       // Extrair treinos de hoje
       const today = getCurrentDayKey();
-      const workoutsToday = plans
+      const workoutsToday = response.trainingPlans
         .flatMap((plan) =>
           plan.workouts.map((workout) => ({
             ...workout,
-            id: workout.id, // Usar o ID real do workout que vem da API
-            planId: plan.id, // Manter referência ao plano
+            id: workout.id,
+            planId: plan.id,
           }))
         )
         .filter((workout) => workout.weekDays.includes(today));
@@ -59,6 +64,10 @@ export const WorkoutsScreen: React.FC = () => {
     } catch (error) {
       setTrainingPlans([]);
       setTodayWorkouts([]);
+      setCounters({
+        workoutsExecutedThisWeek: 0,
+        exercisesExecutedToday: 0,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -79,12 +88,21 @@ export const WorkoutsScreen: React.FC = () => {
     return days[today];
   };
 
-  // Mock data para estatísticas (você pode substituir pelos dados reais)
-  const mockStats = {
-    dailyGoal: 6, // Meta de exercícios diários do usuário
-    dailyCompleted: 2, // Exercícios completados hoje (mock)
-    weeklyGoal: 5, // Meta de treinos semanais
-    weeklyCompleted: 3, // Treinos completados esta semana (mock)
+  // Calcular metas baseadas nos treinos de hoje e da semana
+  const dailyGoal = todayWorkouts.reduce(
+    (sum, workout) => sum + workout.exercises.length,
+    0
+  );
+  const weeklyGoal = trainingPlans.reduce(
+    (sum, plan) => sum + plan.workouts.length,
+    0
+  );
+
+  const stats = {
+    dailyGoal: dailyGoal,
+    dailyCompleted: counters.exercisesExecutedToday,
+    weeklyGoal: weeklyGoal,
+    weeklyCompleted: counters.workoutsExecutedThisWeek,
   };
 
   // Obter todos os workouts de todos os planos ativos
@@ -177,10 +195,10 @@ export const WorkoutsScreen: React.FC = () => {
 
       {/* Card de Estatísticas */}
       <WorkoutStatsCard
-        dailyGoal={mockStats.dailyGoal}
-        dailyCompleted={mockStats.dailyCompleted}
-        weeklyGoal={mockStats.weeklyGoal}
-        weeklyCompleted={mockStats.weeklyCompleted}
+        dailyGoal={stats.dailyGoal}
+        dailyCompleted={stats.dailyCompleted}
+        weeklyGoal={stats.weeklyGoal}
+        weeklyCompleted={stats.weeklyCompleted}
       />
 
       {/* Cards de Músculos */}

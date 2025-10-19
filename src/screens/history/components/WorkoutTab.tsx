@@ -100,15 +100,20 @@ export const WorkoutTab: React.FC = () => {
 
   // Converter histórico para formato compatível com WorkoutExercisesList
   const selectedExercises = workoutHistory.flatMap((entry) =>
-    entry.workout_data.exercises_completed.map((exercise) => ({
+    entry.workout_data.exercises_completed.map((exercise, index) => ({
+      id: `${entry.id}-${index}`,
       name: exercise.name,
-      muscle_group: exercise.muscle_group,
+      muscle: exercise.muscle_group,
       sets: exercise.sets_completed,
       reps: exercise.reps_completed[0] || 0,
       weight: exercise.weight_used[0] || 0,
-      duration: Math.round(exercise.execution_time_seconds / 60),
-      completed: true,
-      workoutName: entry.workout_data.workout_name,
+      duration: exercise.execution_time_seconds,
+      restTime: exercise.average_rest_time_seconds,
+      completed: exercise.status === "completed",
+      time: new Date(exercise.completed_at).toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     }))
   );
 

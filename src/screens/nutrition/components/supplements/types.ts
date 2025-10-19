@@ -3,9 +3,14 @@ export interface Supplement {
   name: string;
   description: string;
   brand?: string;
-  category: "protein" | "vitamin" | "mineral" | "preworkout" | "other";
+  category?: "protein" | "vitamin" | "mineral" | "preworkout" | "other";
   dosage: string;
+  amount: string;
   frequency: string;
+  time?: string;
+  protein?: string;
+  carbohydrates?: string;
+  calories?: string;
   is_active: boolean;
   is_taken?: boolean;
   image?: any;

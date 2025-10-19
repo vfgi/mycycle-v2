@@ -3,11 +3,13 @@ import { ImageBackground } from "react-native";
 import { VStack, Text, HStack, Button, ButtonText } from "@gluestack-ui/themed";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { FIXED_COLORS } from "../../../theme/colors";
 import { useTranslation } from "../../../hooks/useTranslation";
 
 export const SupplementsHeaderCard: React.FC = () => {
   const { t } = useTranslation();
+  const navigation = useNavigation();
 
   return (
     <ImageBackground
@@ -24,17 +26,8 @@ export const SupplementsHeaderCard: React.FC = () => {
         end={{ x: 1, y: 1 }}
         style={{ padding: 20, minHeight: 200 }}
       >
-        <VStack
-          space="sm"
-          alignItems="center"
-          flex={1}
-          justifyContent="center"
-        >
-          <Ionicons
-            name="medical"
-            size={32}
-            color={FIXED_COLORS.text[50]}
-          />
+        <VStack space="sm" alignItems="center" flex={1} justifyContent="center">
+          <Ionicons name="medical" size={32} color={FIXED_COLORS.text[50]} />
           <Text
             color={FIXED_COLORS.text[50]}
             fontSize="$xl"
@@ -59,17 +52,10 @@ export const SupplementsHeaderCard: React.FC = () => {
             size="sm"
             bg={FIXED_COLORS.warning[500]}
             borderRadius="$full"
-            onPress={() => {
-              // TODO: Navegar para tela de criar suplemento
-              console.log("Criar novo suplemento");
-            }}
+            onPress={() => navigation.navigate("CreateSupplement" as never)}
           >
             <HStack alignItems="center" space="xs">
-              <Ionicons
-                name="add"
-                size={16}
-                color={FIXED_COLORS.text[950]}
-              />
+              <Ionicons name="add" size={16} color={FIXED_COLORS.text[950]} />
               <ButtonText
                 color={FIXED_COLORS.text[950]}
                 fontSize="$xs"

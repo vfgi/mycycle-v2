@@ -16,6 +16,7 @@ interface SimpleSupplementCardProps {
   supplement: Supplement;
   onPress: () => void;
   onToggleActive: () => void;
+  onEdit: () => void;
   onDelete: () => void;
 }
 
@@ -23,6 +24,7 @@ export const SimpleSupplementCard: React.FC<SimpleSupplementCardProps> = ({
   supplement,
   onPress,
   onToggleActive,
+  onEdit,
   onDelete,
 }) => {
   const { t } = useTranslation();
@@ -135,6 +137,19 @@ export const SimpleSupplementCard: React.FC<SimpleSupplementCardProps> = ({
                   thumbColor={FIXED_COLORS.text[50]}
                 />
               </HStack>
+
+              <Pressable
+                onPress={onEdit}
+                bg={FIXED_COLORS.background[700]}
+                borderRadius="$md"
+                p="$2"
+              >
+                <Ionicons
+                  name="create-outline"
+                  size={18}
+                  color={FIXED_COLORS.primary[400]}
+                />
+              </Pressable>
 
               <Pressable
                 onPress={onDelete}

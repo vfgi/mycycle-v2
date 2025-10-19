@@ -16,6 +16,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../hooks/useToast";
 import { SimpleMedicationCard } from "./components/SimpleMedicationCard";
 import { MedicationDetailsDrawer } from "./components/MedicationDetailsDrawer";
+import { medicationsService } from "../../services/medicationsService";
 import { Medication } from "./types";
 
 export const MedicationsManagementScreen: React.FC = () => {
@@ -43,46 +44,16 @@ export const MedicationsManagementScreen: React.FC = () => {
   const loadMedications = async () => {
     try {
       setIsLoading(true);
-      // TODO: Implementar serviço de medicamentos
-      const mockMedications: Medication[] = [
-        {
-          id: "1",
-          name: "Paracetamol",
-          description: "Analgésico e antipirético",
-          brand: "Tylenol",
-          category: "analgesic",
-          dosage: "500mg",
-          frequency: "A cada 8 horas",
-          is_active: true,
-          is_taken: false,
-          time_of_day: ["08:00", "16:00", "00:00"],
-        },
-        {
-          id: "2",
-          name: "Amoxicilina",
-          description: "Antibiótico",
-          brand: "Amoxil",
-          category: "antibiotic",
-          dosage: "875mg",
-          frequency: "A cada 12 horas",
-          is_active: true,
-          is_taken: false,
-          time_of_day: ["08:00", "20:00"],
-        },
-        {
-          id: "3",
-          name: "Ibuprofeno",
-          description: "Anti-inflamatório não esteroide",
-          brand: "Advil",
-          category: "antiinflammatory",
-          dosage: "400mg",
-          frequency: "A cada 6 horas",
-          is_active: false,
-          is_taken: false,
-          time_of_day: ["06:00", "12:00", "18:00", "00:00"],
-        },
-      ];
-      setMedications(mockMedications);
+      const data = await medicationsService.getMedications();
+
+      const medicationsWithDefaults = data.map((medication) => ({
+        ...medication,
+        dosage: medication.amount,
+        is_taken: false,
+        category: "other" as const,
+      }));
+
+      setMedications(medicationsWithDefaults as any);
     } catch (error) {
       console.error("Error loading medications:", error);
       setMedications([]);
@@ -101,7 +72,7 @@ export const MedicationsManagementScreen: React.FC = () => {
           medication.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           medication.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           medication.description
-            .toLowerCase()
+            ?.toLowerCase()
             .includes(searchQuery.toLowerCase())
       );
     }
@@ -131,8 +102,16 @@ export const MedicationsManagementScreen: React.FC = () => {
 
   const handleToggleActive = async (medication: Medication) => {
     try {
-      // TODO: Implementar chamada para API
-      console.log("Toggle active:", medication.id, !medication.is_active);
+      const medicationData = {
+        ...medication,
+        amount: medication.dosage || medication.amount,
+      };
+
+      await medicationsService.updateMedicationStatus(
+        medication.id,
+        medicationData as any,
+        !medication.is_active
+      );
 
       setMedications((prev) =>
         prev.map((s) =>
@@ -151,6 +130,10 @@ export const MedicationsManagementScreen: React.FC = () => {
     }
   };
 
+  const handleEditMedication = (medication: Medication) => {
+    (navigation as any).navigate("CreateMedication", { medication });
+  };
+
   const handleDeleteMedication = (medication: Medication) => {
     Alert.alert(
       t("medications.delete.title"),
@@ -165,8 +148,7 @@ export const MedicationsManagementScreen: React.FC = () => {
           style: "destructive",
           onPress: async () => {
             try {
-              // TODO: Implementar chamada para API
-              console.log("Delete medication:", medication.id);
+              await medicationsService.deleteMedication(medication.id);
 
               setMedications((prev) =>
                 prev.filter((s) => s.id !== medication.id)
@@ -362,6 +344,7 @@ export const MedicationsManagementScreen: React.FC = () => {
                         medication={medication}
                         onPress={() => handleMedicationPress(medication)}
                         onToggleActive={() => handleToggleActive(medication)}
+                        onEdit={() => handleEditMedication(medication)}
                         onDelete={() => handleDeleteMedication(medication)}
                       />
                     ))}

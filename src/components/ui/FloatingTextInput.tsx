@@ -76,10 +76,13 @@ export default function FloatingTextInput(
 
   // Calculate dynamic positions based on height/fontSize
   const initialLabelTop = useMemo(
-    () => CONTAINER_PADDING_TOP + inputHeight / 2.2 - labelFontSize / 2,
+    () =>
+      CONTAINER_PADDING_TOP +
+      (inputHeight || 50) / 2.2 -
+      (labelFontSize || 14) / 2,
     [inputHeight, labelFontSize]
   );
-  const translateYUp = useMemo(() => -inputHeight / 2, [inputHeight]);
+  const translateYUp = useMemo(() => -(inputHeight || 50) / 2, [inputHeight]);
   //End
 
   // Inicializar a animação se o campo já tiver valor
@@ -131,12 +134,12 @@ export default function FloatingTextInput(
       return "#F65936";
     }
     if (isFocused) {
-      return props.isFocusBorderColor;
+      return props.isFocusBorderColor || "#007AFF";
     }
     if (props.value) {
-      return props.isBlurValueBorderColor;
+      return props.isBlurValueBorderColor || "#666666";
     }
-    return props.isBlurBorderColor;
+    return props.isBlurBorderColor || "#333333";
   };
 
   const labelStyle = useAnimatedStyle(() => {
@@ -149,7 +152,7 @@ export default function FloatingTextInput(
           translateY: interpolate(
             animatedValue.value,
             [0, 1],
-            [0, translateYUp] // Use calculated value
+            [0, translateYUp || -25] // Use calculated value with fallback
           ),
         },
         {
@@ -159,7 +162,10 @@ export default function FloatingTextInput(
       color: interpolateColor(
         animatedValue.value,
         [0, 1],
-        [props.isBlurLabelColor, props.isFocusLabelColor]
+        [
+          props.isBlurLabelColor || "#999999",
+          props.isFocusLabelColor || "#007AFF",
+        ]
       ),
     };
   });
@@ -174,7 +180,7 @@ export default function FloatingTextInput(
           style={[
             styles.label,
             labelStyle,
-            { backgroundColor: props.backgroundColor },
+            { backgroundColor: props.backgroundColor || "transparent" },
           ]}
         >
           {props?.label}
@@ -188,8 +194,8 @@ export default function FloatingTextInput(
             styles.input,
             {
               height: inputHeight,
-              color: props.valueColor,
-              backgroundColor: props?.backgroundColor ?? "transparent",
+              color: props.valueColor || "#FFFFFF",
+              backgroundColor: props?.backgroundColor || "transparent",
               borderColor: getBorderColor(),
             },
             props?.style,

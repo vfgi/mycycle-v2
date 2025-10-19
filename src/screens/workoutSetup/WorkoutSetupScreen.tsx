@@ -269,45 +269,60 @@ export const WorkoutSetupScreen: React.FC = () => {
     try {
       setIsCreating(true);
 
-      const workouts = selectedDays.map((dayKey) => {
-        const exercises: TrainingExercise[] =
+      const workoutsToCreate = selectedDays.map((dayKey, dayIndex) => {
+        const exercises =
           selectedWorkoutExercises[dayKey]?.map((exercise, index) => {
             const mappedCategory = mapCategory(exercise.category);
             const mappedDifficulty = mapDifficulty(exercise.difficulty);
 
-            const exerciseData = {
+            const exerciseData: any = {
               name: exercise.name,
-              category: mappedCategory,
               muscle_group: exercise.muscle_group,
-              difficulty: mappedDifficulty,
-              equipment: exercise.equipment || "",
               sets: parseInt(exerciseConfigs[exercise.id]?.sets || "3"),
               reps: parseInt(exerciseConfigs[exercise.id]?.reps || "12"),
-              weight: parseFloat(exerciseConfigs[exercise.id]?.weight || "0"),
               order: index + 1,
-              instructions: exercise.instructions || "",
-              videoURL: exercise.imageURL || "",
-              imageURL: exercise.previewImage || "",
             };
+
+            if (mappedCategory) exerciseData.category = mappedCategory;
+            if (mappedDifficulty) exerciseData.difficulty = mappedDifficulty;
+            if (exercise.equipment) exerciseData.equipment = exercise.equipment;
+
+            const weight = parseFloat(
+              exerciseConfigs[exercise.id]?.weight || "0"
+            );
+            if (weight > 0) exerciseData.weight = weight;
+
+            if (exercise.instructions)
+              exerciseData.instructions = exercise.instructions;
+            if (exercise.imageURL) exerciseData.videoURL = exercise.imageURL;
+            if (exercise.previewImage)
+              exerciseData.imageURL = exercise.previewImage;
 
             return exerciseData;
           }) || [];
 
         const workoutName = generateWorkoutName(dayKey);
 
-        return {
+        const workoutData: any = {
           name: workoutName,
-          description: "",
+          description: planDescription || "",
           weekDays: [dayKey],
           exercises,
         };
+
+        // Se estiver editando e o workout existir, incluir o ID
+        if (isEditing && editPlan && editPlan.workouts[dayIndex]) {
+          workoutData.id = editPlan.workouts[dayIndex].id;
+        }
+
+        return workoutData;
       });
 
       const trainingPlanData: CreateTrainingPlanRequest = {
         name: planName,
         description: planDescription,
         is_active: editPlan?.is_active ?? true,
-        workouts,
+        workouts: workoutsToCreate,
       };
 
       if (isEditing && editPlan) {

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { VStack, HStack, Text, Pressable } from "@gluestack-ui/themed";
+import { useFocusEffect } from "@react-navigation/native";
 import { FIXED_COLORS } from "../../../theme/colors";
 import { useTranslation } from "../../../hooks/useTranslation";
+import { medicationsService } from "../../../services/medicationsService";
 import { Medication } from "../types";
 import { MedicationCard } from "./MedicationCard";
 import { MedicationDetailsDrawer } from "./MedicationDetailsDrawer";
@@ -18,40 +20,33 @@ export const MedicationsList: React.FC<MedicationsListProps> = ({
   const [selectedMedication, setSelectedMedication] =
     useState<Medication | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    loadMedications();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      loadMedications();
+    }, [])
+  );
 
   const loadMedications = async () => {
-    // TODO: Implementar serviço de medicamentos
-    const mockMedications: Medication[] = [
-      {
-        id: "1",
-        name: "Paracetamol",
-        description: "Analgésico e antipirético",
-        dosage: "500mg",
-        frequency: "A cada 8 horas",
-        category: "analgesic",
-        brand: "Tylenol",
-        is_active: true,
+    try {
+      setIsLoading(true);
+      const data = await medicationsService.getMedications();
+
+      const medicationsWithDefaults = data.map((medication) => ({
+        ...medication,
+        dosage: medication.amount,
         is_taken: false,
-        time_of_day: ["08:00", "16:00", "00:00"],
-      },
-      {
-        id: "2",
-        name: "Amoxicilina",
-        description: "Antibiótico",
-        dosage: "875mg",
-        frequency: "A cada 12 horas",
-        category: "antibiotic",
-        brand: "Amoxil",
-        is_active: true,
-        is_taken: false,
-        time_of_day: ["08:00", "20:00"],
-      },
-    ];
-    setMedications(mockMedications);
+        category: "other" as const,
+      }));
+
+      setMedications(medicationsWithDefaults.filter((m) => m.is_active));
+    } catch (error) {
+      console.error("Error loading medications:", error);
+      setMedications([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleMedicationPress = (medication: Medication) => {

@@ -357,16 +357,13 @@ export const AppNavigator: React.FC = () => {
               component={CreateSupplementScreen}
               options={({ route }) => ({
                 headerShown: true,
-                title: t("nutrition.supplements.create.title"),
+                headerTitle: () => <HeaderLogo />,
                 headerBackTitleVisible: false,
                 headerBackTitle: "",
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
                 headerTintColor: FIXED_COLORS.text[50],
-                headerTitleStyle: {
-                  fontWeight: "bold",
-                },
               })}
             />
             <Stack.Screen
@@ -408,16 +405,13 @@ export const AppNavigator: React.FC = () => {
               component={CreateMedicationScreen}
               options={({ route }) => ({
                 headerShown: true,
-                title: t("medications.create.title"),
+                headerTitle: () => <HeaderLogo />,
                 headerBackTitleVisible: false,
                 headerBackTitle: "",
                 headerStyle: {
                   backgroundColor: FIXED_COLORS.background[800],
                 },
                 headerTintColor: FIXED_COLORS.text[50],
-                headerTitleStyle: {
-                  fontWeight: "bold",
-                },
               })}
             />
           </>

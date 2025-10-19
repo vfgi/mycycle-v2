@@ -25,6 +25,7 @@ import { useNavigation } from "@react-navigation/native";
 import { CreateReminderModal } from "./CreateReminderModal";
 import { useOneSignal } from "../../hooks/useOneSignal";
 import { useLegacyNotifications } from "../../hooks/useLegacyNotifications";
+import { useFocusEffect } from "@react-navigation/native";
 
 export const NotificationsScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -54,9 +55,11 @@ export const NotificationsScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      loadData();
+    }, [])
+  );
 
   const loadData = async () => {
     try {

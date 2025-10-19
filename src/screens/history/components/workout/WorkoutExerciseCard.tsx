@@ -28,17 +28,6 @@ export const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
     return colorMap[muscle] || FIXED_COLORS.text[400];
   };
 
-  const formatRestTime = (seconds: number) => {
-    if (seconds < 60) {
-      return `${seconds}s`;
-    }
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return remainingSeconds > 0
-      ? `${minutes}m ${remainingSeconds}s`
-      : `${minutes}m`;
-  };
-
   return (
     <Box
       key={exercise.id}
@@ -99,7 +88,7 @@ export const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
               fontSize="$xs"
               fontWeight="$medium"
             >
-              {exercise.duration}min
+              {formatDuration(exercise.duration)}
             </Text>
           </HStack>
         </HStack>
@@ -140,7 +129,7 @@ export const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
               fontSize="$xs"
               fontWeight="$medium"
             >
-              {formatRestTime(exercise.restTime)}
+              {formatDuration(exercise.restTime)}
             </Text>
           </VStack>
 
@@ -153,7 +142,7 @@ export const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
               fontSize="$xs"
               fontWeight="$medium"
             >
-              {exercise.duration}min
+              {formatDuration(exercise.duration)}
             </Text>
           </VStack>
         </HStack>

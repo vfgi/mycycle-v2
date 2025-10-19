@@ -3,6 +3,7 @@ import {
   TrainingPlan,
   TrainingPlanResponse,
   CreateTrainingPlanRequest,
+  TrainingPlansWithCounters,
 } from "../types/training";
 
 export class TrainingService {
@@ -21,13 +22,14 @@ export class TrainingService {
     if (!response.data) {
       throw new Error("Resposta inválida do servidor");
     }
-
     return response.data;
   }
 
-  async getTrainingPlans(isActive?: boolean): Promise<TrainingPlanResponse[]> {
+  async getTrainingPlans(
+    isActive?: boolean
+  ): Promise<TrainingPlansWithCounters> {
     const queryParam = isActive !== undefined ? `?is_active=${isActive}` : "";
-    const response = await apiService.get<TrainingPlanResponse[]>(
+    const response = await apiService.get<TrainingPlansWithCounters>(
       `/training-plans${queryParam}`
     );
 
