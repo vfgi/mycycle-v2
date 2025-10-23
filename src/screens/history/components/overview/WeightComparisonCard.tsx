@@ -13,14 +13,18 @@ interface WeightComparisonCardProps {
   periodLabel: string;
   colors?: string[];
   processedData?: ProcessedBodyData;
+  comparisonDate?: string;
+  hasComparisonData?: boolean;
 }
 
 export const WeightComparisonCard: React.FC<WeightComparisonCardProps> = ({
   oldestRecord,
   latestRecord,
   periodLabel,
-  colors = [FIXED_COLORS.primary[500], FIXED_COLORS.secondary[300]],
+  colors = [FIXED_COLORS.primary[500], FIXED_COLORS.primary[600]],
   processedData,
+  comparisonDate,
+  hasComparisonData = false,
 }) => {
   const { t } = useTranslation();
 
@@ -78,6 +82,19 @@ export const WeightComparisonCard: React.FC<WeightComparisonCardProps> = ({
     return diff > 0 ? FIXED_COLORS.success[500] : FIXED_COLORS.error[500];
   };
 
+  const formatComparisonDate = (dateString?: string) => {
+    if (!dateString) return periodLabel;
+
+    const date = new Date(dateString);
+    const formatted = date.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+
+    return `${t("history.overview.comparingWith")} ${formatted}`;
+  };
+
   return (
     <LinearGradient
       colors={colors as [string, string]}
@@ -121,7 +138,7 @@ export const WeightComparisonCard: React.FC<WeightComparisonCardProps> = ({
               fontSize="$xs"
               opacity={0.8}
             >
-              {periodLabel}
+              {formatComparisonDate(comparisonDate)}
             </Text>
           </VStack>
         </HStack>
@@ -129,7 +146,26 @@ export const WeightComparisonCard: React.FC<WeightComparisonCardProps> = ({
         {/* Comparação de Peso */}
         <VStack space="sm">
           <HStack justifyContent="space-between" alignItems="center">
-            {initialWeight && (
+            {hasComparisonData ? (
+              initialWeight && (
+                <VStack alignItems="center" flex={1}>
+                  <Text
+                    color={FIXED_COLORS.background[0]}
+                    fontSize="$xs"
+                    opacity={0.8}
+                  >
+                    {t("history.overview.initial")}
+                  </Text>
+                  <Text
+                    color={FIXED_COLORS.background[0]}
+                    fontSize="$xl"
+                    fontWeight="$bold"
+                  >
+                    {initialWeight.toFixed(1)}kg
+                  </Text>
+                </VStack>
+              )
+            ) : (
               <VStack alignItems="center" flex={1}>
                 <Text
                   color={FIXED_COLORS.background[0]}
@@ -143,7 +179,7 @@ export const WeightComparisonCard: React.FC<WeightComparisonCardProps> = ({
                   fontSize="$xl"
                   fontWeight="$bold"
                 >
-                  {initialWeight.toFixed(1)}kg
+                  ---
                 </Text>
               </VStack>
             )}
@@ -157,9 +193,13 @@ export const WeightComparisonCard: React.FC<WeightComparisonCardProps> = ({
                 mb="$1"
               >
                 <Ionicons
-                  name={weightDiff >= 0 ? "trending-up" : "trending-down"}
+                  name={
+                    hasComparisonData && weightDiff >= 0
+                      ? "trending-up"
+                      : "trending-down"
+                  }
                   size={16}
-                  color={getDifferenceColor(weightDiff)}
+                  color={getDifferenceColor(hasComparisonData ? weightDiff : 0)}
                 />
               </Box>
               <Text
@@ -167,7 +207,7 @@ export const WeightComparisonCard: React.FC<WeightComparisonCardProps> = ({
                 fontSize="$sm"
                 fontWeight="$semibold"
               >
-                {formatDifference(weightDiff, "kg")}
+                {hasComparisonData ? formatDifference(weightDiff, "kg") : "---"}
               </Text>
             </VStack>
 

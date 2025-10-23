@@ -9,6 +9,7 @@ interface Step0PlanInfoProps {
   planDescription: string;
   onPlanNameChange: (name: string) => void;
   onPlanDescriptionChange: (description: string) => void;
+  isEditing?: boolean;
 }
 
 export const Step0PlanInfo: React.FC<Step0PlanInfoProps> = ({
@@ -16,6 +17,7 @@ export const Step0PlanInfo: React.FC<Step0PlanInfoProps> = ({
   planDescription,
   onPlanNameChange,
   onPlanDescriptionChange,
+  isEditing = false,
 }) => {
   const { t } = useTranslation();
 

@@ -9,7 +9,7 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert, KeyboardAvoidingView, Platform } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { SafeContainer } from "../../components";
 import { FIXED_COLORS } from "../../theme/colors";
 import { useTranslation } from "../../hooks/useTranslation";
@@ -30,6 +30,7 @@ import { useToast } from "../../hooks/useToast";
 
 export const CreateMealScreen: React.FC = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const { t } = useTranslation();
   const { showSuccess, showError } = useToast();
   const { unitSystem } = useUnits();
@@ -37,6 +38,10 @@ export const CreateMealScreen: React.FC = () => {
     SelectedIngredient[]
   >([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingMealId, setEditingMealId] = useState<string | null>(null);
+
+  const params = route.params as any;
+  const mealToEdit = params?.meal;
 
   const {
     control,
@@ -47,11 +52,29 @@ export const CreateMealScreen: React.FC = () => {
   } = useForm<MealFormData>({
     resolver: zodResolver(mealSchema),
     defaultValues: {
-      name: "",
-      meal_type: undefined,
-      description: "",
+      name: mealToEdit?.name || "",
+      meal_type: mealToEdit?.meal_type || undefined,
+      description: mealToEdit?.description || "",
     },
   });
+
+  React.useEffect(() => {
+    if (mealToEdit) {
+      setEditingMealId(mealToEdit.id);
+      const ingredients = mealToEdit.ingredients.map((ing: any) => ({
+        id: ing.name,
+        name: ing.name,
+        calories: ing.calories || 0,
+        protein: ing.protein || 0,
+        carbs: ing.carbs || 0,
+        fat: ing.fat || 0,
+        fiber: ing.fiber || 0,
+        sodium: ing.sodium || 0,
+        quantity: ing.quantity || 100,
+      }));
+      setSelectedIngredients(ingredients);
+    }
+  }, [mealToEdit]);
 
   const selectedMealType = watch("meal_type");
 
@@ -90,13 +113,13 @@ export const CreateMealScreen: React.FC = () => {
   const calculateTotals = () => {
     return selectedIngredients.reduce(
       (acc, ing) => {
-        const multiplier = (ing.quantity || 0) / 100;
+        // Os valores já vêm como totais, não precisamos multiplicar
         return {
-          calories: acc.calories + (ing.calories || 0) * multiplier,
-          protein: acc.protein + (ing.protein || 0) * multiplier,
-          carbs: acc.carbs + (ing.carbs || 0) * multiplier,
-          fat: acc.fat + (ing.fat || 0) * multiplier,
-          fiber: acc.fiber + (ing.fiber || 0) * multiplier,
+          calories: acc.calories + (ing.calories || 0),
+          protein: acc.protein + (ing.protein || 0),
+          carbs: acc.carbs + (ing.carbs || 0),
+          fat: acc.fat + (ing.fat || 0),
+          fiber: acc.fiber + (ing.fiber || 0),
         };
       },
       { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 }
@@ -114,18 +137,15 @@ export const CreateMealScreen: React.FC = () => {
     try {
       const ingredients: Ingredient[] = selectedIngredients.map(
         (ing, index) => {
-          const multiplier = (ing.quantity || 0) / 100;
           return {
             name: ing.name || "",
             description: "",
-            calories: Math.round((ing.calories || 0) * multiplier),
-            protein: parseFloat(((ing.protein || 0) * multiplier).toFixed(1)),
-            carbs: parseFloat(((ing.carbs || 0) * multiplier).toFixed(1)),
-            fat: parseFloat(((ing.fat || 0) * multiplier).toFixed(1)),
-            fiber: parseFloat(((ing.fiber || 0) * multiplier).toFixed(1)),
-            sodium: ing.sodium
-              ? Math.round((ing.sodium || 0) * multiplier)
-              : undefined,
+            calories: Math.round(ing.calories || 0),
+            protein: parseFloat((ing.protein || 0).toFixed(1)),
+            carbs: parseFloat((ing.carbs || 0).toFixed(1)),
+            fat: parseFloat((ing.fat || 0).toFixed(1)),
+            fiber: parseFloat((ing.fiber || 0).toFixed(1)),
+            sodium: ing.sodium ? Math.round(ing.sodium || 0) : undefined,
             quantity: ing.quantity || 0,
             order: index + 1,
           };
@@ -138,17 +158,36 @@ export const CreateMealScreen: React.FC = () => {
         ingredients,
       };
 
-      const result = await mealsService.createMeal(payload);
+      let result;
+      if (editingMealId) {
+        // PUT request para editar
+        result = await mealsService.updateMeal(editingMealId, payload);
+      } else {
+        // POST request para criar
+        result = await mealsService.createMeal(payload);
+      }
 
       if (result) {
-        showSuccess(t("nutrition.meals.createSuccess"));
+        showSuccess(
+          editingMealId
+            ? t("nutrition.meals.updateSuccess")
+            : t("nutrition.meals.createSuccess")
+        );
         navigation.goBack();
       } else {
-        showError(t("nutrition.meals.createError"));
+        showError(
+          editingMealId
+            ? t("nutrition.meals.updateError")
+            : t("nutrition.meals.createError")
+        );
       }
     } catch (error) {
-      console.error("❌ Erro ao criar refeição:", error);
-      showError(t("nutrition.meals.createError"));
+      console.error("❌ Erro:", error);
+      showError(
+        editingMealId
+          ? t("nutrition.meals.updateError")
+          : t("nutrition.meals.createError")
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -226,7 +265,9 @@ export const CreateMealScreen: React.FC = () => {
                 fontSize="$md"
               >
                 {isSubmitting
-                  ? t("common.loading")
+                  ? t("common.saving")
+                  : editingMealId
+                  ? t("common.update")
                   : t("nutrition.meals.createMeal")}
               </ButtonText>
             </Button>

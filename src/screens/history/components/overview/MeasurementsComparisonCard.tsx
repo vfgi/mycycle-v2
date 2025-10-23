@@ -11,6 +11,9 @@ interface MeasurementsComparisonCardProps {
   latestRecord?: MeasurementRecord;
   periodLabel: string;
   colors?: string[];
+  difference?: Record<string, number>;
+  comparisonDate?: string;
+  hasComparisonData?: boolean;
 }
 
 export const MeasurementsComparisonCard: React.FC<
@@ -20,6 +23,9 @@ export const MeasurementsComparisonCard: React.FC<
   latestRecord,
   periodLabel,
   colors = [FIXED_COLORS.success[500], FIXED_COLORS.success[600]],
+  difference,
+  comparisonDate,
+  hasComparisonData = false,
 }) => {
   const { t } = useTranslation();
 
@@ -78,6 +84,19 @@ export const MeasurementsComparisonCard: React.FC<
     return diff > 0 ? FIXED_COLORS.success[500] : FIXED_COLORS.error[500];
   };
 
+  const formatComparisonDate = (dateString?: string) => {
+    if (!dateString) return periodLabel;
+
+    const date = new Date(dateString);
+    const formatted = date.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+
+    return `${t("history.overview.comparingWith")} ${formatted}`;
+  };
+
   return (
     <LinearGradient
       colors={colors as [string, string]}
@@ -121,7 +140,7 @@ export const MeasurementsComparisonCard: React.FC<
               fontSize="$xs"
               opacity={0.8}
             >
-              {periodLabel}
+              {formatComparisonDate(comparisonDate)}
             </Text>
           </VStack>
         </HStack>

@@ -17,6 +17,7 @@ import { WeightRegisterDrawer } from "../screens/home/WeightRegisterDrawer";
 import { goalsService } from "../services/goalsService";
 import { Goals } from "../types/goals";
 import { useFocusEffect } from "@react-navigation/native";
+import { dailyDataStorage, DailyData } from "../services/dailyDataStorage";
 
 interface StatsData {
   calories: {
@@ -87,15 +88,18 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
   const { getMacroUnit, convertWeight, convertMacronutrient } = useUnits();
   const [isWeightDrawerOpen, setIsWeightDrawerOpen] = useState(false);
   const [goals, setGoals] = useState<Goals | null>(null);
+  const [dailyData, setDailyData] = useState<DailyData | null>(null);
 
   useEffect(() => {
     loadGoals();
+    loadDailyData();
   }, []);
 
-  // Recarrega os goals sempre que a tela ganha foco
+  // Recarrega os goals e dados diários sempre que a tela ganha foco
   useFocusEffect(
     React.useCallback(() => {
       loadGoals();
+      loadDailyData();
     }, [])
   );
 
@@ -108,11 +112,40 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
     }
   };
 
+  const loadDailyData = async () => {
+    try {
+      // Usar data local ao invés de UTC
+      const today = new Date();
+      const todayLocal = `${today.getFullYear()}-${String(
+        today.getMonth() + 1
+      ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+      const data = await dailyDataStorage.getDailyData(todayLocal);
+      setDailyData(data);
+    } catch (error) {
+      console.error("Error loading daily data:", error);
+    }
+  };
+
   // Dados reais dos goals ou fallback para mock data
-  const currentWeightKg = user?.measurements?.weight || data.weight.current;
+  const currentWeightKg =
+    dailyData?.weight?.weight ||
+    user?.measurements?.weight ||
+    data.weight.current;
   const goalWeightKg = goals?.targetWeight || data.weight.goal;
   const caloriesGoal = goals?.targetCalories || data.calories.goal;
   const exerciseGoal = goals?.dailyExercises || data.exercise.goal;
+
+  // Dados reais de consumo do storage
+  const realCaloriesConsumed =
+    dailyData?.consumption?.calories || data.calories.consumed;
+  const realProteinConsumed =
+    dailyData?.consumption?.protein || data.macros.protein.current;
+  const realCarbsConsumed =
+    dailyData?.consumption?.carbs || data.macros.carbs.current;
+  const realFatConsumed =
+    dailyData?.consumption?.fat || data.macros.fat.current;
+  const realExercisesCompleted =
+    dailyData?.exercise?.exercisesCompleted || data.exercise.current;
 
   // Converter macronutrientes para unidade atual (tanto current quanto goal)
   const proteinGoalConverted = goals?.targetProtein
@@ -126,15 +159,10 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
     : data.macros.fat.goal;
 
   // Converter valores atuais (consumidos) para unidade atual
-  const proteinCurrentConverted = convertMacronutrient(
-    data.macros.protein.current
-  ).value;
-  const carbsCurrentConverted = convertMacronutrient(
-    data.macros.carbs.current
-  ).value;
-  const fatCurrentConverted = convertMacronutrient(
-    data.macros.fat.current
-  ).value;
+  const proteinCurrentConverted =
+    convertMacronutrient(realProteinConsumed).value;
+  const carbsCurrentConverted = convertMacronutrient(realCarbsConsumed).value;
+  const fatCurrentConverted = convertMacronutrient(realFatConsumed).value;
 
   const getProgressPercentage = (current: number, goal: number) => {
     if (goal === 0) return 0;
@@ -148,7 +176,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
   };
 
   const caloriesPercentage = getProgressPercentage(
-    data.calories.consumed,
+    realCaloriesConsumed,
     caloriesGoal
   );
   const caloriesColor = getCaloriesColor(caloriesPercentage);
@@ -241,7 +269,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
         <VStack space="xs" flex={1}>
           <StatItem
             label="Calorias Consumidas"
-            current={data.calories.consumed}
+            current={realCaloriesConsumed}
             goal={caloriesGoal}
             unit="kcal"
             indicatorColor={caloriesColor}
@@ -273,7 +301,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
 
           <StatItem
             label="Exercícios Realizados"
-            current={data.exercise.current}
+            current={realExercisesCompleted}
             goal={exerciseGoal}
             unit="exercícios"
             indicatorColor={exerciseColor}
@@ -285,7 +313,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
           <CircularChart
             data={{
               calories: {
-                current: data.calories.consumed,
+                current: realCaloriesConsumed,
                 goal: caloriesGoal,
               },
               weight: {
@@ -293,7 +321,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
                 goal: goalWeightKg,
               },
               exercise: {
-                current: data.exercise.current,
+                current: realExercisesCompleted,
                 goal: exerciseGoal,
               },
             }}

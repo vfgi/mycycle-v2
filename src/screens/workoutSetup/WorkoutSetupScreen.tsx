@@ -387,6 +387,7 @@ export const WorkoutSetupScreen: React.FC = () => {
             planDescription={planDescription}
             onPlanNameChange={setPlanName}
             onPlanDescriptionChange={setPlanDescription}
+            isEditing={isEditing}
           />
         );
       case 1:

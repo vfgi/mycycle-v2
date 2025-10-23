@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { VStack, HStack, Text, Pressable } from "@gluestack-ui/themed";
+import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { FIXED_COLORS } from "../../../theme/colors";
 import { useTranslation } from "../../../hooks/useTranslation";
@@ -33,12 +34,36 @@ export const MedicationsList: React.FC<MedicationsListProps> = ({
       setIsLoading(true);
       const data = await medicationsService.getMedications();
 
-      const medicationsWithDefaults = data.map((medication) => ({
-        ...medication,
-        dosage: medication.amount,
-        is_taken: false,
-        category: "other" as const,
-      }));
+      // Usar data local do dispositivo em vez de UTC
+      const today = new Date();
+      const todayLocal = `${today.getFullYear()}-${String(
+        today.getMonth() + 1
+      ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+      console.log("🔍 Today's date (Local - Medications):", todayLocal);
+      console.log("🔍 Device time:", today.toLocaleString());
+
+      const medicationsWithDefaults = data.map((medication: any) => {
+        const lastConsumedDate = medication.last_consumed_at
+          ? medication.last_consumed_at.split("T")[0]
+          : null;
+        const isTakenToday = lastConsumedDate === todayLocal;
+
+        console.log("💊 Medication:", {
+          name: medication.name,
+          lastConsumedAt: medication.last_consumed_at,
+          lastConsumedDate,
+          todayLocal,
+          isTakenToday,
+          match: lastConsumedDate === todayLocal,
+        });
+
+        return {
+          ...medication,
+          dosage: medication.amount,
+          is_taken: isTakenToday,
+          category: "other" as const,
+        };
+      });
 
       setMedications(medicationsWithDefaults.filter((m) => m.is_active));
     } catch (error) {
@@ -60,11 +85,81 @@ export const MedicationsList: React.FC<MedicationsListProps> = ({
   };
 
   const handleToggleTaken = (medicationId: string) => {
+    const medication = medications.find((m) => m.id === medicationId);
+    if (!medication) return;
+
+    // Usar data local do dispositivo
+    const today = new Date();
+    const todayLocal = `${today.getFullYear()}-${String(
+      today.getMonth() + 1
+    ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
     setMedications((prev) =>
       prev.map((m) =>
         m.id === medicationId ? { ...m, is_taken: !m.is_taken } : m
       )
     );
+
+    // Se já foi marcado como tomado, remover do histórico
+    if (medication.is_taken) {
+      medicationsService
+        .removeMedicationHistory({
+          medication_id: medicationId,
+          date: todayLocal,
+        })
+        .then(() => {
+          loadMedications();
+        })
+        .catch((error: any) => {
+          console.error("Error removing medication history:", error);
+          setMedications((prev) =>
+            prev.map((m) =>
+              m.id === medicationId ? { ...m, is_taken: !m.is_taken } : m
+            )
+          );
+        });
+    } else {
+      // Registrar como tomado
+      const now = new Date();
+      // Criar ISO string com a data/hora local (não UTC)
+      const localISOString = new Date(
+        now.getTime() - now.getTimezoneOffset() * 60000
+      ).toISOString();
+
+      const payload = {
+        medication_id: medicationId,
+        recorded_at: localISOString,
+        timezone: "America/Sao_Paulo",
+        notes: "",
+      };
+      console.log("💊 Sending medication history payload:", payload);
+      console.log(
+        "🕐 Time comparison - Local:",
+        now.toLocaleString(),
+        "ISO:",
+        localISOString
+      );
+
+      medicationsService
+        .recordMedicationHistory(payload)
+        .then(() => {
+          console.log("✅ Medication history recorded successfully");
+          loadMedications();
+        })
+        .catch((error: any) => {
+          console.error("❌ Error recording medication history:", error);
+          console.error("Error details:", {
+            message: error.message,
+            response: error.response,
+            stack: error.stack,
+          });
+          setMedications((prev) =>
+            prev.map((m) =>
+              m.id === medicationId ? { ...m, is_taken: !m.is_taken } : m
+            )
+          );
+        });
+    }
   };
 
   if (medications.length === 0) {

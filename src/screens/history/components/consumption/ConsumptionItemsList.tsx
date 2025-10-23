@@ -8,10 +8,12 @@ import { ConsumptionItemCard } from "./ConsumptionItemCard";
 
 interface ConsumptionItemsListProps {
   items: ConsumptionItem[];
+  onItemPress?: (mealHistoryEntry: any) => void;
 }
 
 export const ConsumptionItemsList: React.FC<ConsumptionItemsListProps> = ({
   items,
+  onItemPress,
 }) => {
   const { t } = useTranslation();
 
@@ -20,7 +22,7 @@ export const ConsumptionItemsList: React.FC<ConsumptionItemsListProps> = ({
   }
 
   return (
-    <VStack space="sm" mt="$4">
+    <VStack space="sm" width="100%">
       <HStack alignItems="center" space="sm">
         <Ionicons
           name="list-outline"
@@ -45,7 +47,11 @@ export const ConsumptionItemsList: React.FC<ConsumptionItemsListProps> = ({
 
       <VStack space="xs">
         {items.map((item) => (
-          <ConsumptionItemCard key={item.id} item={item} />
+          <ConsumptionItemCard
+            key={item.id}
+            item={item}
+            onPress={() => onItemPress?.(item.mealHistoryEntry)}
+          />
         ))}
       </VStack>
     </VStack>

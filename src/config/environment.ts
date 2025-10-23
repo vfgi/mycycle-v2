@@ -16,7 +16,7 @@ const getEnvironmentConfig = (): EnvironmentConfig => {
   const isDev = __DEV__;
 
   let environment: Environment = "development";
-  let apiBaseUrl = "https://api.mycycle.com";
+  let apiBaseUrl = "https://api.dev.mycycleht.com";
 
   const envFromExpo = process.env.EXPO_PUBLIC_ENVIRONMENT;
   const envFromNode = process.env.NODE_ENV;
@@ -47,7 +47,7 @@ const getEnvironmentConfig = (): EnvironmentConfig => {
         break;
       case "production":
       default:
-        apiBaseUrl = "https://api.mycycleht.com";
+        apiBaseUrl = "https://api.dev.mycycleht.com";
         break;
     }
   }
@@ -56,8 +56,9 @@ const getEnvironmentConfig = (): EnvironmentConfig => {
     ? parseInt(process.env.EXPO_PUBLIC_API_TIMEOUT, 10)
     : 30000;
 
-  const oneSignalAppId = process.env.EXPO_PUBLIC_ONESIGNAL_APP_ID || 
-    Constants.expoConfig?.extra?.oneSignalAppId || 
+  const oneSignalAppId =
+    process.env.EXPO_PUBLIC_ONESIGNAL_APP_ID ||
+    Constants.expoConfig?.extra?.oneSignalAppId ||
     "";
 
   return {

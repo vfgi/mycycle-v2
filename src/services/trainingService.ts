@@ -5,6 +5,7 @@ import {
   CreateTrainingPlanRequest,
   TrainingPlansWithCounters,
 } from "../types/training";
+import { dailyDataStorage, DailyExerciseData } from "./dailyDataStorage";
 
 export class TrainingService {
   async createTrainingPlan(
@@ -40,6 +41,9 @@ export class TrainingService {
     if (!response.data) {
       throw new Error("Resposta inválida do servidor");
     }
+
+    // Salvar dados de exercícios no storage para a tela home
+    await this.updateDailyExerciseData(response.data);
 
     return response.data;
   }
@@ -126,6 +130,72 @@ export class TrainingService {
     }
 
     return response.data;
+  }
+
+  async updateDailyExerciseData(
+    data: TrainingPlansWithCounters
+  ): Promise<void> {
+    try {
+      // Usar data local ao invés de UTC
+      const today = new Date();
+      const todayLocal = `${today.getFullYear()}-${String(
+        today.getMonth() + 1
+      ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
+      // Obter o dia atual da semana
+      const getCurrentDayKey = (): string => {
+        const days = [
+          "sunday",
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday",
+        ];
+        const todayIndex = new Date().getDay();
+        return days[todayIndex];
+      };
+
+      const currentDay = getCurrentDayKey();
+
+      // Calcular exercícios de hoje (treinos que devem ser executados hoje)
+      const todayWorkouts = data.trainingPlans
+        .flatMap((plan) =>
+          plan.workouts.map((workout) => ({
+            ...workout,
+            planId: plan.id,
+          }))
+        )
+        .filter((workout) => workout.weekDays.includes(currentDay));
+
+      const totalExercisesToday = todayWorkouts.reduce(
+        (acc, workout) => acc + workout.exercises.length,
+        0
+      );
+
+      // Usar os counters da API para exercícios executados
+      const exercisesExecutedToday = data.counters.exercisesExecutedToday;
+
+      // Calcular duração total (aproximada) - 3 minutos por exercício
+      const totalDuration = exercisesExecutedToday * 3 * 60; // 3 minutos por exercício
+
+      // Calcular calorias queimadas (aproximada) - 15 calorias por exercício
+      const caloriesBurned = exercisesExecutedToday * 15; // 15 calorias por exercício
+
+      const exerciseData: DailyExerciseData = {
+        date: todayLocal,
+        exercisesCompleted: exercisesExecutedToday,
+        totalExercises: totalExercisesToday, // Total de exercícios de hoje
+        totalDuration: totalDuration,
+        caloriesBurned: caloriesBurned,
+        lastUpdated: new Date().toISOString(),
+      };
+
+      await dailyDataStorage.setDailyExerciseData(exerciseData);
+    } catch (error) {
+      console.error("Error updating daily exercise data:", error);
+    }
   }
 }
 

@@ -27,6 +27,7 @@ export interface Meal {
   image: any; // Para imagens locais
   is_consumed?: boolean;
   active: boolean;
+  last_consumed_at?: string; // Data da última vez que foi consumida
 }
 
 export interface DietPlan {

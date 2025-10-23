@@ -2,6 +2,19 @@ import { apiService } from "./api";
 import { userStorage } from "./userStorage";
 import { User } from "../types/auth";
 
+export interface MeasurementComparison {
+  current: {
+    date: string;
+    measurements: Record<string, number>;
+  };
+  result: {
+    date: string;
+    measurements: Record<string, number>;
+    notes?: string;
+    difference: Record<string, number>;
+  };
+}
+
 export class UserService {
   async getProfile(): Promise<User> {
     const response = await apiService.get<User>("/clients/me/profile");
@@ -45,6 +58,39 @@ export class UserService {
     } catch (error) {
       console.error("Error saving updated user profile to storage:", error);
       // Não interrompe o fluxo se falhar ao salvar no storage
+    }
+
+    return response.data;
+  }
+
+  async getMeasurementsComparison(
+    period: "week" | "month" | "3months" | "6months" | "year" | "first" | "all"
+  ): Promise<MeasurementComparison> {
+    const userProfile = await userStorage.getUserProfile();
+    const clientId = userProfile?.id;
+
+    if (!clientId) {
+      throw new Error("Client ID não encontrado");
+    }
+
+    const endpoint = `/clients/${clientId}/measurements-comparison?period=${period}`;
+    console.log("📍 userService - Calling endpoint:", endpoint);
+
+    const response = await apiService.get<MeasurementComparison>(endpoint);
+
+    console.log("📍 userService - Response:", {
+      hasError: !!response.error,
+      error: response.error,
+      hasData: !!response.data,
+      response,
+    });
+
+    if (response.error) {
+      throw new Error(response.error);
+    }
+
+    if (!response.data) {
+      throw new Error("Resposta inválida do servidor");
     }
 
     return response.data;

@@ -79,10 +79,25 @@ export const AllWorkoutsScreen: React.FC = () => {
   };
 
   const isWorkoutCompleted = (workout: WorkoutSession) => {
+    // Verificar se foi executado hoje usando lastTimeExecuted
+    if (workout.lastTimeExecuted) {
+      const lastExecuted = new Date(workout.lastTimeExecuted);
+      const today = new Date();
+      const isToday = lastExecuted.toDateString() === today.toDateString();
+      return isToday;
+    }
+
+    // Fallback para o histórico antigo
     return workout.history && workout.history.length > 0;
   };
 
   const getLastWorkoutDate = (workout: WorkoutSession) => {
+    // Priorizar lastTimeExecuted se disponível
+    if (workout.lastTimeExecuted) {
+      return formatDate(workout.lastTimeExecuted);
+    }
+
+    // Fallback para o histórico antigo
     if (!workout.history || workout.history.length === 0) {
       return t("workouts.neverExecuted");
     }

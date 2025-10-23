@@ -80,6 +80,7 @@
     "save": "Salvar",
     "saving": "Salvando...",
     "edit": "Editar",
+    "update": "Atualizar",
     "delete": "Excluir",
     "deleting": "Excluindo...",
     "back": "Voltar",
@@ -177,6 +178,7 @@
         "carbs": "Carboidratos",
         "fat": "Gordura"
       },
+      "noData": "Nenhum dado disponível",
       "comingSoonDescription": "Estamos desenvolvendo uma ferramenta completa para acompanhamento nutricional com base de dados de alimentos brasileiros.",
       "featuresTitle": "Recursos em Desenvolvimento",
       "features": {
@@ -207,6 +209,9 @@
       "noMealsFound": "Nenhuma refeição cadastrada",
       "viewAll": "Ver todas",
       "noMeals": "Nenhuma refeição disponível",
+      "addedToHistory": "Refeição adicionada ao histórico",
+      "removedFromHistory": "Refeição removida do histórico",
+      "toggleError": "Erro ao atualizar consumo da refeição",
       "ingredients": "ingredientes",
       "nutritionalInfo": "Informações Nutricionais",
       "preparationInfo": "Informações de Preparo",
@@ -235,6 +240,7 @@
       "activatedSuccess": "Refeição ativada com sucesso!",
       "deactivatedSuccess": "Refeição desativada com sucesso!",
       "updateError": "Erro ao atualizar refeição. Tente novamente.",
+      "updateSuccess": "Refeição atualizada com sucesso!",
       "types": {
         "breakfast": "Café da Manhã",
         "snack": "Lanche",
@@ -290,7 +296,7 @@
         "protein": "Proteína (g)",
         "carbohydrates": "Carboidratos (g)",
         "calories": "Calorias (kcal)",
-        "description": "Descrição",
+        "descriptionLabel": "Descrição",
         "descriptionPlaceholder": "Descreva o suplemento...",
         "placeholders": {
           "name": "Ex: Whey Protein",
@@ -734,6 +740,9 @@
   "workouts": {
     "noWorkouts": "Nenhum treino criado",
     "noWorkoutsDescription": "Você ainda não criou nenhum plano de treino. Comece criando seu primeiro treino personalizado ou use nossa ferramenta de IA.",
+    "createFirstPlan": "Você ainda não criou nenhum treino. Crie um novo plano de treino para começar a treinar.",
+    "createNewPlan": "Crie um novo plano de treino",
+    "createNewPlanDescription": "Expanda seus treinos criando novos planos personalizados de acordo com suas metas.",
     "createCustomPlan": "Criar meu próprio plano",
     "createWithAI": "Criar com IA",
     "goPremium": "Fazer Upgrade",
@@ -761,6 +770,7 @@
     "noWorkoutsToday": "Nenhum treino para hoje",
     "noWorkoutsTodayDescription": "Você não tem treinos programados para hoje. Verifique seu plano de treino ou crie um novo treino.",
     "startWorkout": "Iniciar",
+    "completedToday": "Concluído hoje",
     "start": "Iniciar",
     "execution": "Execução",
     "rest": "Descanso",
@@ -1470,7 +1480,15 @@
         "lunch": "Almoço",
         "dinner": "Jantar",
         "snack": "Lanche"
-      }
+      },
+      "meal": "Refeição",
+      "supplement": "Suplemento",
+      "nutritionalInfo": "Informações Nutricionais",
+      "additionalInfo": "Informações Adicionais",
+      "fiber": "Fibra",
+      "sodium": "Sódio",
+      "sugar": "Açúcar",
+      "ingredients": "Ingredientes"
     },
     "workout": {
       "title": "Histórico de Treinos",
@@ -1526,6 +1544,7 @@
     "overview": {
       "title": "Visão Geral",
       "description": "Acompanhe seu progresso geral e evolução ao longo do tempo",
+      "comparingWith": "Comparando com",
       "weightProgress": "Progresso de Peso",
       "measurementsProgress": "Progresso de Medidas",
       "initial": "Inicial",
@@ -1536,6 +1555,8 @@
       "weightGoal": "Meta de Peso",
       "noWeightData": "Nenhum dado de peso disponível para este período",
       "noMeasurementData": "Nenhum dado de medidas disponível para este período",
+      "noDataTitle": "Dados de Comparação Indisponíveis",
+      "noDataDescription": "Não há dados disponíveis para a comparação neste período. Por favor, tente outro período.",
       "bmiCategories": {
         "underweight": "Abaixo do Peso",
         "normal": "Normal",
@@ -1592,6 +1613,15 @@
         "6months": "6 Meses",
         "1year": "1 Ano",
         "all": "Desde o Início"
+      },
+      "comingSoon": "Em Breve",
+      "analysisFeatureDescription": "Estamos desenvolvendo uma ferramenta para analisar seus dados e dar insights que vão ajudar você a chegar na sua meta",
+      "analysisFeatures": {
+        "detailedAnalysis": "Análise de progresso detalhada",
+        "personalizedRecommendations": "Recomendações personalizadas",
+        "trendPrediction": "Previsão de tendências",
+        "mealAndWorkoutAdjustments": "Ajustes de refeições e treinos",
+        "andMore": "e muito mais"
       }
     },
     "tabs": {
@@ -1636,21 +1666,17 @@
       "title": "Novo Medicamento",
       "description": "Cadastre um novo medicamento",
       "name": "Nome",
+      "time": "Horário",
       "amount": "Dosagem",
       "frequency": "Frequência",
-      "protein": "Proteína",
-      "carbohydrates": "Carboidratos",
-      "calories": "Calorias",
-      "description": "Descrição",
+      "descriptionLabel": "Descrição",
       "createButton": "Criar Medicamento",
       "updateButton": "Atualizar Medicamento",
       "placeholders": {
         "name": "Ex: Vitamina D",
+        "time": "Ex: Manhã, Tarde, Noite",
         "amount": "Ex: 1000 UI",
         "frequency": "Ex: 1x ao dia",
-        "protein": "Ex: 0",
-        "carbohydrates": "Ex: 0",
-        "calories": "Ex: 0",
         "description": "Informações adicionais sobre o medicamento"
       },
       "reminders": "Lembretes",

@@ -18,6 +18,7 @@ interface SimpleMealCardProps {
   onPress: () => void;
   onToggleActive: () => void;
   onDelete: () => void;
+  onEdit?: () => void;
 }
 
 export const SimpleMealCard: React.FC<SimpleMealCardProps> = ({
@@ -25,6 +26,7 @@ export const SimpleMealCard: React.FC<SimpleMealCardProps> = ({
   onPress,
   onToggleActive,
   onDelete,
+  onEdit,
 }) => {
   const { t } = useTranslation();
   const { convertMacronutrient, getMacroUnit } = useUnits();
@@ -142,6 +144,21 @@ export const SimpleMealCard: React.FC<SimpleMealCardProps> = ({
                   thumbColor={FIXED_COLORS.text[50]}
                 />
               </HStack>
+
+              {onEdit && (
+                <Pressable
+                  onPress={onEdit}
+                  bg={FIXED_COLORS.primary[600]}
+                  borderRadius="$full"
+                  p="$2"
+                >
+                  <Ionicons
+                    name="create"
+                    size={16}
+                    color={FIXED_COLORS.text[50]}
+                  />
+                </Pressable>
+              )}
 
               <Pressable
                 onPress={onDelete}

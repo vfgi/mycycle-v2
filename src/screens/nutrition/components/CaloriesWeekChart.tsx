@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { VStack, HStack, Text, Box, Pressable } from "@gluestack-ui/themed";
 import { LinearGradient } from "expo-linear-gradient";
 import { FIXED_COLORS } from "../../../theme/colors";
 import { useTranslation } from "../../../hooks/useTranslation";
+import { useUnits } from "../../../contexts/UnitsContext";
+import { mealsService, MealsResponse } from "../../../services/mealsService";
 
 interface DayData {
   day: string;
@@ -24,99 +26,185 @@ type NutrientType = "calories" | "protein" | "carbs" | "fat";
 interface CaloriesWeekChartProps {
   data?: DayData[];
   colors?: [string, string];
+  refreshTrigger?: number; // Prop para forçar refresh
 }
 
-// Dados mockados dos últimos 7 dias
-const getMockData = (): DayData[] => [
-  {
-    day: "Dom",
-    dayKey: "weekDays.sunday.short",
-    calories: 1850,
-    protein: 120,
-    carbs: 180,
-    fat: 65,
-    goals: { calories: 2200, protein: 150, carbs: 250, fat: 70 },
-  },
-  {
-    day: "Seg",
-    dayKey: "weekDays.monday.short",
-    calories: 2100,
-    protein: 140,
-    carbs: 220,
-    fat: 75,
-    goals: { calories: 2200, protein: 150, carbs: 250, fat: 70 },
-  },
-  {
-    day: "Ter",
-    dayKey: "weekDays.tuesday.short",
-    calories: 1950,
-    protein: 135,
-    carbs: 200,
-    fat: 68,
-    goals: { calories: 2200, protein: 150, carbs: 250, fat: 70 },
-  },
-  {
-    day: "Qua",
-    dayKey: "weekDays.wednesday.short",
-    calories: 2300,
-    protein: 160,
-    carbs: 280,
-    fat: 80,
-    goals: { calories: 2200, protein: 150, carbs: 250, fat: 70 },
-  },
-  {
-    day: "Qui",
-    dayKey: "weekDays.thursday.short",
-    calories: 2200,
-    protein: 150,
-    carbs: 250,
-    fat: 70,
-    goals: { calories: 2200, protein: 150, carbs: 250, fat: 70 },
-  },
-  {
-    day: "Sex",
-    dayKey: "weekDays.friday.short",
-    calories: 2750,
-    protein: 180,
-    carbs: 320,
-    fat: 95,
-    goals: { calories: 2200, protein: 150, carbs: 250, fat: 70 },
-  },
-  {
-    day: "Sáb",
-    dayKey: "weekDays.saturday.short",
-    calories: 1300,
-    protein: 85,
-    carbs: 120,
-    fat: 45,
-    goals: { calories: 2200, protein: 150, carbs: 250, fat: 70 },
-  },
-];
-
 export const CaloriesWeekChart: React.FC<CaloriesWeekChartProps> = ({
-  data = getMockData(),
+  data,
   colors = [FIXED_COLORS.warning[500], FIXED_COLORS.background[800]],
+  refreshTrigger,
 }) => {
   const { t } = useTranslation();
+  const { convertMacronutrient, getMacroUnit } = useUnits();
   const [selectedNutrient, setSelectedNutrient] =
     useState<NutrientType>("calories");
+  const [chartData, setChartData] = useState<DayData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    loadNutritionData();
+  }, []);
+
+  // Reagir ao refreshTrigger para recarregar dados
+  useEffect(() => {
+    if (refreshTrigger && refreshTrigger > 0) {
+      loadNutritionData();
+    }
+  }, [refreshTrigger]);
+
+  const loadNutritionData = async () => {
+    try {
+      setIsLoading(true);
+      // Usar data local ao invés de UTC
+      const today = new Date();
+      const todayLocal = `${today.getFullYear()}-${String(
+        today.getMonth() + 1
+      ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
+      const response = await mealsService.getMealsWithNutrition(todayLocal);
+      if (response) {
+        const weekData: DayData[] =
+          response.nutrition_summary.calories.days.map((dayData) => ({
+            day: getDayNameByAbbr(dayData.day),
+            dayKey: getDayKeyByAbbr(dayData.day),
+            calories: dayData.value,
+            protein:
+              response.nutrition_summary.protein.days.find(
+                (d) => d.day === dayData.day
+              )?.value || 0,
+            carbs:
+              response.nutrition_summary.carbs.days.find(
+                (d) => d.day === dayData.day
+              )?.value || 0,
+            fat:
+              response.nutrition_summary.fat.days.find(
+                (d) => d.day === dayData.day
+              )?.value || 0,
+            goals: {
+              calories: response.nutrition_summary.calories.goal,
+              protein: response.nutrition_summary.protein.goal,
+              carbs: response.nutrition_summary.carbs.goal,
+              fat: response.nutrition_summary.fat.goal,
+            },
+          }));
+
+        setChartData(weekData);
+      } else {
+        setChartData([]);
+      }
+    } catch (error) {
+      console.error("Error loading nutrition data:", error);
+      setChartData([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getDayName = (dayOfWeek: number): string => {
+    const days = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+    return days[dayOfWeek];
+  };
+
+  const getDayKey = (dayOfWeek: number): string => {
+    const keys = [
+      "weekDays.sunday.short",
+      "weekDays.monday.short",
+      "weekDays.tuesday.short",
+      "weekDays.wednesday.short",
+      "weekDays.thursday.short",
+      "weekDays.friday.short",
+      "weekDays.saturday.short",
+    ];
+    return keys[dayOfWeek];
+  };
+
+  const getDayAbbr = (dayOfWeek: number): string => {
+    const abbrs = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+    return abbrs[dayOfWeek];
+  };
+
+  const getDayNameByAbbr = (abbr: string): string => {
+    const days = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+    const abbrs = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+    const index = abbrs.indexOf(abbr);
+    return index !== -1 ? days[index] : abbr;
+  };
+
+  const getDayKeyByAbbr = (abbr: string): string => {
+    const keys = [
+      "weekDays.sunday.short",
+      "weekDays.monday.short",
+      "weekDays.tuesday.short",
+      "weekDays.wednesday.short",
+      "weekDays.thursday.short",
+      "weekDays.friday.short",
+      "weekDays.saturday.short",
+    ];
+    const abbrs = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+    const index = abbrs.indexOf(abbr);
+    return index !== -1 ? keys[index] : abbr;
+  };
+
+  // Função para formatar valores e tratar NaN
+  const formatValue = (value: number): string => {
+    if (isNaN(value) || value === null || value === undefined) {
+      return "0";
+    }
+
+    return value.toFixed(2);
+  };
+
+  // Função para garantir que o valor seja um número válido
+  const safeValue = (value: number): number => {
+    if (isNaN(value) || value === null || value === undefined) {
+      return 0;
+    }
+    return value;
+  };
 
   // Função para obter valor e meta baseado no nutriente selecionado
-  const getValue = (dayData: DayData) => dayData[selectedNutrient];
-  const getGoal = (dayData: DayData) => dayData.goals[selectedNutrient];
+  const getValue = (dayData: DayData) => {
+    const rawValue = safeValue(dayData[selectedNutrient]);
+    // Converter para unidade imperial se necessário (exceto calorias)
+    if (selectedNutrient !== "calories") {
+      const converted = convertMacronutrient(rawValue);
+      return converted.value;
+    }
+    return rawValue;
+  };
+
+  const getGoal = (dayData: DayData) => {
+    const rawGoal = safeValue(dayData.goals[selectedNutrient]);
+    // Converter para unidade imperial se necessário (exceto calorias)
+    if (selectedNutrient !== "calories") {
+      const converted = convertMacronutrient(rawGoal);
+      return converted.value;
+    }
+    return rawGoal;
+  };
+
+  // Usar dados reais ou dados passados como prop
+  const currentData = data || chartData;
 
   // Encontra o valor máximo para normalizar as barras
   const maxValue = Math.max(
-    ...data.map((d) => Math.max(getValue(d), getGoal(d)))
+    ...currentData.map((d) => Math.max(getValue(d), getGoal(d))),
+    1 // Garantir que maxValue seja pelo menos 1 para evitar divisão por zero
   );
   const chartHeight = 120;
 
   const getBarHeight = (value: number) => {
-    return (value / maxValue) * chartHeight;
+    const safeMaxValue = maxValue > 0 ? maxValue : 1;
+    return (safeValue(value) / safeMaxValue) * chartHeight;
   };
 
   const getBarColor = (value: number, goal: number) => {
-    const percentage = (value / goal) * 100;
+    const safeValueNum = safeValue(value);
+    const safeGoal = safeValue(goal);
+
+    if (safeGoal === 0) return "#6B7280"; // Se não há meta definida, usar cinza
+
+    const percentage = (safeValueNum / safeGoal) * 100;
     if (percentage > 100) return FIXED_COLORS.error[500]; // Muito acima da meta
     if (percentage === 100) return FIXED_COLORS.success[500]; // Meta atingida
     if (percentage >= 80) return FIXED_COLORS.primary[500]; // Próximo da meta
@@ -124,9 +212,16 @@ export const CaloriesWeekChart: React.FC<CaloriesWeekChartProps> = ({
     return "#6B7280"; // Muito abaixo da meta (cinza)
   };
 
-  const totalValue = data.reduce((sum, day) => sum + getValue(day), 0);
-  const averageValue = Math.round(totalValue / data.length);
-  const weekGoal = data[0]?.goals[selectedNutrient] || 0;
+  const totalValue = currentData.reduce((sum, day) => sum + getValue(day), 0);
+  const averageValue =
+    currentData.length > 0 ? totalValue / currentData.length : 0;
+
+  // Para a meta semanal, converter se necessário
+  const rawWeekGoal = safeValue(currentData[0]?.goals[selectedNutrient] || 0);
+  const weekGoal =
+    selectedNutrient !== "calories"
+      ? convertMacronutrient(rawWeekGoal).value
+      : rawWeekGoal;
 
   // Função para obter unidade baseada no nutriente
   const getUnit = () => {
@@ -134,11 +229,9 @@ export const CaloriesWeekChart: React.FC<CaloriesWeekChartProps> = ({
       case "calories":
         return "kcal";
       case "protein":
-        return "g";
       case "carbs":
-        return "g";
       case "fat":
-        return "g";
+        return getMacroUnit(); // Usar unidade do sistema de unidades
       default:
         return "";
     }
@@ -160,6 +253,41 @@ export const CaloriesWeekChart: React.FC<CaloriesWeekChartProps> = ({
     },
     { key: "fat" as NutrientType, label: t("nutrition.food.nutrients.fat") },
   ];
+
+  // Mostrar loading se não há dados
+  if (isLoading || currentData.length === 0) {
+    return (
+      <LinearGradient
+        colors={colors}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{ borderRadius: 16, padding: 20 }}
+      >
+        <VStack
+          space="md"
+          alignItems="center"
+          justifyContent="center"
+          minHeight={200}
+        >
+          <Text
+            color={FIXED_COLORS.text[50]}
+            fontSize="$lg"
+            fontWeight="$bold"
+            textAlign="center"
+          >
+            {t("nutrition.food.weeklyNutrients")}
+          </Text>
+          <Text
+            color="rgba(255, 255, 255, 0.7)"
+            fontSize="$sm"
+            textAlign="center"
+          >
+            {isLoading ? t("common.loading") : t("nutrition.food.noData")}
+          </Text>
+        </VStack>
+      </LinearGradient>
+    );
+  }
 
   return (
     <LinearGradient
@@ -224,7 +352,7 @@ export const CaloriesWeekChart: React.FC<CaloriesWeekChartProps> = ({
               fontSize="$md"
               fontWeight="$bold"
             >
-              {averageValue} {getUnit()}
+              {formatValue(averageValue)} {getUnit()}
             </Text>
           </VStack>
           <VStack alignItems="center">
@@ -240,7 +368,7 @@ export const CaloriesWeekChart: React.FC<CaloriesWeekChartProps> = ({
               fontSize="$md"
               fontWeight="$bold"
             >
-              {weekGoal} {getUnit()}
+              {formatValue(weekGoal)} {getUnit()}
             </Text>
           </VStack>
         </HStack>
@@ -253,7 +381,7 @@ export const CaloriesWeekChart: React.FC<CaloriesWeekChartProps> = ({
             height={chartHeight + 20}
             px="$1"
           >
-            {data.map((dayData, index) => {
+            {currentData.map((dayData, index) => {
               const value = getValue(dayData);
               const goal = getGoal(dayData);
               const barHeight = getBarHeight(value);
@@ -267,7 +395,7 @@ export const CaloriesWeekChart: React.FC<CaloriesWeekChartProps> = ({
                     fontSize="$xs"
                     fontWeight="$medium"
                   >
-                    {value}
+                    {formatValue(value)}
                   </Text>
 
                   {/* Barra do gráfico */}

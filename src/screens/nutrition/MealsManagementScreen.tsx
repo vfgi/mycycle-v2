@@ -52,7 +52,13 @@ export const MealsManagementScreen: React.FC = () => {
   const loadMeals = async () => {
     try {
       setIsLoading(true);
-      const data = await mealsService.getMeals();
+      // Usar data local ao invés de UTC
+      const today = new Date();
+      const todayLocal = `${today.getFullYear()}-${String(
+        today.getMonth() + 1
+      ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+      const response = await mealsService.getMealsWithNutrition(todayLocal);
+      const data = response?.meals || [];
       const mealsWithDefaults = data.map((meal) => {
         const totals = mealsService.calculateMealTotals(meal);
         const ingredientsWithUnit = meal.ingredients.map((ing) => ({
@@ -184,6 +190,10 @@ export const MealsManagementScreen: React.FC = () => {
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false);
     setSelectedMeal(null);
+  };
+
+  const handleEditMeal = (meal: Meal) => {
+    navigation.navigate("CreateMeal" as never, { meal } as never);
   };
 
   const activeMealsCount = useMemo(
@@ -392,6 +402,7 @@ export const MealsManagementScreen: React.FC = () => {
                         onPress={() => handleMealPress(meal)}
                         onToggleActive={() => handleToggleActive(meal.id)}
                         onDelete={() => handleDeleteMeal(meal.id)}
+                        onEdit={() => handleEditMeal(meal)}
                       />
                     ))
                   ) : (

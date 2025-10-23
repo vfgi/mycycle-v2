@@ -58,26 +58,52 @@ export const SupplementsList: React.FC<SupplementsListProps> = ({
       setIsLoading(true);
       const data = await supplementsService.getSupplements();
 
-      const supplementsWithDefaults = data.map((supplement) => ({
-        ...supplement,
-        dosage: supplement.amount,
-        is_taken: false,
-        image: getSupplementImage("protein"),
-        nutrients:
-          supplement.protein || supplement.carbohydrates || supplement.calories
-            ? {
-                protein: supplement.protein
-                  ? parseInt(supplement.protein)
-                  : undefined,
-                carbs: supplement.carbohydrates
-                  ? parseInt(supplement.carbohydrates)
-                  : undefined,
-                calories: supplement.calories
-                  ? parseInt(supplement.calories)
-                  : undefined,
-              }
-            : undefined,
-      }));
+      // Usar data local do dispositivo em vez de UTC
+      const today = new Date();
+      const todayLocal = `${today.getFullYear()}-${String(
+        today.getMonth() + 1
+      ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+      console.log("🔍 Today's date (Local):", todayLocal);
+      console.log("🔍 Device time:", today.toLocaleString());
+
+      const supplementsWithDefaults = data.map((supplement: any) => {
+        const lastConsumedDate = supplement.last_consumed_at
+          ? supplement.last_consumed_at.split("T")[0]
+          : null;
+        const isTakenToday = lastConsumedDate === todayLocal;
+
+        console.log("📋 Supplement:", {
+          name: supplement.name,
+          lastConsumedAt: supplement.last_consumed_at,
+          lastConsumedDate,
+          todayLocal,
+          isTakenToday,
+          match: lastConsumedDate === todayLocal,
+        });
+
+        return {
+          ...supplement,
+          dosage: supplement.amount,
+          is_taken: isTakenToday,
+          image: getSupplementImage("protein"),
+          nutrients:
+            supplement.protein ||
+            supplement.carbohydrates ||
+            supplement.calories
+              ? {
+                  protein: supplement.protein
+                    ? parseInt(supplement.protein)
+                    : undefined,
+                  carbs: supplement.carbohydrates
+                    ? parseInt(supplement.carbohydrates)
+                    : undefined,
+                  calories: supplement.calories
+                    ? parseInt(supplement.calories)
+                    : undefined,
+                }
+              : undefined,
+        };
+      });
 
       setSupplements(supplementsWithDefaults as any);
     } catch (error) {
@@ -103,13 +129,81 @@ export const SupplementsList: React.FC<SupplementsListProps> = ({
   };
 
   const handleToggleTaken = (supplementId: string) => {
+    const supplement = supplements.find((s) => s.id === supplementId);
+    if (!supplement) return;
+
+    // Usar data local do dispositivo
+    const today = new Date();
+    const todayLocal = `${today.getFullYear()}-${String(
+      today.getMonth() + 1
+    ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
     setSupplements((prev) =>
-      prev.map((supplement) =>
-        supplement.id === supplementId
-          ? { ...supplement, is_taken: !supplement.is_taken }
-          : supplement
+      prev.map((s) =>
+        s.id === supplementId ? { ...s, is_taken: !s.is_taken } : s
       )
     );
+
+    // Se já foi marcado como tomado, remover do histórico
+    if (supplement.is_taken) {
+      supplementsService
+        .removeSupplementHistory({
+          supplement_id: supplementId,
+          date: todayLocal,
+        })
+        .then(() => {
+          loadSupplements();
+        })
+        .catch((error: any) => {
+          console.error("Error removing supplement history:", error);
+          setSupplements((prev) =>
+            prev.map((s) =>
+              s.id === supplementId ? { ...s, is_taken: !s.is_taken } : s
+            )
+          );
+        });
+    } else {
+      // Registrar como tomado
+      const now = new Date();
+      // Criar ISO string com a data/hora local (não UTC)
+      const localISOString = new Date(
+        now.getTime() - now.getTimezoneOffset() * 60000
+      ).toISOString();
+
+      const payload = {
+        supplement_id: supplementId,
+        recorded_at: localISOString,
+        timezone: "America/Sao_Paulo",
+        notes: "",
+      };
+      console.log("📤 Sending supplement history payload:", payload);
+      console.log(
+        "🕐 Time comparison - Local:",
+        now.toLocaleString(),
+        "ISO:",
+        localISOString
+      );
+
+      supplementsService
+        .recordSupplementHistory(payload)
+        .then(() => {
+          console.log("✅ Supplement history recorded successfully");
+          loadSupplements();
+        })
+        .catch((error: any) => {
+          console.error("❌ Error recording supplement history:", error);
+          console.error("Error details:", {
+            message: error.message,
+            response: error.response,
+            stack: error.stack,
+          });
+          setSupplements((prev) =>
+            prev.map((s) =>
+              s.id === supplementId ? { ...s, is_taken: !s.is_taken } : s
+            )
+          );
+        });
+    }
   };
 
   return (

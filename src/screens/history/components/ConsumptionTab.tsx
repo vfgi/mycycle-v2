@@ -3,6 +3,7 @@ import { VStack, Text, HStack, Box } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { FIXED_COLORS } from "../../../theme/colors";
 import { useTranslation } from "../../../hooks/useTranslation";
+import { useUnits } from "../../../contexts/UnitsContext";
 import {
   ExpandableCalendarComponent,
   SemicircularProgress,
@@ -10,58 +11,43 @@ import {
 } from "../../../components";
 import { ScrollView } from "react-native-gesture-handler";
 import { goalsService } from "../../../services/goalsService";
+import {
+  mealsHistoryService,
+  HistoryResponse,
+} from "../../../services/mealsHistoryService";
+import { useAuth } from "../../../contexts/AuthContext";
 import { Goals } from "../../../types/goals";
-import { consumptionMockData, ConsumptionItemsList } from "./consumption";
+import {
+  consumptionMockData,
+  ConsumptionItemsList,
+  MealHistoryDetailsDrawer,
+} from "./consumption";
 
 export const ConsumptionTab: React.FC = () => {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const { convertMacronutrient, getMacroUnit } = useUnits();
 
-  const allMockData = {
-    "2025-10-12": {
-      calories: 1850,
-      protein: 120,
-      carbs: 180,
-      fat: 65,
-      water: 2.1,
-    },
-    "2025-10-11": {
-      calories: 1920,
-      protein: 115,
-      carbs: 195,
-      fat: 70,
-      water: 1.8,
-    },
-    "2025-10-10": {
-      calories: 1780,
-      protein: 110,
-      carbs: 170,
-      fat: 62,
-      water: 2.3,
-    },
-    "2025-10-09": {
-      calories: 1650,
-      protein: 105,
-      carbs: 160,
-      fat: 58,
-      water: 2.0,
-    },
-    "2025-10-08": {
-      calories: 1900,
-      protein: 125,
-      carbs: 185,
-      fat: 68,
-      water: 2.2,
-    },
-  };
+  // Usar data local ao invés de UTC
+  const today = new Date();
+  const todayLocal = `${today.getFullYear()}-${String(
+    today.getMonth() + 1
+  ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+  const [selectedDate, setSelectedDate] = useState(todayLocal);
   const [goals, setGoals] = useState<Goals | null>(null);
+  const [historyData, setHistoryData] = useState<HistoryResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedMealHistory, setSelectedMealHistory] = useState<any>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
     loadGoals();
   }, []);
+
+  useEffect(() => {
+    loadHistoryData();
+  }, [selectedDate, user?.id]);
 
   const loadGoals = async () => {
     try {
@@ -72,22 +58,118 @@ export const ConsumptionTab: React.FC = () => {
     }
   };
 
+  const loadHistoryData = async () => {
+    try {
+      setIsLoading(true);
+      if (!user?.id) {
+        console.error("User ID not available");
+        return;
+      }
+      const data = await mealsHistoryService.getHistoryByDay(
+        user.id,
+        selectedDate
+      );
+      setHistoryData(data);
+    } catch (error) {
+      console.error("Error loading history data:", error);
+      setHistoryData(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleDayPress = (day: any) => {
     setSelectedDate(day.dateString);
   };
 
-  const selectedData = allMockData[selectedDate as keyof typeof allMockData];
-  const selectedItems =
-    consumptionMockData[selectedDate as keyof typeof consumptionMockData] || [];
+  const handleMealPress = (historyEntry: any) => {
+    setSelectedMealHistory(historyEntry);
+    setIsDrawerOpen(true);
+  };
+
+  const handleCloseDrawer = () => {
+    setIsDrawerOpen(false);
+    setSelectedMealHistory(null);
+  };
+
+  const selectedData = React.useMemo(() => {
+    if (!historyData || historyData.history.length === 0) {
+      return null;
+    }
+
+    return {
+      calories: historyData.nutrition_summary.calories,
+      protein: historyData.nutrition_summary.protein,
+      carbs: historyData.nutrition_summary.carbs,
+      fat: historyData.nutrition_summary.fat,
+      fiber: historyData.nutrition_summary.fiber,
+      sodium: historyData.nutrition_summary.sodium,
+      sugar: historyData.nutrition_summary.sugar,
+      water: 2.0,
+    };
+  }, [historyData]);
+
+  const selectedItems = React.useMemo(() => {
+    if (!historyData) return [];
+
+    return historyData.history.map((entry) => {
+      let name = "";
+      let calories = 0;
+      let protein = 0;
+      let carbs = 0;
+      let fat = 0;
+
+      if (entry.type === "meal" && entry.nutrition_data) {
+        name = entry.notes || "Refeição";
+        calories = entry.nutrition_data.total_calories;
+        protein = entry.nutrition_data.total_protein;
+        carbs = entry.nutrition_data.total_carbs;
+        fat = entry.nutrition_data.total_fat;
+      } else if (entry.type === "supplement" && entry.supplement_data) {
+        name = entry.supplement_data.name;
+        const caloriesStr = (entry.supplement_data.calories || "0").replace(
+          /[^\d.-]/g,
+          ""
+        );
+        calories = parseInt(caloriesStr) || 0;
+        const proteinStr = (entry.supplement_data.protein || "0").replace(
+          /[^\d.-]/g,
+          ""
+        );
+        protein = parseFloat(proteinStr) || 0;
+      }
+
+      const mealType = (entry.notes?.split("-")[0]?.toLowerCase().trim() ||
+        "lunch") as any;
+
+      return {
+        id: entry.id,
+        name,
+        quantity: 1,
+        unit: "porção",
+        calories,
+        protein,
+        carbs,
+        fat,
+        mealType,
+        time: new Date(entry.recorded_at).toLocaleTimeString("pt-BR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        type: entry.type,
+        mealHistoryEntry: entry,
+      };
+    });
+  }, [historyData]);
 
   const getMarkedDates = () => {
     const marked: any = {};
-    Object.keys(allMockData).forEach((date) => {
-      marked[date] = {
+    if (selectedData && selectedData.calories > 0) {
+      marked[selectedDate] = {
         marked: true,
         dotColor: FIXED_COLORS.primary[500],
       };
-    });
+    }
     return marked;
   };
 
@@ -101,14 +183,19 @@ export const ConsumptionTab: React.FC = () => {
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={{
-            paddingTop: 16,
+            paddingTop: 0,
             paddingBottom: 40,
             paddingHorizontal: 16,
           }}
         >
-          {selectedData ? (
+          {isLoading ? (
+            <VStack alignItems="center" justifyContent="center" py="$8">
+              <Text color={FIXED_COLORS.text[400]} fontSize="$md">
+                {t("common.loading")}...
+              </Text>
+            </VStack>
+          ) : selectedData ? (
             <VStack space="md">
-              {/* Card principal de calorias */}
               <SemicircularProgress
                 title={t("history.consumption.caloriesConsumption")}
                 currentValue={selectedData.calories}
@@ -127,13 +214,16 @@ export const ConsumptionTab: React.FC = () => {
                 }
               />
 
-              {/* Cards de macronutrientes lado a lado */}
               <HStack space="md">
                 <MacroProgressCard
                   title={t("history.consumption.protein")}
-                  currentValue={selectedData.protein}
-                  goalValue={goals?.targetProtein || 120}
-                  unit="g"
+                  currentValue={
+                    convertMacronutrient(selectedData.protein).value
+                  }
+                  goalValue={
+                    convertMacronutrient(goals?.targetProtein || 120).value
+                  }
+                  unit={getMacroUnit()}
                   colors={[
                     FIXED_COLORS.success[500],
                     FIXED_COLORS.success[600],
@@ -149,9 +239,11 @@ export const ConsumptionTab: React.FC = () => {
 
                 <MacroProgressCard
                   title={t("history.consumption.carbs")}
-                  currentValue={selectedData.carbs}
-                  goalValue={goals?.targetCarbs || 180}
-                  unit="g"
+                  currentValue={convertMacronutrient(selectedData.carbs).value}
+                  goalValue={
+                    convertMacronutrient(goals?.targetCarbs || 180).value
+                  }
+                  unit={getMacroUnit()}
                   colors={[
                     FIXED_COLORS.warning[500],
                     FIXED_COLORS.warning[600],
@@ -166,8 +258,10 @@ export const ConsumptionTab: React.FC = () => {
                 />
               </HStack>
 
-              {/* Lista de itens consumidos */}
-              <ConsumptionItemsList items={selectedItems} />
+              <ConsumptionItemsList
+                items={selectedItems}
+                onItemPress={handleMealPress}
+              />
             </VStack>
           ) : (
             <Box
@@ -196,6 +290,12 @@ export const ConsumptionTab: React.FC = () => {
           )}
         </ScrollView>
       </ExpandableCalendarComponent>
+
+      <MealHistoryDetailsDrawer
+        mealHistory={selectedMealHistory}
+        isOpen={isDrawerOpen}
+        onClose={handleCloseDrawer}
+      />
     </VStack>
   );
 };

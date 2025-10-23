@@ -26,6 +26,18 @@ export interface CreateMedicationRequest {
   is_active?: boolean;
 }
 
+export interface RecordMedicationHistoryRequest {
+  medication_id: string;
+  recorded_at: string;
+  timezone: string;
+  notes?: string;
+}
+
+export interface RemoveMedicationHistoryRequest {
+  medication_id: string;
+  date: string;
+}
+
 export class MedicationsService {
   async getMedications(): Promise<Medication[]> {
     const response = await apiService.get<Medication[]>("/medications");
@@ -129,6 +141,29 @@ export class MedicationsService {
 
   async deleteMedication(id: string): Promise<void> {
     const response = await apiService.delete<void>(`/medications/${id}`);
+
+    if (response.error) {
+      throw new Error(response.error);
+    }
+  }
+
+  async recordMedicationHistory(
+    data: RecordMedicationHistoryRequest
+  ): Promise<void> {
+    const response = await apiService.post<void>("/medications/history", data);
+
+    if (response.error) {
+      throw new Error(response.error);
+    }
+  }
+
+  async removeMedicationHistory(
+    data: RemoveMedicationHistoryRequest
+  ): Promise<void> {
+    const response = await apiService.delete<void>(
+      "/medications/history",
+      data
+    );
 
     if (response.error) {
       throw new Error(response.error);

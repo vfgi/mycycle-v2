@@ -32,6 +32,15 @@ export const TodayWorkoutsList: React.FC<TodayWorkoutsListProps> = ({
   const { t } = useTranslation();
   const navigation = useNavigation<NavigationProp>();
 
+  const isWorkoutExecutedToday = (workout: Workout) => {
+    if (workout.lastTimeExecuted) {
+      const lastExecuted = new Date(workout.lastTimeExecuted);
+      const today = new Date();
+      return lastExecuted.toDateString() === today.toDateString();
+    }
+    return false;
+  };
+
   const handleStartWorkout = async (workout: Workout) => {
     try {
       const hasActive = await activeWorkoutStorage.hasActiveWorkout();
@@ -146,12 +155,30 @@ export const TodayWorkoutsList: React.FC<TodayWorkoutsListProps> = ({
                     >
                       {workout.name}
                     </Text>
-                    <Text color={FIXED_COLORS.text[400]} fontSize="$sm">
-                      {workout.exercises.length}{" "}
-                      {workout.exercises.length === 1
-                        ? t("workouts.exercise")
-                        : t("workouts.exercises")}
-                    </Text>
+                    <VStack>
+                      <Text color={FIXED_COLORS.text[400]} fontSize="$sm">
+                        {workout.exercises.length}{" "}
+                        {workout.exercises.length === 1
+                          ? t("workouts.exercise")
+                          : t("workouts.exercises")}
+                      </Text>
+                      {isWorkoutExecutedToday(workout) && (
+                        <HStack alignItems="center" space="xs" mt="$1">
+                          <Ionicons
+                            name="checkmark-circle"
+                            size={14}
+                            color={FIXED_COLORS.success[500]}
+                          />
+                          <Text
+                            color={FIXED_COLORS.success[500]}
+                            fontSize="$xs"
+                            fontWeight="$medium"
+                          >
+                            {t("workouts.completedToday")}
+                          </Text>
+                        </HStack>
+                      )}
+                    </VStack>
                   </VStack>
                 </HStack>
 

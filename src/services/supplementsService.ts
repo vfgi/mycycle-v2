@@ -26,6 +26,18 @@ export interface CreateSupplementRequest {
   is_active?: boolean;
 }
 
+export interface RecordSupplementHistoryRequest {
+  supplement_id: string;
+  recorded_at: string;
+  timezone: string;
+  notes?: string;
+}
+
+export interface RemoveSupplementHistoryRequest {
+  supplement_id: string;
+  date: string;
+}
+
 export class SupplementsService {
   async getSupplements(): Promise<Supplement[]> {
     const response = await apiService.get<Supplement[]>("/supplements");
@@ -129,6 +141,29 @@ export class SupplementsService {
 
   async deleteSupplement(id: string): Promise<void> {
     const response = await apiService.delete<void>(`/supplements/${id}`);
+
+    if (response.error) {
+      throw new Error(response.error);
+    }
+  }
+
+  async recordSupplementHistory(
+    data: RecordSupplementHistoryRequest
+  ): Promise<void> {
+    const response = await apiService.post<void>("/supplements/history", data);
+
+    if (response.error) {
+      throw new Error(response.error);
+    }
+  }
+
+  async removeSupplementHistory(
+    data: RemoveSupplementHistoryRequest
+  ): Promise<void> {
+    const response = await apiService.delete<void>(
+      "/supplements/history",
+      data
+    );
 
     if (response.error) {
       throw new Error(response.error);

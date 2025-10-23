@@ -164,10 +164,12 @@ class ApiService {
 
   async delete<T>(
     endpoint: string,
+    body?: any,
     headers?: Record<string, string>
   ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: "DELETE",
+      body: body ? JSON.stringify(body) : undefined,
       headers,
     });
   }

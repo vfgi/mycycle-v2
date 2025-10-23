@@ -20,6 +20,7 @@ export interface Workout {
   description?: string;
   weekDays: string[];
   exercises: TrainingExercise[];
+  lastTimeExecuted?: string;
 }
 
 export interface TrainingPlan {

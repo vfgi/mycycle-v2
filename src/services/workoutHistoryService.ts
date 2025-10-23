@@ -23,6 +23,12 @@ export interface WorkoutHistoryData {
   total_exercises: number;
   completed_exercises: number;
   progress_percentage: number;
+  total_calories_burned?: number;
+  difficulty_rating?: number;
+  energy_level_before?: number;
+  energy_level_after?: number;
+  mood_before?: number;
+  mood_after?: number;
   workout_name: string;
   started_at: string;
   completed_at: string;
@@ -30,6 +36,8 @@ export interface WorkoutHistoryData {
 
 export interface SaveWorkoutHistoryRequest {
   workoutId: string;
+  recorded_at: string;
+  timezone: string;
   historyData: WorkoutHistoryData;
 }
 
@@ -39,8 +47,21 @@ class WorkoutHistoryService {
     historyData: WorkoutHistoryData
   ): Promise<boolean> {
     try {
+      const now = new Date();
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      // Garantir que a data está no formato ISO 8601 correto
+      const recordedAt = now.toISOString();
+
+      // Validar se a data está no formato correto
+      if (!recordedAt || recordedAt === "Invalid Date") {
+        throw new Error("Invalid date format for recorded_at");
+      }
+
       const payload: SaveWorkoutHistoryRequest = {
         workoutId,
+        recorded_at: recordedAt,
+        timezone,
         historyData,
       };
 
@@ -135,6 +156,12 @@ class WorkoutHistoryService {
       total_exercises: activeWorkout.totalExercises,
       completed_exercises: activeWorkout.completedExercises,
       progress_percentage: progressPercentage,
+      total_calories_burned: Math.round(totalDurationSeconds * 0.1), // Estimativa simples
+      difficulty_rating: 7, // Valor padrão
+      energy_level_before: 8, // Valor padrão
+      energy_level_after: 6, // Valor padrão
+      mood_before: 8, // Valor padrão
+      mood_after: 9, // Valor padrão
       workout_name: activeWorkout.workoutName,
       started_at: activeWorkout.startTime,
       completed_at: completedAt,

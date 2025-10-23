@@ -21,7 +21,7 @@
       },
       "supportsTablet": false,
       "bundleIdentifier": "com.mycycle.trttracker",
-      "buildNumber": "7",
+      "buildNumber": "9",
       "infoPlist": {
         "SKAdNetworkItems": [
           {

@@ -83,14 +83,8 @@ export const CreateMedicationScreen: React.FC = () => {
               .filter((t): t is string => !!t)
               .sort();
             setReminderTimes(times);
-            console.log(
-              `[Edit] Loaded ${times.length} reminder times for medication ${medication.id}:`,
-              times
-            );
           }
-        } catch (error) {
-          console.error("Error loading medication notifications:", error);
-        }
+        } catch (error) {}
       }
     };
 
@@ -185,19 +179,11 @@ export const CreateMedicationScreen: React.FC = () => {
       // Edição ou criação
       let resultMedication;
       if (medication?.id) {
-        console.log(
-          `[API PUT /medications/${medication.id}] Payload:`,
-          JSON.stringify(dataToSend, null, 2)
-        );
         resultMedication = await medicationsService.updateMedication(
           medication.id,
           dataToSend
         );
       } else {
-        console.log(
-          "[API POST /medications] Payload:",
-          JSON.stringify(dataToSend, null, 2)
-        );
         resultMedication = await medicationsService.createMedication(
           dataToSend
         );
@@ -208,9 +194,6 @@ export const CreateMedicationScreen: React.FC = () => {
         try {
           // Se estiver editando, cancelar todas as notificações antigas deste suplemento
           if (medication?.id) {
-            console.log(
-              `[Notifications] Canceling old notifications for medication ${medication.id}`
-            );
             const allNotifications =
               await notificationService.getAllScheduledNotifications();
             const medicationNotifications = allNotifications.filter(
@@ -219,16 +202,11 @@ export const CreateMedicationScreen: React.FC = () => {
 
             for (const notif of medicationNotifications) {
               await notificationService.cancelNotification(notif.id);
-              console.log(`[Notifications] Canceled notification ${notif.id}`);
             }
           }
 
           // Criar novas notificações se houver lembretes
           if (reminderTimes.length > 0) {
-            console.log(
-              `[Notifications] Creating ${reminderTimes.length} daily recurring notifications for medication ${resultMedication.id}`
-            );
-
             for (const time of reminderTimes) {
               const [hours, minutes] = time.split(":").map(Number);
 
@@ -252,20 +230,10 @@ export const CreateMedicationScreen: React.FC = () => {
                 hours,
                 minutes
               );
-              console.log(
-                `[Notifications] Created daily notification for ${time} (${hours}:${minutes}) - will repeat every day`
-              );
             }
           } else if (medication?.id) {
-            console.log(
-              `[Notifications] No reminders set, all notifications canceled`
-            );
           }
         } catch (notificationError) {
-          console.error(
-            "[Notifications] Error managing notifications:",
-            notificationError
-          );
           // Não bloqueamos o fluxo se a notificação falhar
         }
       }
@@ -274,31 +242,11 @@ export const CreateMedicationScreen: React.FC = () => {
       try {
         const allScheduledNotifications =
           await notificationService.getAllScheduledNotifications();
-        console.log("=== NOTIFICAÇÕES AGENDADAS NO SISTEMA ===");
-        console.log(`Total: ${allScheduledNotifications.length}`);
         allScheduledNotifications.forEach((notif, index) => {
-          console.log(`\n[${index + 1}] ID: ${notif.id}`);
-          console.log(`    Título: ${notif.title}`);
-          console.log(
-            `    Agendada para: ${new Date(
-              notif.scheduledTime
-            ).toLocaleString()}`
-          );
-          console.log(`    Ativa: ${notif.isActive}`);
           if (notif.data?.medicationId) {
-            console.log(
-              `    Suplemento: ${notif.data.medicationName} (${notif.data.medicationId})`
-            );
-            console.log(`    Horário: ${notif.data.time}`);
-            console.log(
-              `    Recorrente: ${notif.data.isRecurring ? "Sim" : "Não"}`
-            );
           }
         });
-        console.log("==========================================\n");
-      } catch (error) {
-        console.error("Erro ao listar notificações:", error);
-      }
+      } catch (error) {}
 
       showSuccess(
         medication?.id
@@ -307,7 +255,6 @@ export const CreateMedicationScreen: React.FC = () => {
       );
       navigation.goBack();
     } catch (error) {
-      console.error("Error creating medication:", error);
       showError(t("medications.errors.createError"));
     } finally {
       setIsLoading(false);
@@ -378,7 +325,7 @@ export const CreateMedicationScreen: React.FC = () => {
                   fontSize="$sm"
                   fontWeight="$medium"
                 >
-                  Horário
+                  {t("medications.create.time")}
                 </Text>
                 <Input
                   bg={FIXED_COLORS.background[800]}
@@ -386,7 +333,7 @@ export const CreateMedicationScreen: React.FC = () => {
                   borderRadius="$md"
                 >
                   <InputField
-                    placeholder="Ex: Manhã, Tarde, Noite"
+                    placeholder={t("medications.create.placeholders.time")}
                     value={formData.time}
                     onChangeText={(value) => handleInputChange("time", value)}
                     color={FIXED_COLORS.text[50]}
@@ -442,86 +389,6 @@ export const CreateMedicationScreen: React.FC = () => {
                 </Input>
               </VStack>
 
-              {/* Protein */}
-              <VStack space="xs">
-                <Text
-                  color={FIXED_COLORS.text[50]}
-                  fontSize="$sm"
-                  fontWeight="$medium"
-                >
-                  {t("medications.create.protein")}
-                </Text>
-                <Input
-                  bg={FIXED_COLORS.background[800]}
-                  borderColor={FIXED_COLORS.background[600]}
-                  borderRadius="$md"
-                >
-                  <InputField
-                    placeholder={t("medications.create.placeholders.protein")}
-                    value={formData.protein}
-                    onChangeText={(value) =>
-                      handleInputChange("protein", value)
-                    }
-                    color={FIXED_COLORS.text[50]}
-                    keyboardType="numeric"
-                  />
-                </Input>
-              </VStack>
-
-              {/* Carbohydrates */}
-              <VStack space="xs">
-                <Text
-                  color={FIXED_COLORS.text[50]}
-                  fontSize="$sm"
-                  fontWeight="$medium"
-                >
-                  {t("medications.create.carbohydrates")}
-                </Text>
-                <Input
-                  bg={FIXED_COLORS.background[800]}
-                  borderColor={FIXED_COLORS.background[600]}
-                  borderRadius="$md"
-                >
-                  <InputField
-                    placeholder={t(
-                      "medications.create.placeholders.carbohydrates"
-                    )}
-                    value={formData.carbohydrates}
-                    onChangeText={(value) =>
-                      handleInputChange("carbohydrates", value)
-                    }
-                    color={FIXED_COLORS.text[50]}
-                    keyboardType="numeric"
-                  />
-                </Input>
-              </VStack>
-
-              {/* Calories */}
-              <VStack space="xs">
-                <Text
-                  color={FIXED_COLORS.text[50]}
-                  fontSize="$sm"
-                  fontWeight="$medium"
-                >
-                  {t("medications.create.calories")}
-                </Text>
-                <Input
-                  bg={FIXED_COLORS.background[800]}
-                  borderColor={FIXED_COLORS.background[600]}
-                  borderRadius="$md"
-                >
-                  <InputField
-                    placeholder={t("medications.create.placeholders.calories")}
-                    value={formData.calories}
-                    onChangeText={(value) =>
-                      handleInputChange("calories", value)
-                    }
-                    color={FIXED_COLORS.text[50]}
-                    keyboardType="numeric"
-                  />
-                </Input>
-              </VStack>
-
               {/* Description */}
               <VStack space="xs">
                 <Text
@@ -529,7 +396,7 @@ export const CreateMedicationScreen: React.FC = () => {
                   fontSize="$sm"
                   fontWeight="$medium"
                 >
-                  {t("medications.create.description")}
+                  {t("medications.create.descriptionLabel")}
                 </Text>
                 <Input
                   bg={FIXED_COLORS.background[800]}

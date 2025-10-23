@@ -14,6 +14,9 @@ import { useTranslation } from "../../../../hooks/useTranslation";
 import { MealCard } from "./MealCard";
 import { MealDetailsDrawer } from "./MealDetailsDrawer";
 import { mealsService } from "../../../../services/mealsService";
+import { mealsHistoryService } from "../../../../services/mealsHistoryService";
+import { useToast } from "../../../../hooks/useToast";
+import { useAuth } from "../../../../contexts/AuthContext";
 import { Meal } from "./types";
 
 // Função para obter a imagem baseada no tipo de refeição
@@ -34,11 +37,17 @@ const getMealImage = (mealType: string) => {
 
 interface MealsListProps {
   onViewAll?: () => void;
+  onMealConsumptionChange?: () => void;
 }
 
-export const MealsList: React.FC<MealsListProps> = ({ onViewAll }) => {
+export const MealsList: React.FC<MealsListProps> = ({
+  onViewAll,
+  onMealConsumptionChange,
+}) => {
   const { t } = useTranslation();
   const navigation = useNavigation();
+  const { showSuccess, showError } = useToast();
+  const { user } = useAuth();
   const [meals, setMeals] = useState<Meal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
@@ -53,13 +62,44 @@ export const MealsList: React.FC<MealsListProps> = ({ onViewAll }) => {
   const loadMeals = async () => {
     try {
       setIsLoading(true);
-      const data = await mealsService.getMeals();
+
+      // Usar data local do dispositivo em vez de UTC
+      const today = new Date();
+      const todayLocal = `${today.getFullYear()}-${String(
+        today.getMonth() + 1
+      ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+      console.log("🔍 Today's date (Local - Meals):", todayLocal);
+      console.log("🔍 Device time:", today.toLocaleString());
+
+      const response = await mealsService.getMealsWithNutrition(todayLocal);
+      const data = response?.meals || [];
+
+      if (!data || !Array.isArray(data)) {
+        setMeals([]);
+        return;
+      }
+
       const mealsWithDefaults = data.map((meal) => {
         const totals = mealsService.calculateMealTotals(meal);
+
+        // Verificar se foi consumida hoje baseada no last_consumed_at
+        const isConsumedToday = meal.last_consumed_at
+          ? meal.last_consumed_at.split("T")[0] === todayLocal
+          : false;
+
+        console.log("🍽️ Meal:", {
+          name: meal.name,
+          lastConsumedAt: meal.last_consumed_at,
+          lastConsumedDate: meal.last_consumed_at?.split("T")[0],
+          todayLocal,
+          isConsumedToday,
+          match: meal.last_consumed_at?.split("T")[0] === todayLocal,
+        });
+
         return {
           ...meal,
           active: meal.is_active,
-          is_consumed: false,
+          is_consumed: isConsumedToday,
           calories: totals.calories,
           protein: totals.protein,
           carbs: totals.carbs,
@@ -76,7 +116,6 @@ export const MealsList: React.FC<MealsListProps> = ({ onViewAll }) => {
       });
       setMeals(mealsWithDefaults);
     } catch (error) {
-      console.error("Error loading meals:", error);
       setMeals([]);
     } finally {
       setIsLoading(false);
@@ -90,12 +129,89 @@ export const MealsList: React.FC<MealsListProps> = ({ onViewAll }) => {
     setIsDrawerOpen(true);
   };
 
-  const handleToggleConsumed = (mealId: string) => {
-    setMeals((prev) =>
-      prev.map((meal) =>
-        meal.id === mealId ? { ...meal, is_consumed: !meal.is_consumed } : meal
-      )
-    );
+  const handleToggleConsumed = async (mealId: string) => {
+    try {
+      const meal = meals.find((m) => m.id === mealId);
+      if (!meal) return;
+
+      const now = new Date();
+      // Usar data local do dispositivo
+      const todayLocal = `${now.getFullYear()}-${String(
+        now.getMonth() + 1
+      ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      if (!meal.is_consumed) {
+        // Adicionar ao histórico
+        const nutritionData = {
+          total_calories: meal.calories || 0,
+          total_protein: meal.protein || 0,
+          total_carbs: meal.carbs || 0,
+          total_fat: meal.fat || 0,
+          total_fiber: 0, // Não temos este dado no tipo Meal
+          total_sodium: 0, // Não temos este dado
+          total_sugar: 0, // Não temos este dado
+          ingredients:
+            meal.ingredients?.map((ingredient) => ({
+              name: ingredient.name,
+              quantity: ingredient.quantity || 0,
+              unit: ingredient.unit || "g",
+              calories:
+                (ingredient.calories_per_unit || 0) *
+                (ingredient.quantity || 0),
+              protein:
+                (ingredient.protein_per_unit || 0) * (ingredient.quantity || 0),
+              carbs:
+                (ingredient.carbs_per_unit || 0) * (ingredient.quantity || 0),
+              fat: (ingredient.fat_per_unit || 0) * (ingredient.quantity || 0),
+            })) || [],
+        };
+
+        // Criar ISO string com a data/hora local (não UTC)
+        const localISOString = new Date(
+          now.getTime() - now.getTimezoneOffset() * 60000
+        ).toISOString();
+
+        const mealPayload = {
+          meal_id: mealId,
+          recorded_at: localISOString,
+          timezone,
+          nutrition_data: nutritionData,
+          notes: `${meal.meal_type} - ${meal.name}`,
+        };
+        console.log("🍽️ Sending meal history payload:", mealPayload);
+        console.log(
+          "🕐 Time comparison - Local:",
+          now.toLocaleString(),
+          "ISO:",
+          localISOString
+        );
+
+        await mealsHistoryService.addMealToHistory(mealPayload);
+
+        console.log("✅ Meal history recorded successfully");
+        showSuccess(t("nutrition.meals.addedToHistory"));
+      } else {
+        // Remover do histórico
+        await mealsHistoryService.removeMealFromHistory({
+          meal_id: mealId,
+          date: todayLocal,
+          client_id: user?.id,
+        });
+
+        showSuccess(t("nutrition.meals.removedFromHistory"));
+      }
+
+      // Recarregar dados para obter informações atualizadas
+      await loadMeals();
+
+      // Notificar o componente pai para atualizar o gráfico
+      if (onMealConsumptionChange) {
+        onMealConsumptionChange();
+      }
+    } catch (error) {
+      showError(t("nutrition.meals.toggleError"));
+    }
   };
 
   const handleCloseDrawer = () => {

@@ -3,6 +3,7 @@ import { userStorage } from "./userStorage";
 import { goalsService } from "./goalsService";
 import { Measurements } from "../types/auth";
 import { UserBodyData, processUserBodyData } from "../utils/bodyCalculations";
+import { dailyDataStorage, DailyWeightData } from "./dailyDataStorage";
 
 const WEIGHT_HISTORY_KEY = "@MyCycle:weightHistory";
 const MEASUREMENTS_HISTORY_KEY = "@MyCycle:measurementsHistory";
@@ -77,6 +78,9 @@ class BodyDataService {
         WEIGHT_HISTORY_KEY,
         JSON.stringify(filteredHistory)
       );
+
+      // Salvar dados de peso no storage para a tela home
+      await this.updateDailyWeightData(newEntry);
     } catch (error) {
       console.error("Error adding weight entry:", error);
       throw error;
@@ -274,6 +278,23 @@ class BodyDataService {
     }
 
     return age;
+  }
+
+  async updateDailyWeightData(weightEntry: WeightEntry): Promise<void> {
+    try {
+      const weightData: DailyWeightData = {
+        date: weightEntry.date,
+        weight: weightEntry.weight,
+        bodyFat: weightEntry.bodyFat,
+        muscleMass: weightEntry.muscleMass,
+        bmi: weightEntry.bmi,
+        lastUpdated: new Date().toISOString(),
+      };
+
+      await dailyDataStorage.setDailyWeightData(weightData);
+    } catch (error) {
+      console.error("Error updating daily weight data:", error);
+    }
   }
 
   // Clear all data

@@ -9,9 +9,13 @@ import { calendarMockData, CalendarEvent } from "./calendarMockData";
 
 export const CalendarScreen: React.FC = () => {
   const { t } = useTranslation();
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+  // Usar data local ao invés de UTC
+  const today = new Date();
+  const todayLocal = `${today.getFullYear()}-${String(
+    today.getMonth() + 1
+  ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  
+  const [selectedDate, setSelectedDate] = useState(todayLocal);
 
   // Mock data - em produção virá da API
   const mockEvents = calendarMockData;

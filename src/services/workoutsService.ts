@@ -1,4 +1,5 @@
 import { apiService } from "./api";
+import { dailyDataStorage, DailyExerciseData } from "./dailyDataStorage";
 
 export interface WorkoutExercise {
   id: string;
@@ -27,6 +28,7 @@ export interface WorkoutSession {
   client_id: string;
   exercises: WorkoutExercise[];
   history: string[];
+  lastTimeExecuted?: string;
 }
 
 export class WorkoutsService {
@@ -40,6 +42,9 @@ export class WorkoutsService {
     if (!response.data) {
       throw new Error("Invalid server response");
     }
+
+    // Salvar dados de exercícios no storage para a tela home
+    await this.updateDailyExerciseData(response.data);
 
     return response.data;
   }
@@ -111,8 +116,16 @@ export class WorkoutsService {
     clientId: string,
     date: string
   ): Promise<WorkoutHistoryEntry[]> {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    // Construir query parameters
+    const queryParams = new URLSearchParams({
+      date: date,
+      timezone: timezone,
+    });
+
     const response = await apiService.get<WorkoutHistoryEntry[]>(
-      `/workouts/history/client/${clientId}/day/${date}`
+      `/workouts/history/client/${clientId}/day?${queryParams.toString()}`
     );
 
     if (response.error) {
@@ -124,6 +137,51 @@ export class WorkoutsService {
     }
 
     return response.data;
+  }
+
+  async updateDailyExerciseData(workouts: WorkoutSession[]): Promise<void> {
+    try {
+      // Usar data local ao invés de UTC
+      const today = new Date();
+      const todayLocal = `${today.getFullYear()}-${String(
+        today.getMonth() + 1
+      ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
+      // Calcular exercícios executados hoje
+      const todayWorkouts = workouts.filter(
+        (workout) =>
+          workout.lastTimeExecuted &&
+          workout.lastTimeExecuted.split("T")[0] === todayLocal
+      );
+
+      const totalExercises = workouts.reduce(
+        (acc, workout) => acc + workout.exercises.length,
+        0
+      );
+      const completedExercises = todayWorkouts.reduce(
+        (acc, workout) => acc + workout.exercises.length,
+        0
+      );
+
+      // Calcular duração total (aproximada)
+      const totalDuration = todayWorkouts.length * 30 * 60; // 30 minutos por treino
+
+      // Calcular calorias queimadas (aproximada)
+      const caloriesBurned = todayWorkouts.length * 300; // 300 calorias por treino
+
+      const exerciseData: DailyExerciseData = {
+        date: todayLocal,
+        exercisesCompleted: completedExercises,
+        totalExercises: totalExercises,
+        totalDuration: totalDuration,
+        caloriesBurned: caloriesBurned,
+        lastUpdated: new Date().toISOString(),
+      };
+
+      await dailyDataStorage.setDailyExerciseData(exerciseData);
+    } catch (error) {
+      console.error("Error updating daily exercise data:", error);
+    }
   }
 }
 

@@ -20,9 +20,13 @@ export const WorkoutTab: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
 
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+  // Usar data local ao invés de UTC
+  const today = new Date();
+  const todayLocal = `${today.getFullYear()}-${String(
+    today.getMonth() + 1
+  ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
+  const [selectedDate, setSelectedDate] = useState(todayLocal);
   const [workoutHistory, setWorkoutHistory] = useState<WorkoutHistoryEntry[]>(
     []
   );
@@ -32,7 +36,7 @@ export const WorkoutTab: React.FC = () => {
   );
 
   useEffect(() => {
-    if (user?.id && selectedDate) {
+    if (user?.id) {
       loadWorkoutHistory();
     }
   }, [selectedDate, user?.id]);
