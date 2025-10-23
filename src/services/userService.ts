@@ -15,6 +15,19 @@ export interface MeasurementComparison {
   };
 }
 
+export interface WeightHistoryData {
+  label: string;
+  weight?: number;
+  date?: string;
+}
+
+export interface WeightHistoryResponse {
+  period: string;
+  start_date: string;
+  end_date: string;
+  data: WeightHistoryData[];
+}
+
 export class UserService {
   async getProfile(): Promise<User> {
     const response = await apiService.get<User>("/clients/me/profile");
@@ -88,12 +101,9 @@ export class UserService {
     return response.data;
   }
 
-  async updateUserMeasurement(
-    clientId: string,
-    weight: number
-  ): Promise<void> {
+  async updateUserMeasurement(clientId: string, weight: number): Promise<void> {
     const endpoint = `/clients/${clientId}/measurements`;
-    
+
     const payload = {
       measurements: {
         weight,
@@ -105,6 +115,29 @@ export class UserService {
     if (response.error) {
       throw new Error(response.error);
     }
+  }
+
+  async getWeightHistory(
+    clientId: string,
+    period: "weekly" | "monthly" | "yearly" = "yearly"
+  ): Promise<WeightHistoryResponse> {
+    const endpoint = `/clients/${clientId}/weight-history?period=${period}`;
+
+    console.log("📊 Fetching weight history:", { clientId, period, endpoint });
+
+    const response = await apiService.get<WeightHistoryResponse>(endpoint);
+
+    if (response.error) {
+      throw new Error(response.error);
+    }
+
+    if (!response.data) {
+      throw new Error("Resposta inválida do servidor");
+    }
+
+    console.log("📊 Weight history received:", response.data);
+
+    return response.data;
   }
 }
 

@@ -11,7 +11,7 @@ import { FIXED_COLORS } from "../../theme/colors";
 import { CustomInput, CustomDrawer, CustomButton } from "../../components";
 import { useToast } from "../../hooks/useToast";
 import { useAuth } from "../../contexts/AuthContext";
-import { userService } from "../../services/userService";
+import { userService, WeightHistoryData } from "../../services/userService";
 
 const weightSchema = z.object({
   weight: z
@@ -88,8 +88,29 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
   const { showSuccess } = useToast();
   const { convertWeight, unitSystem } = useUnits();
   const [isSaving, setIsSaving] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState<FilterType>("weekly");
+  const [selectedFilter, setSelectedFilter] = useState<FilterType>("annual");
   const { user } = useAuth();
+  const [weightHistory, setWeightHistory] = useState<WeightHistoryData[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+
+  React.useEffect(() => {
+    if (isOpen && user?.id) {
+      loadWeightHistory();
+    }
+  }, [isOpen, user?.id]);
+
+  const loadWeightHistory = async () => {
+    try {
+      setIsLoadingHistory(true);
+      const data = await userService.getWeightHistory(user?.id || "", "yearly");
+      setWeightHistory(data.data);
+    } catch (error) {
+      console.error("Error loading weight history:", error);
+      setWeightHistory([]);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
 
   const {
     control,
@@ -102,21 +123,6 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
       weight: "",
     },
   });
-
-  const getDataByFilter = (): WeightData[] => {
-    switch (selectedFilter) {
-      case "weekly":
-        return mockWeeklyData;
-      case "monthly":
-        return mockMonthlyData;
-      case "semestral":
-        return mockSemestralData;
-      case "annual":
-        return mockAnnualData;
-      default:
-        return mockWeeklyData;
-    }
-  };
 
   const onSubmit = async (data: WeightFormData) => {
     try {
@@ -145,6 +151,7 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
       showSuccess(t("weight.weightSaved"));
 
       reset();
+      loadWeightHistory();
     } catch (err) {
       console.error("Save weight error:", err);
     } finally {
@@ -157,13 +164,15 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
     onClose();
   };
 
-  const rawChartData = getDataByFilter();
-  const chartData = rawChartData.map((item) => ({
-    ...item,
-    value: convertWeight(item.value).value,
-  }));
-  const maxValue = Math.max(...chartData.map((d) => d.value));
-  const minValue = Math.min(...chartData.map((d) => d.value));
+  const rawChartData = weightHistory;
+  const chartData = rawChartData
+    .filter((item) => item.weight !== undefined)
+    .map((item) => ({
+      ...item,
+      value: convertWeight(item.weight || 0).value,
+    }));
+  const maxValue = chartData.length > 0 ? Math.max(...chartData.map((d) => d.value)) : 100;
+  const minValue = chartData.length > 0 ? Math.min(...chartData.map((d) => d.value)) : 50;
 
   const FilterButton: React.FC<{
     filter: FilterType;
