@@ -63,23 +63,12 @@ export const SupplementsList: React.FC<SupplementsListProps> = ({
       const todayLocal = `${today.getFullYear()}-${String(
         today.getMonth() + 1
       ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-      console.log("🔍 Today's date (Local):", todayLocal);
-      console.log("🔍 Device time:", today.toLocaleString());
 
       const supplementsWithDefaults = data.map((supplement: any) => {
         const lastConsumedDate = supplement.last_consumed_at
           ? supplement.last_consumed_at.split("T")[0]
           : null;
         const isTakenToday = lastConsumedDate === todayLocal;
-
-        console.log("📋 Supplement:", {
-          name: supplement.name,
-          lastConsumedAt: supplement.last_consumed_at,
-          lastConsumedDate,
-          todayLocal,
-          isTakenToday,
-          match: lastConsumedDate === todayLocal,
-        });
 
         return {
           ...supplement,
@@ -176,27 +165,13 @@ export const SupplementsList: React.FC<SupplementsListProps> = ({
         timezone: "America/Sao_Paulo",
         notes: "",
       };
-      console.log("📤 Sending supplement history payload:", payload);
-      console.log(
-        "🕐 Time comparison - Local:",
-        now.toLocaleString(),
-        "ISO:",
-        localISOString
-      );
 
       supplementsService
         .recordSupplementHistory(payload)
         .then(() => {
-          console.log("✅ Supplement history recorded successfully");
           loadSupplements();
         })
         .catch((error: any) => {
-          console.error("❌ Error recording supplement history:", error);
-          console.error("Error details:", {
-            message: error.message,
-            response: error.response,
-            stack: error.stack,
-          });
           setSupplements((prev) =>
             prev.map((s) =>
               s.id === supplementId ? { ...s, is_taken: !s.is_taken } : s

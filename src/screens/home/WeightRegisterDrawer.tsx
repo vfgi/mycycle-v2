@@ -10,6 +10,8 @@ import { useUnits } from "../../contexts/UnitsContext";
 import { FIXED_COLORS } from "../../theme/colors";
 import { CustomInput, CustomDrawer, CustomButton } from "../../components";
 import { useToast } from "../../hooks/useToast";
+import { useAuth } from "../../contexts/AuthContext";
+import { userService } from "../../services/userService";
 
 const weightSchema = z.object({
   weight: z
@@ -87,6 +89,7 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
   const { convertWeight, unitSystem } = useUnits();
   const [isSaving, setIsSaving] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<FilterType>("weekly");
+  const { user } = useAuth();
 
   const {
     control,
@@ -126,7 +129,18 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
         weightInKg = weightInDisplayUnit / 2.205;
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log("📤 Saving weight:", {
+        clientId: user?.id,
+        weightInDisplayUnit,
+        weightInKg,
+        payload: {
+          measurements: {
+            weight: weightInKg,
+          },
+        },
+      });
+
+      await userService.updateUserMeasurement(user?.id || "", weightInKg);
 
       showSuccess(t("weight.weightSaved"));
 

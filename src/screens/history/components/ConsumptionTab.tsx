@@ -268,6 +268,7 @@ export const ConsumptionTab: React.FC = () => {
               bg={FIXED_COLORS.background[800]}
               borderRadius="$lg"
               p="$4"
+              mt="$4"
               borderWidth={1}
               borderColor={FIXED_COLORS.background[700]}
               borderStyle="dashed"

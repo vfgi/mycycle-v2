@@ -68,8 +68,6 @@ export const MealsList: React.FC<MealsListProps> = ({
       const todayLocal = `${today.getFullYear()}-${String(
         today.getMonth() + 1
       ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-      console.log("🔍 Today's date (Local - Meals):", todayLocal);
-      console.log("🔍 Device time:", today.toLocaleString());
 
       const response = await mealsService.getMealsWithNutrition(todayLocal);
       const data = response?.meals || [];
@@ -86,15 +84,6 @@ export const MealsList: React.FC<MealsListProps> = ({
         const isConsumedToday = meal.last_consumed_at
           ? meal.last_consumed_at.split("T")[0] === todayLocal
           : false;
-
-        console.log("🍽️ Meal:", {
-          name: meal.name,
-          lastConsumedAt: meal.last_consumed_at,
-          lastConsumedDate: meal.last_consumed_at?.split("T")[0],
-          todayLocal,
-          isConsumedToday,
-          match: meal.last_consumed_at?.split("T")[0] === todayLocal,
-        });
 
         return {
           ...meal,
@@ -179,17 +168,9 @@ export const MealsList: React.FC<MealsListProps> = ({
           nutrition_data: nutritionData,
           notes: `${meal.meal_type} - ${meal.name}`,
         };
-        console.log("🍽️ Sending meal history payload:", mealPayload);
-        console.log(
-          "🕐 Time comparison - Local:",
-          now.toLocaleString(),
-          "ISO:",
-          localISOString
-        );
 
         await mealsHistoryService.addMealToHistory(mealPayload);
 
-        console.log("✅ Meal history recorded successfully");
         showSuccess(t("nutrition.meals.addedToHistory"));
       } else {
         // Remover do histórico

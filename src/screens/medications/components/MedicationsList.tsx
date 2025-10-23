@@ -39,23 +39,12 @@ export const MedicationsList: React.FC<MedicationsListProps> = ({
       const todayLocal = `${today.getFullYear()}-${String(
         today.getMonth() + 1
       ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-      console.log("🔍 Today's date (Local - Medications):", todayLocal);
-      console.log("🔍 Device time:", today.toLocaleString());
 
       const medicationsWithDefaults = data.map((medication: any) => {
         const lastConsumedDate = medication.last_consumed_at
           ? medication.last_consumed_at.split("T")[0]
           : null;
         const isTakenToday = lastConsumedDate === todayLocal;
-
-        console.log("💊 Medication:", {
-          name: medication.name,
-          lastConsumedAt: medication.last_consumed_at,
-          lastConsumedDate,
-          todayLocal,
-          isTakenToday,
-          match: lastConsumedDate === todayLocal,
-        });
 
         return {
           ...medication,
@@ -132,27 +121,13 @@ export const MedicationsList: React.FC<MedicationsListProps> = ({
         timezone: "America/Sao_Paulo",
         notes: "",
       };
-      console.log("💊 Sending medication history payload:", payload);
-      console.log(
-        "🕐 Time comparison - Local:",
-        now.toLocaleString(),
-        "ISO:",
-        localISOString
-      );
 
       medicationsService
         .recordMedicationHistory(payload)
         .then(() => {
-          console.log("✅ Medication history recorded successfully");
           loadMedications();
         })
         .catch((error: any) => {
-          console.error("❌ Error recording medication history:", error);
-          console.error("Error details:", {
-            message: error.message,
-            response: error.response,
-            stack: error.stack,
-          });
           setMedications((prev) =>
             prev.map((m) =>
               m.id === medicationId ? { ...m, is_taken: !m.is_taken } : m

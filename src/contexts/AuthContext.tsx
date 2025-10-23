@@ -43,14 +43,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         tokenStorage.getAccessToken(),
         tokenStorage.getRefreshToken(),
       ]);
-
-      console.log("🔍 [AuthContext] Storage data:", {
-        hasUser: !!user,
-        hasAccessToken: !!accessToken,
-        hasRefreshToken: !!refreshToken,
-        refreshTokenLength: refreshToken?.length || 0,
-      });
-
       if (accessToken && refreshToken) {
         console.log("✅ [AuthContext] User authenticated from storage");
 

@@ -74,16 +74,8 @@ export class UserService {
     }
 
     const endpoint = `/clients/${clientId}/measurements-comparison?period=${period}`;
-    console.log("📍 userService - Calling endpoint:", endpoint);
 
     const response = await apiService.get<MeasurementComparison>(endpoint);
-
-    console.log("📍 userService - Response:", {
-      hasError: !!response.error,
-      error: response.error,
-      hasData: !!response.data,
-      response,
-    });
 
     if (response.error) {
       throw new Error(response.error);
@@ -94,6 +86,25 @@ export class UserService {
     }
 
     return response.data;
+  }
+
+  async updateUserMeasurement(
+    clientId: string,
+    weight: number
+  ): Promise<void> {
+    const endpoint = `/clients/${clientId}/measurements`;
+    
+    const payload = {
+      measurements: {
+        weight,
+      },
+    };
+
+    const response = await apiService.patch<void>(endpoint, payload);
+
+    if (response.error) {
+      throw new Error(response.error);
+    }
   }
 }
 

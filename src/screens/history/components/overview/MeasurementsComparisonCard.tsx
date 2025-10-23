@@ -90,7 +90,7 @@ export const MeasurementsComparisonCard: React.FC<
     // Extrair apenas a data da string ISO (YYYY-MM-DD)
     const datePart = dateString.split("T")[0];
     const [year, month, day] = datePart.split("-");
-    
+
     const formatted = `${day}/${month}/${year}`;
 
     return `${t("history.overview.comparingWith")} ${formatted}`;

@@ -55,16 +55,6 @@ export const OverviewTab: React.FC = () => {
         apiPeriod as any
       );
       setComparisonData(comparison);
-      console.log("🔗 API Endpoint Construction:", {
-        selectedPeriodUI: selectedPeriod,
-        mappedApiPeriod: apiPeriod,
-        fullEndpoint: `/clients/me/measurements-comparison?period=${apiPeriod}`,
-      });
-      console.log("📊 Measurement Comparison Data:", {
-        period: selectedPeriod,
-        apiPeriod,
-        comparison,
-      });
 
       const selectedPeriodOption = periodOptions.find(
         (option) => option.key === selectedPeriod
