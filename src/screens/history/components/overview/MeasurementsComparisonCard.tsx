@@ -87,12 +87,11 @@ export const MeasurementsComparisonCard: React.FC<
   const formatComparisonDate = (dateString?: string) => {
     if (!dateString) return periodLabel;
 
-    const date = new Date(dateString);
-    const formatted = date.toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
+    // Extrair apenas a data da string ISO (YYYY-MM-DD)
+    const datePart = dateString.split("T")[0];
+    const [year, month, day] = datePart.split("-");
+    
+    const formatted = `${day}/${month}/${year}`;
 
     return `${t("history.overview.comparingWith")} ${formatted}`;
   };

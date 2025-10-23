@@ -14,7 +14,7 @@ export const CalendarScreen: React.FC = () => {
   const todayLocal = `${today.getFullYear()}-${String(
     today.getMonth() + 1
   ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-  
+
   const [selectedDate, setSelectedDate] = useState(todayLocal);
 
   // Mock data - em produção virá da API
