@@ -165,14 +165,28 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
   };
 
   const rawChartData = weightHistory;
-  const chartData = rawChartData
-    .filter((item) => item.weight !== undefined)
-    .map((item) => ({
+  const chartData = rawChartData.map((item) => {
+    if (item.weight !== undefined) {
+      return {
+        ...item,
+        value: convertWeight(item.weight).value,
+      };
+    }
+    return {
       ...item,
-      value: convertWeight(item.weight || 0).value,
-    }));
-  const maxValue = chartData.length > 0 ? Math.max(...chartData.map((d) => d.value)) : 100;
-  const minValue = chartData.length > 0 ? Math.min(...chartData.map((d) => d.value)) : 50;
+      value: 0,
+    };
+  });
+
+  const dataWithWeights = chartData.filter((item) => item.weight !== undefined);
+  const maxValue =
+    dataWithWeights.length > 0
+      ? Math.max(...dataWithWeights.map((d) => d.value)) + 2
+      : 100;
+  const minValue =
+    dataWithWeights.length > 0
+      ? Math.min(...dataWithWeights.map((d) => d.value)) - 2
+      : 50;
 
   const FilterButton: React.FC<{
     filter: FilterType;
@@ -302,8 +316,8 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
                 curved
                 areaChart
                 hideRules
-                maxValue={maxValue + 2}
-                yAxisOffset={minValue - 2}
+                maxValue={maxValue}
+                yAxisOffset={minValue}
                 noOfSections={4}
               />
             </VStack>
