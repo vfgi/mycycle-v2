@@ -188,15 +188,36 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
   };
 
   const rawChartData = weightHistory;
-  const chartData = rawChartData
-    .filter((item) => item.weight !== undefined)
-    .map((item) => ({
+  
+  // Interpolar dados: se não tiver valor, usar o último valor válido
+  const interpolatedData = rawChartData.map((item, index) => {
+    if (item.weight !== undefined) {
+      return {
+        ...item,
+        value: convertWeight(item.weight).value,
+      };
+    }
+    
+    // Se não tiver peso, procurar o último valor válido
+    let lastValidValue = 0;
+    for (let i = index - 1; i >= 0; i--) {
+      if (rawChartData[i].weight !== undefined) {
+        lastValidValue = convertWeight(rawChartData[i].weight || 0).value;
+        break;
+      }
+    }
+    
+    return {
       ...item,
-      value: convertWeight(item.weight || 0).value,
-    }));
+      value: lastValidValue,
+    };
+  });
+
+  const chartData = interpolatedData.filter((item) => item.value > 0);
 
   console.log("📊 Chart Data Debug:", {
     rawChartData,
+    interpolatedData,
     chartData,
     chartDataLength: chartData.length,
   });
