@@ -313,10 +313,10 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
             >
               <LineChart
                 data={chartData}
-                width={350}
+                width={280}
                 height={200}
                 spacing={selectedFilter === "annual" ? 20 : 40}
-                initialSpacing={20}
+                initialSpacing={10}
                 color={FIXED_COLORS.primary[600]}
                 thickness={3}
                 startFillColor={FIXED_COLORS.primary[600]}
