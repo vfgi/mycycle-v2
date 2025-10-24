@@ -52,37 +52,9 @@ interface StatsCardProps {
   data?: StatsData;
 }
 
-// Mock data
-const mockData: StatsData = {
-  calories: {
-    consumed: 1200,
-    goal: 2200,
-  },
-  weight: {
-    current: 99.5,
-    goal: 70.0,
-  },
-  exercise: {
-    current: 3,
-    goal: 5,
-  },
-  macros: {
-    protein: {
-      current: 85,
-      goal: 120,
-    },
-    carbs: {
-      current: 150,
-      goal: 180,
-    },
-    fat: {
-      current: 45,
-      goal: 65,
-    },
-  },
-};
+// Remover mockData - usar apenas dados reais
 
-export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
+export const StatsCard: React.FC<StatsCardProps> = ({ data }) => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { getMacroUnit, convertWeight, convertMacronutrient } = useUnits();
@@ -130,20 +102,20 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
   const currentWeightKg =
     dailyData?.weight?.weight ||
     user?.measurements?.weight ||
-    data.weight.current;
-  const goalWeightKg = goals?.targetWeight || data.weight.goal;
-  const caloriesGoal = goals?.targetCalories || data.calories.goal;
-  const exerciseGoal = goals?.dailyExercises || data.exercise.goal;
+    0;
+  const goalWeightKg = goals?.targetWeight || 0;
+  const caloriesGoal = goals?.targetCalories || 0;
+  const exerciseGoal = goals?.dailyExercises || 0;
 
   // Dados reais de consumo do storage
   const realCaloriesConsumed =
-    dailyData?.consumption?.calories || data.calories.consumed;
+    dailyData?.consumption?.calories || 0;
   const realProteinConsumed =
-    dailyData?.consumption?.protein || data.macros.protein.current;
+    dailyData?.consumption?.protein || 0;
   const realCarbsConsumed =
-    dailyData?.consumption?.carbs || data.macros.carbs.current;
+    dailyData?.consumption?.carbs || 0;
   const realFatConsumed =
-    dailyData?.consumption?.fat || data.macros.fat.current;
+    dailyData?.consumption?.fat || 0;
   const realExercisesCompleted =
     dailyData?.exercise?.exercisesCompleted !== undefined
       ? dailyData.exercise.exercisesCompleted
@@ -154,13 +126,13 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
   // Converter macronutrientes para unidade atual (tanto current quanto goal)
   const proteinGoalConverted = goals?.targetProtein
     ? convertMacronutrient(goals.targetProtein).value
-    : data.macros.protein.goal;
+    : 0;
   const carbsGoalConverted = goals?.targetCarbs
     ? convertMacronutrient(goals.targetCarbs).value
-    : data.macros.carbs.goal;
+    : 0;
   const fatGoalConverted = goals?.targetFat
     ? convertMacronutrient(goals.targetFat).value
-    : data.macros.fat.goal;
+    : 0;
 
   // Converter valores atuais (consumidos) para unidade atual
   const proteinCurrentConverted =
