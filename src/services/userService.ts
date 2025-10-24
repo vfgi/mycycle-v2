@@ -192,18 +192,10 @@ export class UserService {
       throw new Error(response.error);
     }
 
-    if (!response.data) {
-      throw new Error("Resposta inválida do servidor");
-    }
+    // Após upload, fazer GET do perfil completo para manter todos os dados
+    const fullProfile = await this.getProfile();
 
-    // Salvar dados atualizados na AsyncStorage
-    try {
-      await userStorage.setUserProfile(response.data);
-    } catch (error) {
-      console.error("Error saving updated user profile to storage:", error);
-    }
-
-    return response.data;
+    return fullProfile;
   }
 }
 
