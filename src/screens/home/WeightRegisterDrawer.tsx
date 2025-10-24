@@ -189,8 +189,33 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
 
   const rawChartData = weightHistory;
   
+  // Para semana, reordenar para começar em Dom (0) e terminar em Sáb (6)
+  const dayOrder: Record<string, number> = {
+    "Dom": 0,
+    "Seg": 1,
+    "Ter": 2,
+    "Qua": 3,
+    "Qui": 4,
+    "Sex": 5,
+    "Sáb": 6,
+  };
+
+  const sortedData = selectedFilter === "weekly" 
+    ? [...rawChartData].sort((a, b) => {
+        const orderA = dayOrder[a.label] ?? 7;
+        const orderB = dayOrder[b.label] ?? 7;
+        return orderA - orderB;
+      })
+    : rawChartData;
+
+  console.log("📊 Sorted Data:", {
+    selectedFilter,
+    rawChartData: rawChartData.map(d => d.label),
+    sortedData: sortedData.map(d => d.label),
+  });
+  
   // Interpolar dados: se não tiver valor, usar o último valor válido
-  const interpolatedData = rawChartData.map((item, index) => {
+  const interpolatedData = sortedData.map((item, index) => {
     if (item.weight !== undefined) {
       return {
         ...item,
@@ -201,8 +226,8 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
     // Se não tiver peso, procurar o último valor válido
     let lastValidValue = 0;
     for (let i = index - 1; i >= 0; i--) {
-      if (rawChartData[i].weight !== undefined) {
-        lastValidValue = convertWeight(rawChartData[i].weight || 0).value;
+      if (sortedData[i].weight !== undefined) {
+        lastValidValue = convertWeight(sortedData[i].weight || 0).value;
         break;
       }
     }
