@@ -150,7 +150,9 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
     try {
       setIsSaving(true);
 
-      const weightInDisplayUnit = parseFloat(data.weight);
+      // Converter vírgula para ponto (formato brasileiro)
+      const weightString = data.weight.replace(",", ".");
+      const weightInDisplayUnit = parseFloat(weightString);
       let weightInKg = weightInDisplayUnit;
 
       if (unitSystem === "imperial") {
