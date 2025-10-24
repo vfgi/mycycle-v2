@@ -16,7 +16,11 @@ const weightSchema = z.object({
   weight: z
     .string()
     .min(1, "weight.weightRequired")
-    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+    .refine((val) => {
+      // Aceitar vírgula ou ponto como separador
+      const normalized = val.replace(",", ".");
+      return !isNaN(Number(normalized)) && Number(normalized) > 0;
+    }, {
       message: "weight.weightInvalid",
     }),
 });
