@@ -2,6 +2,7 @@ import { apiService } from "./api";
 import { userStorage } from "./userStorage";
 import { User } from "../types/auth";
 import { bodyDataService } from "./bodyDataService";
+import { dailyDataStorage, DailyWeightData } from "./dailyDataStorage";
 
 export interface MeasurementComparison {
   current: {
@@ -129,7 +130,18 @@ export class UserService {
         weight: weight,
       });
 
-      console.log("✅ Weight entry added to local history:", { date: todayLocal, weight });
+      // Atualizar storage diário para o StatsCard
+      const dailyWeightData: DailyWeightData = {
+        date: todayLocal,
+        weight: weight,
+        lastUpdated: new Date().toISOString(),
+      };
+      await dailyDataStorage.setDailyWeightData(dailyWeightData);
+
+      console.log("✅ Weight entry added to local history:", {
+        date: todayLocal,
+        weight,
+      });
     } catch (error) {
       console.error("Error adding weight to local history:", error);
     }
