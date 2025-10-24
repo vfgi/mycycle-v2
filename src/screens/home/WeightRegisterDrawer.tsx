@@ -188,35 +188,14 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
 
   const rawChartData = weightHistory;
 
-  // Interpolar dados: se não tiver valor, usar o último valor válido
-  const interpolatedData = rawChartData.map((item, index) => {
-    if (item.weight !== undefined) {
-      return {
-        ...item,
-        value: convertWeight(item.weight).value,
-      };
-    }
-
-    // Se não tiver peso, procurar o último valor válido
-    let lastValidValue = 0;
-    for (let i = index - 1; i >= 0; i--) {
-      if (rawChartData[i].weight !== undefined) {
-        lastValidValue = convertWeight(rawChartData[i].weight || 0).value;
-        break;
-      }
-    }
-
-    return {
-      ...item,
-      value: lastValidValue,
-    };
-  });
-
-  const chartData = interpolatedData;
+  // Mapear dados: apenas adicionar value quando tiver peso
+  const chartData = rawChartData.map((item) => ({
+    ...item,
+    value: item.weight !== undefined ? convertWeight(item.weight).value : 0,
+  }));
 
   console.log("📊 Chart Data Debug:", {
     rawChartData: rawChartData.map((d) => d.label),
-    interpolatedData,
     chartData,
     chartDataLength: chartData.length,
   });
@@ -346,15 +325,12 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
                   const value = dayData.value;
                   const barHeight = maxValue > 0 ? (value / maxValue) * 120 : 0;
                   const barColor =
-                    value > 0 ? FIXED_COLORS.primary[500] : FIXED_COLORS.background[600];
+                    value > 0
+                      ? FIXED_COLORS.primary[500]
+                      : FIXED_COLORS.background[600];
 
                   return (
-                    <VStack
-                      key={index}
-                      alignItems="center"
-                      space="xs"
-                      flex={1}
-                    >
+                    <VStack key={index} alignItems="center" space="xs" flex={1}>
                       <Text
                         color={FIXED_COLORS.text[50]}
                         fontSize="$xs"
