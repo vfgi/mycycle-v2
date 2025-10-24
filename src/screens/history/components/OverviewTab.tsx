@@ -4,8 +4,6 @@ import { ScrollView } from "react-native-gesture-handler";
 import { FIXED_COLORS } from "../../../theme/colors";
 import { useTranslation } from "../../../hooks/useTranslation";
 import {
-  periodOptions,
-  getDataForPeriod,
   PeriodSelector,
   WeightComparisonCard,
   MeasurementsComparisonCard,
@@ -29,6 +27,15 @@ const periodApiMap: Record<PeriodType, string> = {
   "1year": "year",
   all: "all",
 };
+
+const periodOptions = [
+  { key: "1week" as PeriodType, label: "1 Semana", days: 7 },
+  { key: "1month" as PeriodType, label: "1 Mês", days: 30 },
+  { key: "3months" as PeriodType, label: "3 Meses", days: 90 },
+  { key: "6months" as PeriodType, label: "6 Meses", days: 180 },
+  { key: "1year" as PeriodType, label: "1 Ano", days: 365 },
+  { key: "all" as PeriodType, label: "Tudo", days: null },
+];
 
 export const OverviewTab: React.FC = () => {
   const { t } = useTranslation();
@@ -103,7 +110,12 @@ export const OverviewTab: React.FC = () => {
           oldestMeasurement: realMeasurementData.oldest,
           latestMeasurement: realMeasurementData.latest,
         }
-      : getDataForPeriod(selectedPeriodOption!);
+      : {
+          oldestWeight: null,
+          latestWeight: null,
+          oldestMeasurement: null,
+          latestMeasurement: null,
+        };
 
   return (
     <VStack flex={1} bg={FIXED_COLORS.background[950]}>

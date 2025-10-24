@@ -100,22 +100,16 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data }) => {
 
   // Dados reais dos goals ou fallback para mock data
   const currentWeightKg =
-    dailyData?.weight?.weight ||
-    user?.measurements?.weight ||
-    0;
+    dailyData?.weight?.weight || user?.measurements?.weight || 0;
   const goalWeightKg = goals?.targetWeight || 0;
   const caloriesGoal = goals?.targetCalories || 0;
   const exerciseGoal = goals?.dailyExercises || 0;
 
   // Dados reais de consumo do storage
-  const realCaloriesConsumed =
-    dailyData?.consumption?.calories || 0;
-  const realProteinConsumed =
-    dailyData?.consumption?.protein || 0;
-  const realCarbsConsumed =
-    dailyData?.consumption?.carbs || 0;
-  const realFatConsumed =
-    dailyData?.consumption?.fat || 0;
+  const realCaloriesConsumed = dailyData?.consumption?.calories || 0;
+  const realProteinConsumed = dailyData?.consumption?.protein || 0;
+  const realCarbsConsumed = dailyData?.consumption?.carbs || 0;
+  const realFatConsumed = dailyData?.consumption?.fat || 0;
   const realExercisesCompleted =
     dailyData?.exercise?.exercisesCompleted !== undefined
       ? dailyData.exercise.exercisesCompleted
