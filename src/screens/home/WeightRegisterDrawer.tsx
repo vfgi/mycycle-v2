@@ -165,27 +165,20 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
   };
 
   const rawChartData = weightHistory;
-  const chartData = rawChartData.map((item) => {
-    if (item.weight !== undefined) {
-      return {
-        ...item,
-        value: convertWeight(item.weight).value,
-      };
-    }
-    return {
+  const chartData = rawChartData
+    .filter((item) => item.weight !== undefined)
+    .map((item) => ({
       ...item,
-      value: 0,
-    };
-  });
+      value: convertWeight(item.weight || 0).value,
+    }));
 
-  const dataWithWeights = chartData.filter((item) => item.weight !== undefined);
   const maxValue =
-    dataWithWeights.length > 0
-      ? Math.max(...dataWithWeights.map((d) => d.value)) + 2
+    chartData.length > 0
+      ? Math.max(...chartData.map((d) => d.value)) + 2
       : 100;
   const minValue =
-    dataWithWeights.length > 0
-      ? Math.min(...dataWithWeights.map((d) => d.value)) - 2
+    chartData.length > 0
+      ? Math.min(...chartData.map((d) => d.value)) - 2
       : 50;
 
   const FilterButton: React.FC<{
