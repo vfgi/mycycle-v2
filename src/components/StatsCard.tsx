@@ -148,13 +148,6 @@ export const StatsCard: React.FC<StatsCardProps> = ({ data = mockData }) => {
     dailyData?.exercise?.exercisesCompleted !== undefined
       ? dailyData.exercise.exercisesCompleted
       : 0;
-
-  console.log("📊 StatsCard Exercise Data:", {
-    fromStorage: dailyData?.exercise?.exercisesCompleted,
-    mockData: data.exercise.current,
-    final: realExercisesCompleted,
-  });
-
   // Usar apenas valor real da storage
   const exercisesCompleteToDisplay = realExercisesCompleted;
 

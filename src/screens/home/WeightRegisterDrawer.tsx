@@ -123,18 +123,6 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
       if (unitSystem === "imperial") {
         weightInKg = weightInDisplayUnit / 2.205;
       }
-
-      console.log("📤 Saving weight:", {
-        clientId: user?.id,
-        weightInDisplayUnit,
-        weightInKg,
-        payload: {
-          measurements: {
-            weight: weightInKg,
-          },
-        },
-      });
-
       await userService.updateUserMeasurement(user?.id || "", weightInKg);
 
       showSuccess(t("weight.weightSaved"));
@@ -160,13 +148,6 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
     ...item,
     value: item.weight !== undefined ? convertWeight(item.weight).value : 0,
   }));
-
-  console.log("📊 Chart Data Debug:", {
-    rawChartData: rawChartData.map((d) => d.label),
-    chartData,
-    chartDataLength: chartData.length,
-  });
-
   const chartDataWithValues = chartData.filter((item) => item.value > 0);
   const maxValue =
     chartDataWithValues.length > 0

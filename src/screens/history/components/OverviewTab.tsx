@@ -173,16 +173,16 @@ export const OverviewTab: React.FC = () => {
               oldestRecord={{
                 id: "comparison",
                 date: comparisonData.result.date,
-                measurements: comparisonData.result.measurements,
+                measurements: comparisonData.result.measurements as any,
               }}
               latestRecord={{
                 id: "current",
                 date: comparisonData.current.date,
-                measurements: comparisonData.current.measurements,
+                measurements: comparisonData.current.measurements as any,
               }}
               periodLabel={selectedPeriodOption?.label || ""}
               colors={[FIXED_COLORS.success[500], FIXED_COLORS.success[600]]}
-              difference={comparisonData.result.difference}
+              difference={comparisonData.result.difference as any}
               comparisonDate={comparisonData.result.date}
               hasComparisonData={true}
             />

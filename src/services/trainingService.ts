@@ -177,16 +177,8 @@ export class TrainingService {
       // Usar os counters da API para exercícios executados
       const exercisesExecutedToday = data.counters.exercisesExecutedToday;
 
-      console.log("📊 Daily Exercise Data:", {
-        todayLocal,
-        exercisesExecutedToday,
-        totalExercisesToday,
-        counters: data.counters,
-      });
-
       // Só salvar se houver dados reais (exercícios completados > 0)
       if (exercisesExecutedToday === 0 && totalExercisesToday > 0) {
-        console.log("⚠️ No exercises completed today, skipping save");
         return;
       }
 
@@ -206,7 +198,6 @@ export class TrainingService {
         lastUpdated: new Date().toISOString(),
       };
 
-      console.log("💾 Saving exercise data:", exerciseData);
       await dailyDataStorage.setDailyExerciseData(exerciseData);
     } catch (error) {
       console.error("Error updating daily exercise data:", error);

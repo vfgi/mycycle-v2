@@ -435,7 +435,13 @@
     "today": "Hoje",
     "average": "Média",
     "updated": "Perfil actualizado com sucesso",
-    "updateError": "Erro ao actualizar perfil"
+    "updateError": "Erro ao actualizar perfil",
+    "changeProfileImage": "Alterar Foto de Perfil",
+    "selectProfileImageDescription": "Toque para seleccionar uma nova imagem",
+    "cameraPermissionDenied": "Permissão de câmara negada",
+    "selectImageError": "Erro ao seleccionar imagem",
+    "uploadImageError": "Erro ao fazer upload da imagem",
+    "imageUpdated": "Foto de perfil actualizada com sucesso"
   },
   "measurements": {
     "title": "Medidas Corporais",

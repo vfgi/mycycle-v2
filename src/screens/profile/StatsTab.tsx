@@ -72,11 +72,6 @@ export const StatsTab: React.FC = () => {
 
       const data = await dailyDataStorage.getDailyData(todayLocal);
       setDailyData(data);
-      console.log("📊 Daily data loaded:", data);
-      console.log("📊 Exercise data:", {
-        exercisesCompleted: data?.exercise?.exercisesCompleted,
-        totalExercises: data?.exercise?.totalExercises,
-      });
     } catch (error) {
       console.error("Error loading daily data:", error);
     }
@@ -96,7 +91,8 @@ export const StatsTab: React.FC = () => {
   const caloriesConsumed = dailyData?.consumption?.calories || 0;
   const targetCalories = goals?.targetCalories || 0;
   const exercisesCompleted = dailyData?.exercise?.exercisesCompleted || 0;
-  const workoutsExecutedThisWeek = dailyData?.exercise?.workoutsExecutedThisWeek || 0;
+  const workoutsExecutedThisWeek =
+    dailyData?.exercise?.workoutsExecutedThisWeek || 0;
   const weeklyWorkouts = goals?.weeklyWorkouts || 0;
 
   const weightStats = [

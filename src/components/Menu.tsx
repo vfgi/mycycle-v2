@@ -78,11 +78,11 @@ export const Menu: React.FC<MenuProps> = ({
       label: t("navigation.measurements"),
     },
     { key: "goals", icon: "trophy-outline", label: t("navigation.goals") },
-    {
-      key: "calendar",
-      icon: "calendar-number",
-      label: t("navigation.calendar"),
-    },
+    // {
+    //   key: "calendar",
+    //   icon: "calendar-number",
+    //   label: t("navigation.calendar"),
+    // },
     {
       key: "medications",
       icon: "medkit-outline",

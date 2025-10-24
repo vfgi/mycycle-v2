@@ -435,7 +435,13 @@
     "today": "Today",
     "average": "Average",
     "updated": "Profile updated successfully",
-    "updateError": "Error updating profile"
+    "updateError": "Error updating profile",
+    "changeProfileImage": "Change Profile Picture",
+    "selectProfileImageDescription": "Tap to select a new image",
+    "cameraPermissionDenied": "Camera permission denied",
+    "selectImageError": "Error selecting image",
+    "uploadImageError": "Error uploading image",
+    "imageUpdated": "Profile picture updated successfully"
   },
   "measurements": {
     "title": "Body Measurements",

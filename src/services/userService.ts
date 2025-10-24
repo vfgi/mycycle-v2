@@ -169,6 +169,42 @@ export class UserService {
 
     return response.data;
   }
+
+  async uploadProfileImage(imageUri: string): Promise<User> {
+    const formData = new FormData();
+
+    const filename = imageUri.split("/").pop() || "profile.jpg";
+    const match = /\.(\w+)$/.exec(filename);
+    const type = match ? `image/${match[1]}` : "image/jpeg";
+
+    formData.append("image", {
+      uri: imageUri,
+      name: filename,
+      type,
+    } as any);
+
+    const response = await apiService.uploadImage<User>(
+      "/clients/me/image",
+      formData
+    );
+
+    if (response.error) {
+      throw new Error(response.error);
+    }
+
+    if (!response.data) {
+      throw new Error("Resposta inválida do servidor");
+    }
+
+    // Salvar dados atualizados na AsyncStorage
+    try {
+      await userStorage.setUserProfile(response.data);
+    } catch (error) {
+      console.error("Error saving updated user profile to storage:", error);
+    }
+
+    return response.data;
+  }
 }
 
 export const userService = new UserService();

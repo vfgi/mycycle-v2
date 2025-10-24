@@ -185,6 +185,60 @@ class ApiService {
       headers,
     });
   }
+
+  async uploadImage<T>(
+    endpoint: string,
+    imageFormData: FormData
+  ): Promise<ApiResponse<T>> {
+    try {
+      const url = `${this.baseURL}${endpoint}`;
+      const accessToken = await tokenStorage.getAccessToken();
+
+      const headers: Record<string, string> = {};
+
+      if (accessToken) {
+        headers.Authorization = `Bearer ${accessToken}`;
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+      }, this.timeout);
+
+      const response = await fetch(url, {
+        method: "PUT",
+        body: imageFormData,
+        headers,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      let data = null;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        try {
+          data = await response.json();
+        } catch (e) {
+          // Empty
+        }
+      }
+
+      if (!response.ok) {
+        return {
+          error: data?.message || data?.error || "Erro no upload",
+          message: data?.message,
+        };
+      }
+
+      return { data };
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return {
+        error: error instanceof Error ? error.message : "Erro de conexão",
+      };
+    }
+  }
 }
 
 export const apiService = new ApiService();

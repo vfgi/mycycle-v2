@@ -11,6 +11,7 @@ import { userService } from "../../services/userService";
 import { userStorage } from "../../services/userStorage";
 import { useToast } from "../../hooks/useToast";
 import { User } from "../../types/auth";
+import * as ImagePicker from "expo-image-picker";
 
 interface InfoFieldProps {
   icon: string;
@@ -256,6 +257,46 @@ export const UserDataTab: React.FC = () => {
     await updateUserProfile({ gender: newGender });
   };
 
+  const handleSelectProfileImage = async () => {
+    try {
+      const permissionResult =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (!permissionResult.granted) {
+        showError(t("profile.cameraPermissionDenied"));
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.7,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        await handleUploadProfileImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error("Error selecting image:", error);
+      showError(t("profile.selectImageError"));
+    }
+  };
+
+  const handleUploadProfileImage = async (imageUri: string) => {
+    try {
+      setIsSaving(true);
+      const updatedUser = await userService.uploadProfileImage(imageUri);
+      updateUser(updatedUser);
+      showSuccess(t("profile.imageUpdated"));
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      showError(t("profile.uploadImageError"));
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const planType = user?.is_premium
     ? t("profile.premiumPlan")
     : t("profile.freePlan");
@@ -276,6 +317,43 @@ export const UserDataTab: React.FC = () => {
 
   return (
     <VStack space="lg">
+      <TouchableOpacity
+        onPress={handleSelectProfileImage}
+        activeOpacity={0.7}
+        disabled={isSaving}
+      >
+        <VStack
+          bg={FIXED_COLORS.background[800]}
+          borderRadius="$xl"
+          p="$4"
+          alignItems="center"
+          space="sm"
+        >
+          <MaterialCommunityIcons
+            name="camera-plus"
+            size={40}
+            color={FIXED_COLORS.primary[500]}
+          />
+          <Text
+            color={FIXED_COLORS.text[50]}
+            fontSize="$md"
+            fontWeight="$bold"
+            textAlign="center"
+          >
+            {t("profile.changeProfileImage")}
+          </Text>
+          <Text
+            color={FIXED_COLORS.text[400]}
+            fontSize="$xs"
+            textAlign="center"
+          >
+            {t("profile.selectProfileImageDescription")}
+          </Text>
+        </VStack>
+      </TouchableOpacity>
+
+      <Divider bg={FIXED_COLORS.background[700]} />
+
       <EditableField
         icon="rename-box"
         label={t("profile.name")}
@@ -323,17 +401,19 @@ export const UserDataTab: React.FC = () => {
         onSave={handleSaveGender}
       />
 
-      <Divider bg={FIXED_COLORS.background[700]} />
+      {/* <Divider bg={FIXED_COLORS.background[700]} />
 
       <InfoField
         icon="star"
         label={t("profile.planType")}
         value={planType}
         isEditable={false}
-      />
+      /> */}
 
-      <Divider bg={FIXED_COLORS.background[700]} />
-      <AITrainerField isPremium={user?.is_premium || true} />
+      {/* TODO: Add AI Trainer Field */}
+
+      {/* <Divider bg={FIXED_COLORS.background[700]} /> */}
+      {/* <AITrainerField isPremium={user?.is_premium || true} /> */}
 
       <Divider bg={FIXED_COLORS.background[700]} />
       <InfoField
