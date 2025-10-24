@@ -3,4 +3,3 @@ export * from "./PeriodSelector";
 export * from "./WeightComparisonCard";
 export * from "./MeasurementsComparisonCard";
 export * from "./PremiumAnalysisCard";
-export * from "./mockData";

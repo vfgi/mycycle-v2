@@ -1,6 +1,5 @@
 import { apiService } from "./api";
 import {
-  TrainingPlan,
   TrainingPlanResponse,
   CreateTrainingPlanRequest,
   TrainingPlansWithCounters,
@@ -74,12 +73,10 @@ export class TrainingService {
     );
 
     if (response.error) {
-      console.error("Error updating training plan:", response.error);
       throw new Error(response.error);
     }
 
     if (!response.data) {
-      console.error("No data in response");
       throw new Error("Resposta inválida do servidor");
     }
 
@@ -90,7 +87,6 @@ export class TrainingService {
     const response = await apiService.delete<void>(`/training-plans/${id}`);
 
     if (response.error) {
-      console.error("Error deleting training plan:", response.error);
       throw new Error(response.error);
     }
   }
@@ -199,9 +195,7 @@ export class TrainingService {
       };
 
       await dailyDataStorage.setDailyExerciseData(exerciseData);
-    } catch (error) {
-      console.error("Error updating daily exercise data:", error);
-    }
+    } catch (error) {}
   }
 }
 

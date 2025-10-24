@@ -853,8 +853,7 @@
     "noExercisesInWorkout": "No exercises in this workout",
     "planActivated": "Plan activated successfully",
     "planDeactivated": "Plan deactivated successfully",
-    "togglePlanError": "Error activating/deactivating plan",
-    "createNewPlan": "Create Plan"
+    "togglePlanError": "Error activating/deactivating plan"
   },
   "premium": {
     "upgradeTitle": "Upgrade to Premium",

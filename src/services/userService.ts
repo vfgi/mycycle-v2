@@ -177,7 +177,7 @@ export class UserService {
     const match = /\.(\w+)$/.exec(filename);
     const type = match ? `image/${match[1]}` : "image/jpeg";
 
-    formData.append("image", {
+    formData.append("file", {
       uri: imageUri,
       name: filename,
       type,

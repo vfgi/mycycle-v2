@@ -851,8 +851,7 @@
     "noExercisesInWorkout": "Nenhum exercício neste treino",
     "planActivated": "Plano ativado com sucesso",
     "planDeactivated": "Plano desativado com sucesso",
-    "togglePlanError": "Erro ao ativar/desativar plano",
-    "createNewPlan": "Criar Plano"
+    "togglePlanError": "Erro ao ativar/desativar plano"
   },
   "premium": {
     "upgradeTitle": "Faça Upgrade para Premium",
