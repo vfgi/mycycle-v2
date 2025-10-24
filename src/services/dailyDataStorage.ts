@@ -30,6 +30,7 @@ export interface DailyExerciseData {
   totalExercises: number;
   totalDuration: number; // in seconds
   caloriesBurned: number;
+  workoutsExecutedThisWeek?: number;
   lastUpdated: string;
 }
 

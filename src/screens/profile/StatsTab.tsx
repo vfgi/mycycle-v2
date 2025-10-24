@@ -96,6 +96,7 @@ export const StatsTab: React.FC = () => {
   const caloriesConsumed = dailyData?.consumption?.calories || 0;
   const targetCalories = goals?.targetCalories || 0;
   const exercisesCompleted = dailyData?.exercise?.exercisesCompleted || 0;
+  const workoutsExecutedThisWeek = dailyData?.exercise?.workoutsExecutedThisWeek || 0;
   const weeklyWorkouts = goals?.weeklyWorkouts || 0;
 
   const weightStats = [
@@ -136,9 +137,9 @@ export const StatsTab: React.FC = () => {
       label: t("profile.today"),
       value: `${exercisesCompleted}`,
     },
-    weeklyWorkouts > 0 && {
+    workoutsExecutedThisWeek > 0 && {
       label: t("profile.thisWeek"),
-      value: `${weeklyWorkouts}`,
+      value: `${workoutsExecutedThisWeek}`,
     },
   ].filter(Boolean);
 

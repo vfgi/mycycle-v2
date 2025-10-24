@@ -202,6 +202,7 @@ export class TrainingService {
         totalExercises: totalExercisesToday,
         totalDuration: totalDuration,
         caloriesBurned: caloriesBurned,
+        workoutsExecutedThisWeek: data.counters.workoutsExecutedThisWeek,
         lastUpdated: new Date().toISOString(),
       };
 
