@@ -210,11 +210,17 @@ class BodyDataService {
         };
       }
 
+      // Usar data local ao invés de UTC
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - days);
+      
+      // Normalizar para YYYY-MM-DD local
+      const cutoffString = `${cutoffDate.getFullYear()}-${String(
+        cutoffDate.getMonth() + 1
+      ).padStart(2, "0")}-${String(cutoffDate.getDate()).padStart(2, "0")}`;
 
       const filteredHistory = history.filter(
-        (entry) => new Date(entry.date) >= cutoffDate
+        (entry) => entry.date >= cutoffString
       );
 
       return {
@@ -246,11 +252,17 @@ class BodyDataService {
         };
       }
 
+      // Usar data local ao invés de UTC
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - days);
+      
+      // Normalizar para YYYY-MM-DD local
+      const cutoffString = `${cutoffDate.getFullYear()}-${String(
+        cutoffDate.getMonth() + 1
+      ).padStart(2, "0")}-${String(cutoffDate.getDate()).padStart(2, "0")}`;
 
       const filteredHistory = history.filter(
-        (entry) => new Date(entry.date) >= cutoffDate
+        (entry) => entry.date >= cutoffString
       );
 
       return {

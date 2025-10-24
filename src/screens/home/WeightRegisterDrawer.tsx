@@ -16,13 +16,16 @@ const weightSchema = z.object({
   weight: z
     .string()
     .min(1, "weight.weightRequired")
-    .refine((val) => {
-      // Aceitar vírgula ou ponto como separador
-      const normalized = val.replace(",", ".");
-      return !isNaN(Number(normalized)) && Number(normalized) > 0;
-    }, {
-      message: "weight.weightInvalid",
-    }),
+    .refine(
+      (val) => {
+        // Aceitar vírgula ou ponto como separador
+        const normalized = val.replace(",", ".");
+        return !isNaN(Number(normalized)) && Number(normalized) > 0;
+      },
+      {
+        message: "weight.weightInvalid",
+      }
+    ),
 });
 
 type WeightFormData = z.infer<typeof weightSchema>;
