@@ -39,7 +39,6 @@ const StatRow: React.FC<{
         </VStack>
       ))}
     </HStack>
-
   </VStack>
 );
 
@@ -74,13 +73,18 @@ export const StatsTab: React.FC = () => {
       const data = await dailyDataStorage.getDailyData(todayLocal);
       setDailyData(data);
       console.log("📊 Daily data loaded:", data);
+      console.log("📊 Exercise data:", {
+        exercisesCompleted: data?.exercise?.exercisesCompleted,
+        totalExercises: data?.exercise?.totalExercises,
+      });
     } catch (error) {
       console.error("Error loading daily data:", error);
     }
   };
 
   // Weight Stats
-  const currentWeight = dailyData?.weight?.weight || user?.measurements?.weight || 0;
+  const currentWeight =
+    dailyData?.weight?.weight || user?.measurements?.weight || 0;
   const goalWeight = goals?.targetWeight || 0;
   const difference = currentWeight - goalWeight;
 
@@ -109,7 +113,10 @@ export const StatsTab: React.FC = () => {
         value: `${difference > 0 ? "+" : "-"}${differenceConverted.value} ${
           differenceConverted.unit
         }`,
-        color: difference > 0 ? FIXED_COLORS.warning[500] : FIXED_COLORS.success[500],
+        color:
+          difference > 0
+            ? FIXED_COLORS.warning[500]
+            : FIXED_COLORS.success[500],
       },
   ].filter(Boolean);
 
