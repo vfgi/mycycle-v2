@@ -7,8 +7,7 @@ import { FIXED_COLORS } from "../../../../theme/colors";
 import { useTranslation } from "../../../../hooks/useTranslation";
 import { MealCard } from "./MealCard";
 import { MealDetailsDrawer } from "./MealDetailsDrawer";
-import { Meal } from "./types";
-import { mealsService } from "../../../../services/mealsService";
+import { mealsService, Meal } from "../../../../services/mealsService";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
 
@@ -36,7 +35,7 @@ export const AllMealsScreen: React.FC<AllMealsScreenProps> = ({ onBack }) => {
       const todayLocal = `${today.getFullYear()}-${String(
         today.getMonth() + 1
       ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-      
+
       const response = await mealsService.getMealsWithNutrition(todayLocal);
       setMeals(response?.meals || []);
     } catch (error) {
@@ -52,18 +51,14 @@ export const AllMealsScreen: React.FC<AllMealsScreenProps> = ({ onBack }) => {
     setIsDrawerOpen(true);
   };
 
-  const handleToggleConsumed = (mealId: string) => {
-    setMeals((prev) =>
-      prev.map((meal) =>
-        meal.id === mealId ? { ...meal, is_consumed: !meal.is_consumed } : meal
-      )
-    );
+  const handleToggleConsumed = () => {
+    // Noop - API não suporta toggle de consumo local
   };
 
   const handleToggleActive = (mealId: string) => {
     setMeals((prev) =>
       prev.map((meal) =>
-        meal.id === mealId ? { ...meal, active: !meal.active } : meal
+        meal.id === mealId ? { ...meal, is_active: !meal.is_active } : meal
       )
     );
   };
@@ -79,8 +74,8 @@ export const AllMealsScreen: React.FC<AllMealsScreenProps> = ({ onBack }) => {
     setSelectedMeal(null);
   };
 
-  const activeMeals = meals.filter((meal) => meal.active);
-  const inactiveMeals = meals.filter((meal) => !meal.active);
+  const activeMeals = meals.filter((meal) => meal.is_active);
+  const inactiveMeals = meals.filter((meal) => !meal.is_active);
 
   return (
     <ScreenContainer>
@@ -133,9 +128,9 @@ export const AllMealsScreen: React.FC<AllMealsScreenProps> = ({ onBack }) => {
                   {activeMeals.map((meal) => (
                     <MealCard
                       key={meal.id}
-                      meal={meal}
-                      onPress={() => handleMealPress(meal)}
-                      onToggleConsumed={() => handleToggleConsumed(meal.id)}
+                      meal={meal as any}
+                      onPress={() => handleMealPress(meal as any)}
+                      onToggleConsumed={handleToggleConsumed}
                     />
                   ))}
                 </VStack>
@@ -166,9 +161,9 @@ export const AllMealsScreen: React.FC<AllMealsScreenProps> = ({ onBack }) => {
                   {inactiveMeals.map((meal) => (
                     <MealCard
                       key={meal.id}
-                      meal={meal}
-                      onPress={() => handleMealPress(meal)}
-                      onToggleConsumed={() => handleToggleConsumed(meal.id)}
+                      meal={meal as any}
+                      onPress={() => handleMealPress(meal as any)}
+                      onToggleConsumed={handleToggleConsumed}
                     />
                   ))}
                 </VStack>
@@ -178,7 +173,7 @@ export const AllMealsScreen: React.FC<AllMealsScreenProps> = ({ onBack }) => {
         </ScrollView>
 
         <MealDetailsDrawer
-          meal={selectedMeal}
+          meal={selectedMeal as any}
           isOpen={isDrawerOpen}
           onClose={handleCloseDrawer}
           showActions={true}
