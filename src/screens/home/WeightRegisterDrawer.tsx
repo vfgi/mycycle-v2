@@ -333,7 +333,7 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
                     <VStack key={index} alignItems="center" space="xs" flex={1}>
                       <Text
                         color={FIXED_COLORS.text[50]}
-                        fontSize="$xs"
+                        fontSize={selectedFilter === "annual" ? "$2xs" : "$xs"}
                         fontWeight="$medium"
                       >
                         {value > 0 ? value.toFixed(1) : "-"}
