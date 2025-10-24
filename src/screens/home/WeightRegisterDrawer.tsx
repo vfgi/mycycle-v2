@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { VStack, HStack, Text, ScrollView } from "@gluestack-ui/themed";
+import { VStack, HStack, Text, ScrollView, Box } from "@gluestack-ui/themed";
 import { TouchableOpacity } from "react-native";
-import { LineChart } from "react-native-gifted-charts";
 import { useTranslation } from "../../hooks/useTranslation";
 import { useUnits } from "../../contexts/UnitsContext";
 import { FIXED_COLORS } from "../../theme/colors";
@@ -224,9 +223,13 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
 
   const chartDataWithValues = chartData.filter((item) => item.value > 0);
   const maxValue =
-    chartDataWithValues.length > 0 ? Math.max(...chartDataWithValues.map((d) => d.value)) + 2 : 100;
+    chartDataWithValues.length > 0
+      ? Math.max(...chartDataWithValues.map((d) => d.value)) + 2
+      : 100;
   const minValue =
-    chartDataWithValues.length > 0 ? Math.min(...chartDataWithValues.map((d) => d.value)) - 2 : 50;
+    chartDataWithValues.length > 0
+      ? Math.min(...chartDataWithValues.map((d) => d.value)) - 2
+      : 50;
 
   const FilterButton: React.FC<{
     filter: FilterType;
@@ -333,33 +336,54 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
               p="$4"
               mt="$2"
             >
-              <LineChart
-                data={chartData}
-                width={280}
-                height={200}
-                spacing={selectedFilter === "annual" ? 20 : 40}
-                initialSpacing={10}
-                color={FIXED_COLORS.primary[600]}
-                thickness={3}
-                startFillColor={FIXED_COLORS.primary[600]}
-                endFillColor={FIXED_COLORS.background[700]}
-                startOpacity={0.4}
-                endOpacity={0.1}
-                hideDataPoints={selectedFilter === "annual"}
-                dataPointsColor={FIXED_COLORS.primary[600]}
-                dataPointsRadius={4}
-                textColor={FIXED_COLORS.text[400]}
-                textFontSize={12}
-                yAxisColor={FIXED_COLORS.background[600]}
-                xAxisColor={FIXED_COLORS.background[600]}
-                yAxisTextStyle={{ color: FIXED_COLORS.text[400] }}
-                curved
-                areaChart
-                hideRules
-                maxValue={maxValue}
-                yAxisOffset={minValue}
-                noOfSections={4}
-              />
+              <HStack
+                justifyContent="space-between"
+                alignItems="flex-end"
+                height={150}
+                px="$1"
+              >
+                {chartData.map((dayData, index) => {
+                  const value = dayData.value;
+                  const barHeight = maxValue > 0 ? (value / maxValue) * 120 : 0;
+                  const barColor =
+                    value > 0 ? FIXED_COLORS.primary[500] : FIXED_COLORS.background[600];
+
+                  return (
+                    <VStack
+                      key={index}
+                      alignItems="center"
+                      space="xs"
+                      flex={1}
+                    >
+                      <Text
+                        color={FIXED_COLORS.text[50]}
+                        fontSize="$xs"
+                        fontWeight="$medium"
+                      >
+                        {value > 0 ? value.toFixed(1) : "-"}
+                      </Text>
+
+                      <Box
+                        bg={barColor}
+                        width="$6"
+                        height={barHeight}
+                        borderRadius="$sm"
+                        borderTopLeftRadius="$md"
+                        borderTopRightRadius="$md"
+                        opacity={0.9}
+                      />
+
+                      <Text
+                        color="rgba(255, 255, 255, 0.9)"
+                        fontSize="$xs"
+                        fontWeight="$semibold"
+                      >
+                        {dayData.label}
+                      </Text>
+                    </VStack>
+                  );
+                })}
+              </HStack>
             </VStack>
           </VStack>
         </VStack>
