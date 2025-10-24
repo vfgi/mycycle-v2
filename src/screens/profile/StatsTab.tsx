@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { VStack, HStack, Text, Divider } from "@gluestack-ui/themed";
 import { FIXED_COLORS } from "../../theme/colors";
 import { useTranslation } from "../../hooks/useTranslation";
 import { useAuth } from "../../contexts/AuthContext";
 import { useUnits } from "../../contexts/UnitsContext";
 import { goalsService } from "../../services/goalsService";
+import { dailyDataStorage } from "../../services/dailyDataStorage";
 import { Goals } from "../../types/goals";
 
 interface StatValue {
@@ -17,31 +18,28 @@ const StatRow: React.FC<{
   title: string;
   stats: StatValue[];
 }> = ({ title, stats }) => (
-  <VStack space="sm">
-    <Text color={FIXED_COLORS.background[0]} fontSize="$2xl" fontWeight="$bold">
+  <VStack space="md">
+    <Text color={FIXED_COLORS.text[50]} fontSize="$md" fontWeight="$bold">
       {title}
     </Text>
-    <HStack
-      space="xl"
-      mt="$2"
-      alignItems="center"
-      justifyContent="space-between"
-    >
+
+    <HStack space="lg" justifyContent="space-around">
       {stats.map((stat, index) => (
-        <VStack key={index} alignItems="center" space="xs">
-          <Text color={FIXED_COLORS.text[400]} fontSize="$xs">
+        <VStack key={index} alignItems="center" flex={1}>
+          <Text color={FIXED_COLORS.text[400]} fontSize="$xs" mb="$1">
             {stat.label}
           </Text>
           <Text
-            color={stat.color || FIXED_COLORS.text[50]}
-            fontSize="$xl"
-            fontWeight="$semibold"
+            color={stat.color || FIXED_COLORS.primary[500]}
+            fontSize="$lg"
+            fontWeight="$bold"
           >
             {stat.value}
           </Text>
         </VStack>
       ))}
     </HStack>
+
   </VStack>
 );
 
@@ -50,9 +48,11 @@ export const StatsTab: React.FC = () => {
   const { user } = useAuth();
   const { convertWeight } = useUnits();
   const [goals, setGoals] = useState<Goals | null>(null);
+  const [dailyData, setDailyData] = useState<any>(null);
 
   useEffect(() => {
     loadGoals();
+    loadDailyData();
   }, []);
 
   const loadGoals = async () => {
@@ -64,8 +64,23 @@ export const StatsTab: React.FC = () => {
     }
   };
 
+  const loadDailyData = async () => {
+    try {
+      const today = new Date();
+      const todayLocal = `${today.getFullYear()}-${String(
+        today.getMonth() + 1
+      ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
+      const data = await dailyDataStorage.getDailyData(todayLocal);
+      setDailyData(data);
+      console.log("📊 Daily data loaded:", data);
+    } catch (error) {
+      console.error("Error loading daily data:", error);
+    }
+  };
+
   // Weight Stats
-  const currentWeight = user?.measurements?.weight || 0;
+  const currentWeight = dailyData?.weight?.weight || user?.measurements?.weight || 0;
   const goalWeight = goals?.targetWeight || 0;
   const difference = currentWeight - goalWeight;
 
@@ -73,87 +88,83 @@ export const StatsTab: React.FC = () => {
   const goalWeightConverted = convertWeight(goalWeight);
   const differenceConverted = convertWeight(Math.abs(difference));
 
-  // Nutrition Stats
+  // Consumption Stats
+  const caloriesConsumed = dailyData?.consumption?.calories || 0;
   const targetCalories = goals?.targetCalories || 0;
-
-  // Exercise Stats
+  const exercisesCompleted = dailyData?.exercise?.exercisesCompleted || 0;
   const weeklyWorkouts = goals?.weeklyWorkouts || 0;
+
+  const weightStats = [
+    currentWeight > 0 && {
+      label: t("profile.current"),
+      value: `${currentWeightConverted.value} ${currentWeightConverted.unit}`,
+    },
+    goalWeight > 0 && {
+      label: t("profile.goal"),
+      value: `${goalWeightConverted.value} ${goalWeightConverted.unit}`,
+    },
+    currentWeight > 0 &&
+      goalWeight > 0 && {
+        label: t("profile.difference"),
+        value: `${difference > 0 ? "+" : "-"}${differenceConverted.value} ${
+          differenceConverted.unit
+        }`,
+        color: difference > 0 ? FIXED_COLORS.warning[500] : FIXED_COLORS.success[500],
+      },
+  ].filter(Boolean);
+
+  const calorieStats = [
+    caloriesConsumed > 0 && {
+      label: t("profile.today"),
+      value: `${Math.round(caloriesConsumed)}`,
+    },
+    targetCalories > 0 && {
+      label: t("profile.goal"),
+      value: `${targetCalories}`,
+    },
+  ].filter(Boolean);
+
+  const exerciseStats = [
+    exercisesCompleted > 0 && {
+      label: t("profile.today"),
+      value: `${exercisesCompleted}`,
+    },
+    weeklyWorkouts > 0 && {
+      label: t("profile.thisWeek"),
+      value: `${weeklyWorkouts}`,
+    },
+  ].filter(Boolean);
 
   return (
     <VStack space="xl">
-      <StatRow
-        title={t("profile.weight")}
-        stats={[
-          {
-            label: t("profile.current"),
-            value:
-              currentWeight > 0
-                ? `${currentWeightConverted.value} ${currentWeightConverted.unit}`
-                : "-",
-          },
-          {
-            label: t("profile.goal"),
-            value:
-              goalWeight > 0
-                ? `${goalWeightConverted.value} ${goalWeightConverted.unit}`
-                : "-",
-          },
-          {
-            label: t("profile.difference"),
-            value:
-              currentWeight > 0 && goalWeight > 0
-                ? `${difference > 0 ? "+" : "-"}${differenceConverted.value} ${
-                    differenceConverted.unit
-                  }`
-                : "-",
-            color:
-              currentWeight > 0 && goalWeight > 0
-                ? difference > 0
-                  ? FIXED_COLORS.warning[500]
-                  : FIXED_COLORS.success[500]
-                : undefined,
-          },
-        ]}
-      />
+      {weightStats.length > 0 && (
+        <>
+          <StatRow
+            title={t("profile.weight")}
+            stats={weightStats as StatValue[]}
+          />
+          <Divider bg={FIXED_COLORS.background[700]} />
+        </>
+      )}
 
-      <Divider bg={FIXED_COLORS.background[700]} />
+      {calorieStats.length > 0 && (
+        <>
+          <StatRow
+            title={t("profile.calories")}
+            stats={calorieStats as StatValue[]}
+          />
+          <Divider bg={FIXED_COLORS.background[700]} />
+        </>
+      )}
 
-      <StatRow
-        title={t("profile.workouts")}
-        stats={[
-          { label: t("profile.total"), value: "24" },
-          {
-            label: t("profile.thisWeek"),
-            value: weeklyWorkouts > 0 ? `${weeklyWorkouts}` : "0",
-          },
-          { label: t("profile.thisMonth"), value: "18" },
-        ]}
-      />
-
-      <Divider bg={FIXED_COLORS.background[700]} />
-
-      <StatRow
-        title={t("profile.calories")}
-        stats={[
-          { label: t("profile.today"), value: "1850" },
-          { label: t("profile.average"), value: "2100" },
-          {
-            label: t("profile.goal"),
-            value: targetCalories > 0 ? `${targetCalories}` : "2200",
-          },
-        ]}
-      />
-
-      <Divider bg={FIXED_COLORS.background[700]} />
-
-      <StatRow
-        title={t("profile.totalTime")}
-        stats={[
-          { label: t("profile.total"), value: "12h" },
-          { label: t("profile.thisWeek"), value: "3h" },
-          { label: t("profile.average"), value: "45min" },
-        ]}
-      />
+      {exerciseStats.length > 0 && (
+        <>
+          <StatRow
+            title={t("profile.workouts")}
+            stats={exerciseStats as StatValue[]}
+          />
+        </>
+      )}
     </VStack>
   );
 };
