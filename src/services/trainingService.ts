@@ -132,7 +132,9 @@ export class TrainingService {
     return response.data;
   }
 
-  async updateDailyExerciseData(data: TrainingPlansWithCounters): Promise<void> {
+  async updateDailyExerciseData(
+    data: TrainingPlansWithCounters
+  ): Promise<void> {
     try {
       // Usar data local ao invés de UTC
       const today = new Date();

@@ -37,48 +37,6 @@ interface WeightData {
   label: string;
   date: string;
 }
-
-const mockWeeklyData: WeightData[] = [
-  { value: 100.5, label: "Seg", date: "2024-01-15" },
-  { value: 99.8, label: "Ter", date: "2024-01-16" },
-  { value: 99.5, label: "Qua", date: "2024-01-17" },
-  { value: 99.2, label: "Qui", date: "2024-01-18" },
-  { value: 99.0, label: "Sex", date: "2024-01-19" },
-  { value: 98.8, label: "Sáb", date: "2024-01-20" },
-  { value: 98.5, label: "Dom", date: "2024-01-21" },
-];
-
-const mockMonthlyData: WeightData[] = [
-  { value: 102.0, label: "Sem 1", date: "2024-01-07" },
-  { value: 101.2, label: "Sem 2", date: "2024-01-14" },
-  { value: 99.8, label: "Sem 3", date: "2024-01-21" },
-  { value: 98.5, label: "Sem 4", date: "2024-01-28" },
-];
-
-const mockSemestralData: WeightData[] = [
-  { value: 105.0, label: "Ago", date: "2023-08-01" },
-  { value: 103.5, label: "Set", date: "2023-09-01" },
-  { value: 102.0, label: "Out", date: "2023-10-01" },
-  { value: 101.0, label: "Nov", date: "2023-11-01" },
-  { value: 100.0, label: "Dez", date: "2023-12-01" },
-  { value: 98.5, label: "Jan", date: "2024-01-01" },
-];
-
-const mockAnnualData: WeightData[] = [
-  { value: 110.0, label: "Fev", date: "2023-02-01" },
-  { value: 108.5, label: "Mar", date: "2023-03-01" },
-  { value: 107.0, label: "Abr", date: "2023-04-01" },
-  { value: 106.0, label: "Mai", date: "2023-05-01" },
-  { value: 105.0, label: "Jun", date: "2023-06-01" },
-  { value: 104.0, label: "Jul", date: "2023-07-01" },
-  { value: 103.0, label: "Ago", date: "2023-08-01" },
-  { value: 102.0, label: "Set", date: "2023-09-01" },
-  { value: 101.0, label: "Out", date: "2023-10-01" },
-  { value: 100.0, label: "Nov", date: "2023-11-01" },
-  { value: 99.0, label: "Dez", date: "2023-12-01" },
-  { value: 98.5, label: "Jan", date: "2024-01-01" },
-];
-
 interface WeightRegisterDrawerProps {
   isOpen: boolean;
   onClose: () => void;
