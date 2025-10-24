@@ -105,7 +105,9 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
     }
   }, [selectedFilter]);
 
-  const mapFilterToPeriod = (filter: FilterType): "weekly" | "monthly" | "yearly" => {
+  const mapFilterToPeriod = (
+    filter: FilterType
+  ): "weekly" | "monthly" | "yearly" => {
     switch (filter) {
       case "weekly":
         return "weekly";
@@ -192,6 +194,12 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
       ...item,
       value: convertWeight(item.weight || 0).value,
     }));
+
+  console.log("📊 Chart Data Debug:", {
+    rawChartData,
+    chartData,
+    chartDataLength: chartData.length,
+  });
 
   const maxValue =
     chartData.length > 0 ? Math.max(...chartData.map((d) => d.value)) + 2 : 100;
@@ -305,10 +313,10 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
             >
               <LineChart
                 data={chartData}
-                width={280}
+                width={350}
                 height={200}
                 spacing={selectedFilter === "annual" ? 20 : 40}
-                initialSpacing={10}
+                initialSpacing={20}
                 color={FIXED_COLORS.primary[600]}
                 thickness={3}
                 startFillColor={FIXED_COLORS.primary[600]}
