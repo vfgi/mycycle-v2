@@ -163,6 +163,12 @@ export class WorkoutsService {
         0
       );
 
+      // Só salvar se houver dados reais (exercícios completados > 0)
+      if (completedExercises === 0) {
+        console.log("⚠️ No exercises completed today, skipping save");
+        return;
+      }
+
       // Calcular duração total (aproximada)
       const totalDuration = todayWorkouts.length * 30 * 60; // 30 minutos por treino
 
