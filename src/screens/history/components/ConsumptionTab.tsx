@@ -17,11 +17,7 @@ import {
 } from "../../../services/mealsHistoryService";
 import { useAuth } from "../../../contexts/AuthContext";
 import { Goals } from "../../../types/goals";
-import {
-  consumptionMockData,
-  ConsumptionItemsList,
-  MealHistoryDetailsDrawer,
-} from "./consumption";
+import { ConsumptionItemsList, MealHistoryDetailsDrawer } from "./consumption";
 
 export const ConsumptionTab: React.FC = () => {
   const { t } = useTranslation();

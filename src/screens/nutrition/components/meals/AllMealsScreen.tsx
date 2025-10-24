@@ -7,8 +7,10 @@ import { FIXED_COLORS } from "../../../../theme/colors";
 import { useTranslation } from "../../../../hooks/useTranslation";
 import { MealCard } from "./MealCard";
 import { MealDetailsDrawer } from "./MealDetailsDrawer";
-import { getMockDietPlan } from "./mockData";
 import { Meal } from "./types";
+import { mealsService } from "../../../../services/mealsService";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
 interface AllMealsScreenProps {
   onBack: () => void;
@@ -16,9 +18,34 @@ interface AllMealsScreenProps {
 
 export const AllMealsScreen: React.FC<AllMealsScreenProps> = ({ onBack }) => {
   const { t } = useTranslation();
-  const [dietPlan, setDietPlan] = useState(getMockDietPlan());
+  const [meals, setMeals] = useState<Meal[]>([]);
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadMeals();
+    }, [])
+  );
+
+  const loadMeals = async () => {
+    try {
+      setIsLoading(true);
+      const today = new Date();
+      const todayLocal = `${today.getFullYear()}-${String(
+        today.getMonth() + 1
+      ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+      
+      const response = await mealsService.getMealsWithNutrition(todayLocal);
+      setMeals(response?.meals || []);
+    } catch (error) {
+      console.error("Error loading meals:", error);
+      setMeals([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleMealPress = (meal: Meal) => {
     setSelectedMeal(meal);
@@ -26,28 +53,23 @@ export const AllMealsScreen: React.FC<AllMealsScreenProps> = ({ onBack }) => {
   };
 
   const handleToggleConsumed = (mealId: string) => {
-    setDietPlan((prev) => ({
-      ...prev,
-      meals: prev.meals.map((meal) =>
+    setMeals((prev) =>
+      prev.map((meal) =>
         meal.id === mealId ? { ...meal, is_consumed: !meal.is_consumed } : meal
-      ),
-    }));
+      )
+    );
   };
 
   const handleToggleActive = (mealId: string) => {
-    setDietPlan((prev) => ({
-      ...prev,
-      meals: prev.meals.map((meal) =>
+    setMeals((prev) =>
+      prev.map((meal) =>
         meal.id === mealId ? { ...meal, active: !meal.active } : meal
-      ),
-    }));
+      )
+    );
   };
 
   const handleDeleteMeal = (mealId: string) => {
-    setDietPlan((prev) => ({
-      ...prev,
-      meals: prev.meals.filter((meal) => meal.id !== mealId),
-    }));
+    setMeals((prev) => prev.filter((meal) => meal.id !== mealId));
     setIsDrawerOpen(false);
     setSelectedMeal(null);
   };
@@ -57,8 +79,8 @@ export const AllMealsScreen: React.FC<AllMealsScreenProps> = ({ onBack }) => {
     setSelectedMeal(null);
   };
 
-  const activeMeals = dietPlan.meals.filter((meal) => meal.active);
-  const inactiveMeals = dietPlan.meals.filter((meal) => !meal.active);
+  const activeMeals = meals.filter((meal) => meal.active);
+  const inactiveMeals = meals.filter((meal) => !meal.active);
 
   return (
     <ScreenContainer>
