@@ -177,6 +177,12 @@ export class TrainingService {
       // Usar os counters da API para exercícios executados
       const exercisesExecutedToday = data.counters.exercisesExecutedToday;
 
+      // Só salvar se houver dados reais (exercícios completados > 0)
+      if (exercisesExecutedToday === 0 && totalExercisesToday > 0) {
+        console.log("⚠️ No exercises completed today, skipping save");
+        return;
+      }
+
       // Calcular duração total (aproximada) - 3 minutos por exercício
       const totalDuration = exercisesExecutedToday * 3 * 60; // 3 minutos por exercício
 
