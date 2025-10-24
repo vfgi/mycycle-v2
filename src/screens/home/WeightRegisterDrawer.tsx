@@ -99,10 +99,31 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
     }
   }, [isOpen, user?.id]);
 
+  React.useEffect(() => {
+    if (isOpen && user?.id) {
+      loadWeightHistory();
+    }
+  }, [selectedFilter]);
+
+  const mapFilterToPeriod = (filter: FilterType): "weekly" | "monthly" | "yearly" => {
+    switch (filter) {
+      case "weekly":
+        return "weekly";
+      case "monthly":
+        return "monthly";
+      case "semestral":
+      case "annual":
+        return "yearly";
+      default:
+        return "yearly";
+    }
+  };
+
   const loadWeightHistory = async () => {
     try {
       setIsLoadingHistory(true);
-      const data = await userService.getWeightHistory(user?.id || "", "yearly");
+      const period = mapFilterToPeriod(selectedFilter);
+      const data = await userService.getWeightHistory(user?.id || "", period);
       setWeightHistory(data.data);
     } catch (error) {
       console.error("Error loading weight history:", error);
@@ -173,13 +194,9 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
     }));
 
   const maxValue =
-    chartData.length > 0
-      ? Math.max(...chartData.map((d) => d.value)) + 2
-      : 100;
+    chartData.length > 0 ? Math.max(...chartData.map((d) => d.value)) + 2 : 100;
   const minValue =
-    chartData.length > 0
-      ? Math.min(...chartData.map((d) => d.value)) - 2
-      : 50;
+    chartData.length > 0 ? Math.min(...chartData.map((d) => d.value)) - 2 : 50;
 
   const FilterButton: React.FC<{
     filter: FilterType;
