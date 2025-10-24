@@ -188,7 +188,7 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
   };
 
   const rawChartData = weightHistory;
-  
+
   // Interpolar dados: se não tiver valor, usar o último valor válido
   const interpolatedData = rawChartData.map((item, index) => {
     if (item.weight !== undefined) {
@@ -197,7 +197,7 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
         value: convertWeight(item.weight).value,
       };
     }
-    
+
     // Se não tiver peso, procurar o último valor válido
     let lastValidValue = 0;
     for (let i = index - 1; i >= 0; i--) {
@@ -206,26 +206,27 @@ export const WeightRegisterDrawer: React.FC<WeightRegisterDrawerProps> = ({
         break;
       }
     }
-    
+
     return {
       ...item,
       value: lastValidValue,
     };
   });
 
-  const chartData = interpolatedData.filter((item) => item.value > 0);
+  const chartData = interpolatedData;
 
   console.log("📊 Chart Data Debug:", {
-    rawChartData: rawChartData.map(d => d.label),
+    rawChartData: rawChartData.map((d) => d.label),
     interpolatedData,
     chartData,
     chartDataLength: chartData.length,
   });
 
+  const chartDataWithValues = chartData.filter((item) => item.value > 0);
   const maxValue =
-    chartData.length > 0 ? Math.max(...chartData.map((d) => d.value)) + 2 : 100;
+    chartDataWithValues.length > 0 ? Math.max(...chartDataWithValues.map((d) => d.value)) + 2 : 100;
   const minValue =
-    chartData.length > 0 ? Math.min(...chartData.map((d) => d.value)) - 2 : 50;
+    chartDataWithValues.length > 0 ? Math.min(...chartDataWithValues.map((d) => d.value)) - 2 : 50;
 
   const FilterButton: React.FC<{
     filter: FilterType;
