@@ -16,7 +16,7 @@ const getEnvironmentConfig = (): EnvironmentConfig => {
   const isDev = __DEV__;
 
   let environment: Environment = "development";
-  let apiBaseUrl = "https://api.dev.mycycleht.com";
+  let apiBaseUrl = "https://api.mycycleht.com";
 
   const envFromExpo = process.env.EXPO_PUBLIC_ENVIRONMENT;
   const envFromNode = process.env.NODE_ENV;
@@ -47,7 +47,7 @@ const getEnvironmentConfig = (): EnvironmentConfig => {
         break;
       case "production":
       default:
-        apiBaseUrl = "https://api.dev.mycycleht.com";
+        apiBaseUrl = "https://api.mycycleht.com";
         break;
     }
   }
