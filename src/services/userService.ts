@@ -1,6 +1,7 @@
 import { apiService } from "./api";
 import { userStorage } from "./userStorage";
 import { User } from "../types/auth";
+import { bodyDataService } from "./bodyDataService";
 
 export interface MeasurementComparison {
   current: {
@@ -114,6 +115,23 @@ export class UserService {
 
     if (response.error) {
       throw new Error(response.error);
+    }
+
+    // Salvar peso no histórico local após atualizar na API
+    try {
+      const today = new Date();
+      const todayLocal = `${today.getFullYear()}-${String(
+        today.getMonth() + 1
+      ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
+      await bodyDataService.addWeightEntry({
+        date: todayLocal,
+        weight: weight,
+      });
+
+      console.log("✅ Weight entry added to local history:", { date: todayLocal, weight });
+    } catch (error) {
+      console.error("Error adding weight to local history:", error);
     }
   }
 

@@ -213,7 +213,7 @@ class BodyDataService {
       // Usar data local ao invés de UTC
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - days);
-      
+
       // Normalizar para YYYY-MM-DD local
       const cutoffString = `${cutoffDate.getFullYear()}-${String(
         cutoffDate.getMonth() + 1
@@ -255,7 +255,7 @@ class BodyDataService {
       // Usar data local ao invés de UTC
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - days);
-      
+
       // Normalizar para YYYY-MM-DD local
       const cutoffString = `${cutoffDate.getFullYear()}-${String(
         cutoffDate.getMonth() + 1
