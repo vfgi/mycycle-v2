@@ -1,7 +1,17 @@
 import { apiService } from "./api";
 import { dailyDataStorage, DailyConsumptionData } from "./dailyDataStorage";
 
+export interface IngredientTemplate {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  fiber: number;
+  sodium: number;
+}
+
 export interface Ingredient {
+  ingredient_id: string;
   name: string;
   description: string;
   calories: number;
@@ -13,6 +23,7 @@ export interface Ingredient {
   image_url?: string;
   quantity: number;
   order: number;
+  template?: IngredientTemplate;
 }
 
 export interface Meal {

@@ -62,7 +62,7 @@ export const CreateMealScreen: React.FC = () => {
     if (mealToEdit) {
       setEditingMealId(mealToEdit.id);
       const ingredients = mealToEdit.ingredients.map((ing: any) => ({
-        id: ing.name,
+        id: ing.ingredient_id || ing.name,
         name: ing.name,
         calories: ing.calories || 0,
         protein: ing.protein || 0,
@@ -71,6 +71,7 @@ export const CreateMealScreen: React.FC = () => {
         fiber: ing.fiber || 0,
         sodium: ing.sodium || 0,
         quantity: ing.quantity || 100,
+        template: ing.template, // Incluir o template se disponível
       }));
       setSelectedIngredients(ingredients);
     }
@@ -113,13 +114,22 @@ export const CreateMealScreen: React.FC = () => {
   const calculateTotals = () => {
     return selectedIngredients.reduce(
       (acc, ing) => {
-        // Os valores já vêm como totais, não precisamos multiplicar
+        // Calcular o multiplicador baseado na quantidade (valores são por 100g)
+        const multiplier = (ing.quantity || 0) / 100;
+
+        // Usar valores do template se disponível, senão usar valores padrão
+        const baseCalories = ing.template?.calories || ing.calories || 0;
+        const baseProtein = ing.template?.protein || ing.protein || 0;
+        const baseCarbs = ing.template?.carbs || ing.carbs || 0;
+        const baseFat = ing.template?.fat || ing.fat || 0;
+        const baseFiber = ing.template?.fiber || ing.fiber || 0;
+
         return {
-          calories: acc.calories + (ing.calories || 0),
-          protein: acc.protein + (ing.protein || 0),
-          carbs: acc.carbs + (ing.carbs || 0),
-          fat: acc.fat + (ing.fat || 0),
-          fiber: acc.fiber + (ing.fiber || 0),
+          calories: acc.calories + baseCalories * multiplier,
+          protein: acc.protein + baseProtein * multiplier,
+          carbs: acc.carbs + baseCarbs * multiplier,
+          fat: acc.fat + baseFat * multiplier,
+          fiber: acc.fiber + baseFiber * multiplier,
         };
       },
       { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 }
@@ -137,15 +147,29 @@ export const CreateMealScreen: React.FC = () => {
     try {
       const ingredients: Ingredient[] = selectedIngredients.map(
         (ing, index) => {
+          // Calcular o multiplicador baseado na quantidade (valores são por 100g)
+          const multiplier = (ing.quantity || 0) / 100;
+
+          // Usar valores do template se disponível, senão usar valores padrão
+          const baseCalories = ing.template?.calories || ing.calories || 0;
+          const baseProtein = ing.template?.protein || ing.protein || 0;
+          const baseCarbs = ing.template?.carbs || ing.carbs || 0;
+          const baseFat = ing.template?.fat || ing.fat || 0;
+          const baseFiber = ing.template?.fiber || ing.fiber || 0;
+          const baseSodium = ing.template?.sodium || ing.sodium || 0;
+
           return {
+            ingredient_id: ing.id,
             name: ing.name || "",
             description: "",
-            calories: Math.round(ing.calories || 0),
-            protein: parseFloat((ing.protein || 0).toFixed(1)),
-            carbs: parseFloat((ing.carbs || 0).toFixed(1)),
-            fat: parseFloat((ing.fat || 0).toFixed(1)),
-            fiber: parseFloat((ing.fiber || 0).toFixed(1)),
-            sodium: ing.sodium ? Math.round(ing.sodium || 0) : undefined,
+            calories: Math.round(baseCalories * multiplier),
+            protein: parseFloat((baseProtein * multiplier).toFixed(1)),
+            carbs: parseFloat((baseCarbs * multiplier).toFixed(1)),
+            fat: parseFloat((baseFat * multiplier).toFixed(1)),
+            fiber: parseFloat((baseFiber * multiplier).toFixed(1)),
+            sodium: baseSodium
+              ? Math.round(baseSodium * multiplier)
+              : undefined,
             quantity: ing.quantity || 0,
             order: index + 1,
           };

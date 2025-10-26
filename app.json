@@ -196,7 +196,7 @@
       }
     },
     "android": {
-      "versionCode": 1,
+      "versionCode": 23,
       "package": "com.mycycle.app",
       "splash": {
         "image": "./assets/splash-icon.png",

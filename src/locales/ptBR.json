@@ -818,6 +818,7 @@
     "deletePlanError": "Erro ao excluir plano de treino",
     "deleteWorkout": "Excluir Treino",
     "deleteWorkoutConfirmation": "Tem certeza que deseja excluir este treino?",
+    "deleteWorkoutMessage": "Tem certeza que deseja excluir o treino \"{{name}}\"? Esta ação não pode ser desfeita.",
     "deleteWorkoutWarning": "Esta ação não pode ser desfeita.",
     "workoutDeletedSuccess": "Treino excluído com sucesso",
     "deleteWorkoutError": "Erro ao excluir treino",
@@ -851,7 +852,8 @@
     "noExercisesInWorkout": "Nenhum exercício neste treino",
     "planActivated": "Plano ativado com sucesso",
     "planDeactivated": "Plano desativado com sucesso",
-    "togglePlanError": "Erro ao ativar/desativar plano"
+    "togglePlanError": "Erro ao ativar/desativar plano",
+    "clearWorkoutData": "Limpar Dados do Treino"
   },
   "premium": {
     "upgradeTitle": "Faça Upgrade para Premium",

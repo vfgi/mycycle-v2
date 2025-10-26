@@ -14,6 +14,15 @@ export const mealSchema = z.object({
 
 export type MealFormData = z.infer<typeof mealSchema>;
 
+export interface IngredientTemplate {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  fiber: number;
+  sodium: number;
+}
+
 export interface SelectedIngredient {
   id: string;
   name: string;
@@ -24,4 +33,5 @@ export interface SelectedIngredient {
   fiber: number;
   sodium: number;
   quantity: number;
+  template?: IngredientTemplate;
 }

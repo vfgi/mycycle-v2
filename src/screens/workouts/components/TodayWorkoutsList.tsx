@@ -224,6 +224,7 @@ export const TodayWorkoutsList: React.FC<TodayWorkoutsListProps> = ({
                   <ExerciseCard
                     key={`${exercise.name}-${exerciseIndex}`}
                     exercise={exercise}
+                    showPlayButton={false}
                   />
                 ))}
               </VStack>

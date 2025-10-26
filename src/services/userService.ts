@@ -137,11 +137,6 @@ export class UserService {
         lastUpdated: new Date().toISOString(),
       };
       await dailyDataStorage.setDailyWeightData(dailyWeightData);
-
-      console.log("✅ Weight entry added to local history:", {
-        date: todayLocal,
-        weight,
-      });
     } catch (error) {
       console.error("Error adding weight to local history:", error);
     }
@@ -153,8 +148,6 @@ export class UserService {
   ): Promise<WeightHistoryResponse> {
     const endpoint = `/clients/${clientId}/weight-history?period=${period}`;
 
-    console.log("📊 Fetching weight history:", { clientId, period, endpoint });
-
     const response = await apiService.get<WeightHistoryResponse>(endpoint);
 
     if (response.error) {
@@ -164,8 +157,6 @@ export class UserService {
     if (!response.data) {
       throw new Error("Resposta inválida do servidor");
     }
-
-    console.log("📊 Weight history received:", response.data);
 
     return response.data;
   }

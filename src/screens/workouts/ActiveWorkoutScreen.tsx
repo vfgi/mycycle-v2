@@ -336,7 +336,7 @@ export const ActiveWorkoutScreen: React.FC = () => {
               fontSize="$sm"
               fontWeight="$bold"
             >
-              {t("workout.dev.clearButton")}
+              {t("workouts.clearWorkoutData")}
             </Text>
           </Pressable>
         </Box>

@@ -16,6 +16,8 @@ import { PlanExercisesList } from "./components/PlanExercisesList";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../contexts/AuthContext";
 import { Workout } from "../../types/training";
+import { goalsService } from "../../services/goalsService";
+import { Goals } from "../../types/goals";
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -32,12 +34,14 @@ export const WorkoutsScreen: React.FC = () => {
     workoutsExecutedThisWeek: 0,
     exercisesExecutedToday: 0,
   });
+  const [goals, setGoals] = useState<Goals | null>(null);
   const navigation = useNavigation<NavigationProp>();
 
   // Carregar planos quando a tela receber foco
   useFocusEffect(
     useCallback(() => {
       loadTrainingPlans();
+      loadGoals();
     }, [])
   );
 
@@ -73,6 +77,15 @@ export const WorkoutsScreen: React.FC = () => {
     }
   };
 
+  const loadGoals = async () => {
+    try {
+      const goalsData = await goalsService.getGoals();
+      setGoals(goalsData);
+    } catch (error) {
+      console.error("Error loading goals:", error);
+    }
+  };
+
   // Função para obter o dia atual da semana
   const getCurrentDayKey = (): string => {
     const days = [
@@ -88,15 +101,9 @@ export const WorkoutsScreen: React.FC = () => {
     return days[today];
   };
 
-  // Calcular metas baseadas nos treinos de hoje e da semana
-  const dailyGoal = todayWorkouts.reduce(
-    (sum, workout) => sum + workout.exercises.length,
-    0
-  );
-  const weeklyGoal = trainingPlans.reduce(
-    (sum, plan) => sum + plan.workouts.length,
-    0
-  );
+  // Calcular metas baseadas nos goals do usuário
+  const dailyGoal = goals?.dailyExercises || 0;
+  const weeklyGoal = goals?.weeklyWorkouts || 0;
 
   const stats = {
     dailyGoal: dailyGoal,

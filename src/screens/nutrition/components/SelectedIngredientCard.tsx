@@ -61,15 +61,17 @@ export const SelectedIngredientCard: React.FC<SelectedIngredientCardProps> = ({
     }
   };
 
-  const multiplier = (ingredient.quantity || 0) / 100;
-  const calories = (ingredient.calories || 0) * multiplier;
-  const proteinInGrams = (ingredient.protein || 0) * multiplier;
-  const carbsInGrams = (ingredient.carbs || 0) * multiplier;
-  const fatInGrams = (ingredient.fat || 0) * multiplier;
+  // Mostrar valores por 100g do template (sem multiplicar pela quantidade)
+  const baseCalories =
+    ingredient.template?.calories || ingredient.calories || 0;
+  const baseProtein = ingredient.template?.protein || ingredient.protein || 0;
+  const baseCarbs = ingredient.template?.carbs || ingredient.carbs || 0;
+  const baseFat = ingredient.template?.fat || ingredient.fat || 0;
 
-  const proteinConverted = convertMacronutrient(proteinInGrams);
-  const carbsConverted = convertMacronutrient(carbsInGrams);
-  const fatConverted = convertMacronutrient(fatInGrams);
+  // Converter para unidade atual (gramas por padrão)
+  const proteinConverted = convertMacronutrient(baseProtein);
+  const carbsConverted = convertMacronutrient(baseCarbs);
+  const fatConverted = convertMacronutrient(baseFat);
   const unit = getMacroUnit();
 
   return (
@@ -92,10 +94,10 @@ export const SelectedIngredientCard: React.FC<SelectedIngredientCardProps> = ({
               {ingredient.name}
             </Text>
 
-            {/* Nutritional Info */}
+            {/* Nutritional Info - valores por 100g */}
             <HStack space="md" flexWrap="wrap">
               <Text color={FIXED_COLORS.text[400]} fontSize="$xs">
-                {Math.round(calories)} kcal
+                {Math.round(baseCalories)} kcal
               </Text>
               <Text color={FIXED_COLORS.text[400]} fontSize="$xs">
                 P: {proteinConverted.value.toFixed(1)}
