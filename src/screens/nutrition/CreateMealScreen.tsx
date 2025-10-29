@@ -230,6 +230,8 @@ export const CreateMealScreen: React.FC = () => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 150, paddingTop: 8 }}
           keyboardShouldPersistTaps="handled"
+          nestedScrollEnabled={true}
+          scrollEventThrottle={16}
         >
           <VStack space="lg" px="$4">
             {/* Header */}

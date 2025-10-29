@@ -72,6 +72,8 @@ export const SlideCard: React.FC<SlideCardProps> = ({
         scrollAnimationDuration={1000}
         autoPlayInterval={autoPlayInterval}
         renderItem={renderItem}
+        panGestureHandlerEnabled={false}
+        enabled={false}
       />
 
       <View

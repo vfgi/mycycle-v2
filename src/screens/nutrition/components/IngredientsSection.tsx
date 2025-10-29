@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Platform } from "react-native";
 import { VStack, HStack, Text, Pressable } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { FIXED_COLORS } from "../../../theme/colors";
@@ -6,6 +7,7 @@ import { useTranslation } from "../../../hooks/useTranslation";
 import { IngredientTemplate } from "../../../services/ingredientsService";
 import { SelectedIngredient } from "../../../schemas/mealSchema";
 import { IngredientSearchBar } from "./IngredientSearchBar";
+import { AndroidIngredientSearchBar } from "./AndroidIngredientSearchBar";
 import { SelectedIngredientCard } from "./SelectedIngredientCard";
 
 interface IngredientsSectionProps {
@@ -81,10 +83,17 @@ export const IngredientsSection: React.FC<IngredientsSectionProps> = ({
       </HStack>
 
       {/* Search Bar */}
-      <IngredientSearchBar
-        onSelectIngredient={onAddIngredient}
-        tableBase={selectedTable}
-      />
+      {Platform.OS === "android" ? (
+        <AndroidIngredientSearchBar
+          onSelectIngredient={onAddIngredient}
+          tableBase={selectedTable}
+        />
+      ) : (
+        <IngredientSearchBar
+          onSelectIngredient={onAddIngredient}
+          tableBase={selectedTable}
+        />
+      )}
 
       {/* Selected Ingredients */}
       {selectedIngredients.length > 0 && (
