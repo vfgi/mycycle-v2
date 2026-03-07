@@ -903,6 +903,8 @@
     "selectDay": "Select day",
     "selectMuscleGroups": "Select muscle groups for this day",
     "selectedMuscleGroup": "Selected muscle group",
+    "changeMuscleGroup": "Change",
+    "searchExercisesPlaceholder": "Search exercises...",
     "exercisesForMuscle": "Exercises for {{muscle}}",
     "exercisesComingSoon": "Exercises coming soon",
     "exercisesDescription": "Specific exercises for this muscle group will appear here",
@@ -1529,12 +1531,12 @@
         "saveError": "Error saving workout to history"
       },
       "dev": {
-        "clearData": "DEV: Clear Data",
+        "clearData": "Clear Data",
         "clearDataMessage": "Are you sure you want to clear all active workout data?",
         "clear": "Clear",
         "clearSuccess": "Workout data cleared!",
         "clearError": "Error clearing data",
-        "clearButton": "DEV: Clear Workout Data"
+        "clearButton": "Clear Workout Data"
       },
       "totalDuration": "total",
       "weight": "Weight",
@@ -1589,7 +1591,8 @@
         "thigh": "Thigh",
         "neck": "Neck",
         "forearm": "Forearm",
-        "calf": "Calf"
+        "calf": "Calf",
+        "hip": "Hip"
       },
       "measurementsTracked": "measurements tracked",
       "premiumAnalysis": "Premium Analysis",

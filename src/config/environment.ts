@@ -43,7 +43,7 @@ const getEnvironmentConfig = (): EnvironmentConfig => {
   } else {
     switch (environment) {
       case "development":
-        apiBaseUrl = "https://api.dev.mycycleht.com";
+        apiBaseUrl = "https://api.mycycleht.com";
         break;
       case "production":
       default:

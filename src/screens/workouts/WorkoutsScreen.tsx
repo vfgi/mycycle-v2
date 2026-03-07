@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { VStack, Text } from "@gluestack-ui/themed";
 import { FIXED_COLORS } from "../../theme/colors";
 import { useTranslation } from "../../hooks/useTranslation";
 import { SafeContainer, AnimatedTabs, AdBanner } from "../../components";
-import { EmptyWorkoutScreen } from "./EmptyWorkoutScreen";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { RootStackParamList } from "../../navigation/AppNavigator";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -184,13 +183,6 @@ export const WorkoutsScreen: React.FC = () => {
     );
   }
 
-  if (trainingPlans.length === 0) {
-    return (
-      <SafeContainer paddingTop={0} paddingBottom={0} paddingHorizontal={0}>
-        <EmptyWorkoutScreen />
-      </SafeContainer>
-    );
-  }
   return (
     <SafeContainer paddingTop={0} paddingBottom={0} paddingHorizontal={0}>
       {/* Banner de Propaganda - Apenas para não premium */}

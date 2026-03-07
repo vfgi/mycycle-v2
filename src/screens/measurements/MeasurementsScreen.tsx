@@ -10,16 +10,19 @@ import { FIXED_COLORS } from "../../theme/colors";
 import { useTranslation } from "../../hooks/useTranslation";
 import { SafeContainer, MeasurementCard, CustomButton } from "../../components";
 import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { userStorage } from "../../services/userStorage";
 import { userService } from "../../services/userService";
 import { User, Measurements } from "../../types/auth";
 import { getMeasurementFields } from "./measurementFields";
 import { useUnits } from "../../contexts/UnitsContext";
 import { useToast } from "../../hooks/useToast";
+import { useAuth } from "../../contexts/AuthContext";
 
 export const MeasurementsScreen: React.FC = () => {
   const { t } = useTranslation();
   const { showSuccess, showError } = useToast();
+  const { user: authUser, updateUser } = useAuth();
   const {
     convertBodyMeasurement,
     convertHeight,
@@ -29,40 +32,48 @@ export const MeasurementsScreen: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [measurements, setMeasurements] = useState<Measurements>({});
   const [displayValues, setDisplayValues] = useState<Record<string, string>>(
-    {}
+    {},
   );
   const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const userData = await userStorage.getUserProfile();
-        setUser(userData);
-        if (userData?.measurements) {
-          setMeasurements(userData.measurements);
+  useFocusEffect(
+    React.useCallback(() => {
+      let isMounted = true;
+      const loadUserData = async () => {
+        try {
+          const profileFromApi = await userService.getProfile();
+          if (!profileFromApi || !isMounted) return;
 
-          // Convert stored metric values to display values based on user's unit preference
-          const displayVals: Record<string, string> = {};
-          Object.entries(userData.measurements).forEach(([key, value]) => {
-            if (value) {
-              if (key === "height") {
-                const converted = convertHeight(value);
-                displayVals[key] = converted.value.toString();
-              } else {
-                const converted = convertBodyMeasurement(value);
-                displayVals[key] = converted.value.toString();
+          setUser(profileFromApi);
+          updateUser(profileFromApi);
+
+          const meas = profileFromApi.measurements;
+          if (meas && Object.keys(meas).length > 0 && isMounted) {
+            setMeasurements(meas);
+            const displayVals: Record<string, string> = {};
+            Object.entries(meas).forEach(([key, value]) => {
+              if (value != null && value !== "") {
+                if (key === "height") {
+                  const converted = convertHeight(value);
+                  displayVals[key] = converted.value.toString();
+                } else {
+                  const converted = convertBodyMeasurement(value);
+                  displayVals[key] = converted.value.toString();
+                }
               }
-            }
-          });
-          setDisplayValues(displayVals);
+            });
+            setDisplayValues(displayVals);
+          }
+        } catch (error) {
+          console.error("Error loading user data:", error);
         }
-      } catch (error) {
-        console.error("Error loading user data:", error);
-      }
-    };
-
-    loadUserData();
-  }, [convertHeight, convertBodyMeasurement]);
+      };
+      loadUserData();
+      return () => {
+        isMounted = false;
+      };
+    }, []),
+  );
 
   const measurementFields = useMemo(() => {
     return getMeasurementFields(t, user, getUnitForMeasurement);
@@ -93,23 +104,28 @@ export const MeasurementsScreen: React.FC = () => {
 
   const handleSaveMeasurements = async () => {
     try {
-      if (!user) return;
+      if (!user?.id) return;
 
       setIsSaving(true);
 
-      const updatedUser = {
+      await userService.updateMeasurements(user.id, measurements as Record<string, number | undefined>);
+
+      const userWithMeasurements = {
         ...user,
-        measurements,
+        measurements: {
+          ...user.measurements,
+          ...Object.fromEntries(
+            Object.entries(measurements).filter(
+              (entry): entry is [string, number] =>
+                entry[1] != null && typeof entry[1] === "number",
+            ),
+          ),
+        },
       };
 
-      // Primeiro tenta salvar na API
-      await userService.updateProfile({
-        measurements,
-      });
-
-      // Se API teve sucesso, então salva localmente
-      await userStorage.setUserProfile(updatedUser);
-      setUser(updatedUser);
+      setUser(userWithMeasurements);
+      updateUser(userWithMeasurements);
+      await userStorage.setUserProfile(userWithMeasurements);
 
       showSuccess(t("measurements.updated"));
     } catch (error) {

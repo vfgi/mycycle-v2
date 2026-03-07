@@ -221,7 +221,7 @@ export const ActiveWorkoutScreen: React.FC = () => {
 
   const handleConfirmFinishWorkout = async () => {
     if (!activeWorkout?.workoutId) {
-      showError(t("workout.finish.error"));
+      showError(t("history.workout.finish.error"));
       return;
     }
 
@@ -244,15 +244,15 @@ export const ActiveWorkoutScreen: React.FC = () => {
         // Limpar dados temporários da storage
         await activeWorkoutStorage.deleteActiveWorkout();
 
-        showSuccess(t("workout.finish.success"));
+        showSuccess(t("history.workout.finish.success"));
         setShowFinishModal(false);
         navigation.goBack();
       } else {
-        showError(t("workout.finish.saveError"));
+        showError(t("history.workout.finish.saveError"));
       }
     } catch (error) {
       console.error("Error saving workout history:", error);
-      showError(t("workout.finish.saveError"));
+      showError(t("history.workout.finish.saveError"));
     } finally {
       setIsSavingWorkout(false);
     }
@@ -263,19 +263,19 @@ export const ActiveWorkoutScreen: React.FC = () => {
   };
 
   const handleClearWorkoutData = async () => {
-    Alert.alert(t("workout.dev.clearData"), t("workout.dev.clearDataMessage"), [
+    Alert.alert(t("history.workout.dev.clearData"), t("history.workout.dev.clearDataMessage"), [
       { text: t("common.cancel"), style: "cancel" },
       {
-        text: t("workout.dev.clear"),
+        text: t("history.workout.dev.clear"),
         style: "destructive",
         onPress: async () => {
           try {
             await activeWorkoutStorage.deleteActiveWorkout();
-            showSuccess(t("workout.dev.clearSuccess"));
+            showSuccess(t("history.workout.dev.clearSuccess"));
             navigation.goBack();
           } catch (error) {
             console.error("Error clearing workout data:", error);
-            showError(t("workout.dev.clearError"));
+            showError(t("history.workout.dev.clearError"));
           }
         },
       },

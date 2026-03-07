@@ -2,6 +2,7 @@ import React, {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
   ReactNode,
 } from "react";
@@ -10,6 +11,7 @@ import { authService } from "../services/authService";
 import { userService } from "../services/userService";
 import { tokenStorage } from "../services/tokenStorage";
 import { oneSignalService } from "../services/oneSignalService";
+import { apiService } from "../services/api";
 
 interface AuthContextType extends AuthState {
   login: (credentials: LoginRequest) => Promise<void>;
@@ -46,7 +48,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (accessToken && refreshToken) {
         console.log("✅ [AuthContext] User authenticated from storage");
 
-        // Buscar dados atualizados do usuário da API
         let updatedUser = user;
         try {
           updatedUser = await userService.getProfile();
@@ -55,6 +56,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             "❌ [AuthContext] Error fetching updated profile:",
             error
           );
+          await tokenStorage.clearAll();
+          setAuthState({
+            user: null,
+            accessToken: null,
+            refreshToken: null,
+            isAuthenticated: false,
+            isLoading: false,
+          });
+          return;
         }
 
         setAuthState({
@@ -186,6 +196,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.error("Error during logout:", error);
     }
   };
+
+  const logoutRef = useRef(logout);
+  logoutRef.current = logout;
+  useEffect(() => {
+    apiService.setOnUnauthorized(() => {
+      logoutRef.current?.();
+    });
+    return () => apiService.setOnUnauthorized(null);
+  }, []);
 
   const refreshAuth = async () => {
     try {

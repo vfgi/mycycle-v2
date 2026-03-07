@@ -1,5 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { VStack, Text, HStack, Pressable, Spinner } from "@gluestack-ui/themed";
+import React, { useState, useEffect, useMemo } from "react";
+import {
+  VStack,
+  Text,
+  HStack,
+  Pressable,
+  Spinner,
+  Input,
+  InputField,
+} from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { FIXED_COLORS } from "../../../theme/colors";
 import { useTranslation } from "../../../hooks/useTranslation";
@@ -52,14 +60,15 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
   const [selectedExercisePreview, setSelectedExercisePreview] =
     useState<Exercise | null>(null);
   const [swappingExercise, setSwappingExercise] = useState<Exercise | null>(
-    null
+    null,
   );
+  const [exerciseSearchTerm, setExerciseSearchTerm] = useState("");
 
-  // Limpar estados quando o dia muda
   useEffect(() => {
     setFilteredCategory(null);
     setSwappingExercise(null);
     setSelectedExercisePreview(null);
+    setExerciseSearchTerm("");
   }, [currentDay]);
 
   const handleCategoryToggle = (category: string) => {
@@ -91,7 +100,7 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
       if (muscleGroup) {
         const response = await exerciseService.getExercisesByMuscleGroup(
           muscleGroup,
-          50
+          510,
         );
         setAvailableExercises(response.exercises);
       }
@@ -106,7 +115,17 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
   const handleClearFilter = () => {
     setFilteredCategory(null);
     setAvailableExercises([]);
+    setExerciseSearchTerm("");
   };
+
+  const filteredBySearchExercises = useMemo(() => {
+    const term = exerciseSearchTerm.trim().toLowerCase();
+    if (!term) return availableExercises;
+    return availableExercises.filter((ex) => {
+      const translatedName = t(`exercises.${ex.name}`);
+      return translatedName.toLowerCase().includes(term);
+    });
+  }, [availableExercises, exerciseSearchTerm, t]);
 
   const handleExerciseToggle = (exercise: Exercise) => {
     // Se estamos em modo de troca, substituir o exercício
@@ -152,7 +171,7 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
   const handleRemoveExercise = (exercise: Exercise) => {
     const currentExercises = selectedWorkoutExercises[currentDay] || [];
     const updatedExercises = currentExercises.filter(
-      (ex) => ex.id !== exercise.id
+      (ex) => ex.id !== exercise.id,
     );
     onWorkoutExercisesChange(currentDay, updatedExercises);
 
@@ -173,7 +192,7 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
 
     const currentExercises = selectedWorkoutExercises[currentDay] || [];
     const exerciseIndex = currentExercises.findIndex(
-      (ex) => ex.id === swappingExercise.id
+      (ex) => ex.id === swappingExercise.id,
     );
 
     if (exerciseIndex !== -1) {
@@ -193,13 +212,6 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
 
     setSwappingExercise(null);
     setFilteredCategory(null);
-  };
-
-  const getFilteredCategories = () => {
-    if (filteredCategory) {
-      return EXERCISE_CATEGORIES.filter((cat) => cat.key === filteredCategory);
-    }
-    return EXERCISE_CATEGORIES;
   };
 
   const isCategorySelected = (category: string) => {
@@ -252,8 +264,8 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
                     isSelected
                       ? FIXED_COLORS.primary[600]
                       : isCompleted
-                      ? FIXED_COLORS.success[600]
-                      : FIXED_COLORS.background[700]
+                        ? FIXED_COLORS.success[600]
+                        : FIXED_COLORS.background[700]
                   }
                   borderRadius="$lg"
                   px="$3"
@@ -286,70 +298,116 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
         </VStack>
       )}
 
-      {/* Current Day Title */}
       {currentDay && (
         <VStack space="sm">
-          <HStack justifyContent="space-between" alignItems="center">
-            <VStack space="xs">
-              <Text
-                color={FIXED_COLORS.text[50]}
-                fontSize="$md"
-                fontWeight="$semibold"
+          <Text
+            color={FIXED_COLORS.text[50]}
+            fontSize="$md"
+            fontWeight="$semibold"
+          >
+            {getCurrentDayLabel()}
+          </Text>
+          {filteredCategory ? (
+            <VStack space="sm">
+              <HStack alignItems="center" space="sm" flexWrap="wrap">
+                <Pressable
+                  bg={FIXED_COLORS.primary[600]}
+                  borderRadius="$lg"
+                  px="$3"
+                  py="$2"
+                >
+                  <Text
+                    color={FIXED_COLORS.text[950]}
+                    fontSize="$sm"
+                    fontWeight="$medium"
+                  >
+                    {t(`workoutSetup.muscleGroups.${filteredCategory}`)}
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={handleClearFilter}
+                  bg={FIXED_COLORS.background[600]}
+                  borderRadius="$lg"
+                  px="$3"
+                  py="$2"
+                >
+                  <HStack alignItems="center" space="xs">
+                    <Ionicons
+                      name="swap-horizontal"
+                      size={18}
+                      color={FIXED_COLORS.text[100]}
+                    />
+                    <Text
+                      color={FIXED_COLORS.text[100]}
+                      fontSize="$sm"
+                      fontWeight="$medium"
+                    >
+                      {t("workoutSetup.changeMuscleGroup")}
+                    </Text>
+                  </HStack>
+                </Pressable>
+              </HStack>
+              <Input
+                bg={FIXED_COLORS.background[700]}
+                borderColor={FIXED_COLORS.background[700]}
+                borderWidth={1}
+                borderRadius="$xl"
+                height={44}
               >
-                {getCurrentDayLabel()}
-              </Text>
-              <Text color={FIXED_COLORS.text[300]} fontSize="$sm">
-                {filteredCategory
-                  ? t("workoutSetup.selectedMuscleGroup")
-                  : t("workoutSetup.selectMuscleGroups")}
-              </Text>
+                <HStack alignItems="center" flex={1} pl="$2" pr="$2" space="xs">
+                  <Ionicons
+                    name="search"
+                    size={20}
+                    color={FIXED_COLORS.text[400]}
+                  />
+                  <InputField
+                    placeholder={t("workoutSetup.searchExercisesPlaceholder")}
+                    value={exerciseSearchTerm}
+                    onChangeText={setExerciseSearchTerm}
+                    color={FIXED_COLORS.text[50]}
+                    fontSize="$sm"
+                    placeholderTextColor={FIXED_COLORS.text[400]}
+                    keyboardAppearance="dark"
+                    flex={1}
+                  />
+                  {exerciseSearchTerm.length > 0 && (
+                    <Pressable
+                      onPress={() => setExerciseSearchTerm("")}
+                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    >
+                      <Ionicons
+                        name="close-circle"
+                        size={22}
+                        color={FIXED_COLORS.text[400]}
+                      />
+                    </Pressable>
+                  )}
+                </HStack>
+              </Input>
             </VStack>
-            {filteredCategory && (
-              <Pressable
-                onPress={handleClearFilter}
-                bg={FIXED_COLORS.primary[600]}
-                borderRadius="$full"
-                p="$2"
-              >
-                <Ionicons
-                  name="swap-horizontal"
-                  size={20}
-                  color={FIXED_COLORS.text[950]}
-                />
-              </Pressable>
-            )}
-          </HStack>
-        </VStack>
-      )}
-
-      {/* Exercise Categories Grid */}
-      {currentDay && (
-        <VStack space="md">
-          <HStack space="md" flexWrap="wrap" justifyContent="space-between">
-            {getFilteredCategories().map((category) => (
-              <ExerciseCard
-                key={category.key}
-                id={category.key}
-                title={t(category.labelKey)}
-                isSelected={
-                  isCategorySelected(category.key) ||
-                  filteredCategory === category.key
-                }
-                onPress={() => {
-                  if (filteredCategory) {
-                    handleCategoryToggle(category.key);
-                  } else {
-                    handleCategoryFilter(category.key);
-                  }
-                }}
-                imageSource={category.image}
-                imageType="local"
-                showCheckmark={true}
-                cardHeight={140}
-                imageHeight={120}
-              />
-            ))}
-          </HStack>
+          ) : (
+            <>
+              <Text color={FIXED_COLORS.text[300]} fontSize="$sm">
+                {t("workoutSetup.selectMuscleGroups")}
+              </Text>
+              <HStack space="md" flexWrap="wrap" justifyContent="space-between">
+                {EXERCISE_CATEGORIES.map((category) => (
+                  <ExerciseCard
+                    key={category.key}
+                    id={category.key}
+                    title={t(category.labelKey)}
+                    isSelected={isCategorySelected(category.key)}
+                    onPress={() => handleCategoryFilter(category.key)}
+                    imageSource={category.image}
+                    imageType="local"
+                    showCheckmark={true}
+                    cardHeight={140}
+                    imageHeight={120}
+                  />
+                ))}
+              </HStack>
+            </>
+          )}
         </VStack>
       )}
 
@@ -375,7 +433,7 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
             </VStack>
           ) : (
             <HStack space="md" flexWrap="wrap" justifyContent="space-between">
-              {availableExercises.map((exercise) => (
+              {filteredBySearchExercises.map((exercise) => (
                 <ExerciseCard
                   key={exercise.id}
                   id={exercise.id}

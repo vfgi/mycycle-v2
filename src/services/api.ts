@@ -12,10 +12,19 @@ class ApiService {
   private baseURL: string;
   private timeout: number;
   private isRefreshing: boolean = false;
+  private onUnauthorized: (() => void) | null = null;
 
   constructor() {
     this.baseURL = ENV.API_BASE_URL;
     this.timeout = ENV.API_TIMEOUT;
+  }
+
+  setOnUnauthorized(callback: (() => void) | null): void {
+    this.onUnauthorized = callback;
+  }
+
+  private triggerUnauthorized(): void {
+    this.onUnauthorized?.();
   }
 
   private async request<T>(
@@ -61,7 +70,12 @@ class ApiService {
       }
 
       if (!response.ok) {
-        // Se for erro 401 (Unauthorized), tentar refresh token primeiro
+        console.error("[API Error]", {
+          endpoint: url,
+          status: response.status,
+          statusText: response.statusText,
+          body: data,
+        });
         if (response.status === 401 && !this.isRefreshing) {
           try {
             this.isRefreshing = true;
@@ -95,30 +109,43 @@ class ApiService {
               if (retryResponse.ok) {
                 return { data: retryData };
               } else {
+                console.error("[API Error] Retry failed", {
+                  endpoint: url,
+                  status: retryResponse.status,
+                  body: retryData,
+                });
                 await tokenStorage.clearAll();
+                this.triggerUnauthorized();
               }
             } else {
               await tokenStorage.clearAll();
+              this.triggerUnauthorized();
             }
           } catch (refreshError) {
             console.error("Token refresh failed:", refreshError);
             await tokenStorage.clearAll();
+            this.triggerUnauthorized();
           } finally {
             this.isRefreshing = false;
           }
         } else if (response.status === 401) {
           await tokenStorage.clearAll();
+          this.triggerUnauthorized();
         }
 
         return {
-          error: data.message || data.error || "Erro na requisição",
-          message: data.message,
+          error: data?.message || data?.error || "Erro na requisição",
+          message: data?.message,
         };
       }
 
       return { data };
     } catch (error) {
-      console.error("Error making API request:", error);
+      console.error("[API Error] Request failed", {
+        error,
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+      });
       return {
         error: error instanceof Error ? error.message : "Erro de conexão",
       };
@@ -225,6 +252,16 @@ class ApiService {
       }
 
       if (!response.ok) {
+        console.error("[API Error] Upload failed", {
+          endpoint: url,
+          status: response.status,
+          statusText: response.statusText,
+          body: data,
+        });
+        if (response.status === 401) {
+          await tokenStorage.clearAll();
+          this.triggerUnauthorized();
+        }
         return {
           error: data?.message || data?.error || "Erro no upload",
           message: data?.message,
@@ -233,7 +270,10 @@ class ApiService {
 
       return { data };
     } catch (error) {
-      console.error("Error uploading image:", error);
+      console.error("[API Error] Upload request failed", {
+        error,
+        message: error instanceof Error ? error.message : String(error),
+      });
       return {
         error: error instanceof Error ? error.message : "Erro de conexão",
       };

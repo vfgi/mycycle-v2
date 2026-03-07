@@ -903,6 +903,8 @@
     "selectDay": "Selecciona el día",
     "selectMuscleGroups": "Selecciona los grupos musculares para este día",
     "selectedMuscleGroup": "Grupo muscular seleccionado",
+    "changeMuscleGroup": "Cambiar",
+    "searchExercisesPlaceholder": "Buscar ejercicios...",
     "exercisesForMuscle": "Ejercicios para {{muscle}}",
     "exercisesComingSoon": "Ejercicios próximamente",
     "exercisesDescription": "Aquí aparecerán los ejercicios específicos para este grupo muscular",
@@ -1526,12 +1528,12 @@
         "saveError": "Error al guardar entrenamiento en el historial"
       },
       "dev": {
-        "clearData": "DEV: Limpiar Datos",
+        "clearData": "Limpiar Datos",
         "clearDataMessage": "¿Estás seguro de que deseas limpiar todos los datos del entrenamiento activo?",
         "clear": "Limpiar",
         "clearSuccess": "¡Datos del entrenamiento limpiados!",
         "clearError": "Error al limpiar datos",
-        "clearButton": "DEV: Limpiar Datos del Entrenamiento"
+        "clearButton": "Limpiar Datos del Entrenamiento"
       },
       "totalDuration": "total",
       "weight": "Peso",
@@ -1587,7 +1589,8 @@
         "thigh": "Muslo",
         "neck": "Cuello",
         "forearm": "Antebrazo",
-        "calf": "Pantorrilla"
+        "calf": "Pantorrilla",
+        "hip": "Cadera"
       },
       "measurementsTracked": "medidas seguidas",
       "premiumAnalysis": "Análisis Premium",

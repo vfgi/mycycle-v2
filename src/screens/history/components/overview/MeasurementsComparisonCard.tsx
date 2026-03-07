@@ -57,15 +57,30 @@ export const MeasurementsComparisonCard: React.FC<
     );
   }
 
-  const measurementKeys = [
-    { key: "chest", label: t("history.overview.measurements.chest") },
-    { key: "waist", label: t("history.overview.measurements.waist") },
-    { key: "bicep", label: t("history.overview.measurements.bicep") },
-    { key: "thigh", label: t("history.overview.measurements.thigh") },
-    { key: "neck", label: t("history.overview.measurements.neck") },
-    { key: "forearm", label: t("history.overview.measurements.forearm") },
-    { key: "calf", label: t("history.overview.measurements.calf") },
-  ] as const;
+  const measurementKeyToLabel: Record<string, string> = {
+    chest: t("history.overview.measurements.chest"),
+    waist: t("history.overview.measurements.waist"),
+    bicep: t("history.overview.measurements.bicep"),
+    thigh: t("history.overview.measurements.thigh"),
+    neck: t("history.overview.measurements.neck"),
+    forearm: t("history.overview.measurements.forearm"),
+    calf: t("history.overview.measurements.calf"),
+    hip: t("history.overview.measurements.hip"),
+  };
+
+  const measurementsOld = oldestRecord.measurements as Record<string, number>;
+  const measurementsLatest = latestRecord.measurements as Record<string, number>;
+  const availableKeys = Object.keys(measurementsOld).filter(
+    (key) =>
+      key !== "weight" &&
+      typeof measurementsOld[key] === "number" &&
+      typeof measurementsLatest[key] === "number"
+  );
+
+  const measurementKeys = availableKeys.map((key) => ({
+    key,
+    label: measurementKeyToLabel[key] || key,
+  }));
 
   const formatDifference = (diff: number) => {
     const sign = diff >= 0 ? "+" : "";
@@ -146,92 +161,88 @@ export const MeasurementsComparisonCard: React.FC<
 
         {/* Comparações de Medidas */}
         <VStack space="sm">
-          {measurementKeys
-            .map(({ key, label }) => {
-              const oldValue = oldestRecord.measurements[key];
-              const newValue = latestRecord.measurements[key];
+          {measurementKeys.map(({ key, label }) => {
+            const oldValue = measurementsOld[key];
+            const newValue = measurementsLatest[key];
+            const diff = newValue - oldValue;
 
-              // Skip if measurement doesn't exist in both records
-              if (!oldValue || !newValue) return null;
-
-              const diff = newValue - oldValue;
-
-              return (
-                <HStack
-                  key={key}
-                  justifyContent="space-between"
-                  alignItems="center"
-                  py="$1"
+            return (
+              <HStack
+                key={key}
+                justifyContent="space-between"
+                alignItems="center"
+                py="$1"
+              >
+                <Text
+                  color={FIXED_COLORS.background[0]}
+                  fontSize="$xs"
+                  opacity={0.8}
+                  flex={1}
+                  minWidth="$16"
                 >
+                  {label}
+                </Text>
+
+                <HStack alignItems="center" space="xs" flex={2}>
                   <Text
                     color={FIXED_COLORS.background[0]}
                     fontSize="$xs"
-                    opacity={0.8}
+                    fontWeight="$medium"
+                    textAlign="center"
                     flex={1}
-                    minWidth="$16"
                   >
-                    {label}
+                    {oldValue.toFixed(1)} → {newValue.toFixed(1)}cm
                   </Text>
 
-                  <HStack alignItems="center" space="xs" flex={2}>
+                  <HStack alignItems="center" space="xs" minWidth="$20">
+                    <Box
+                      bg={FIXED_COLORS.background[0]}
+                      borderRadius="$full"
+                      p="$1"
+                      opacity={0.9}
+                    >
+                      <Ionicons
+                        name={
+                          Math.abs(diff) < 0.1
+                            ? "remove"
+                            : diff > 0
+                            ? "trending-up"
+                            : "trending-down"
+                      }
+                        size={10}
+                        color={getDifferenceColor(diff, key)}
+                      />
+                    </Box>
+
                     <Text
                       color={FIXED_COLORS.background[0]}
                       fontSize="$xs"
-                      fontWeight="$medium"
-                      textAlign="center"
-                      flex={1}
+                      fontWeight="$semibold"
+                      textAlign="right"
+                      minWidth="$12"
                     >
-                      {oldValue.toFixed(1)} → {newValue.toFixed(1)}cm
+                      {formatDifference(diff)}
                     </Text>
-
-                    <HStack alignItems="center" space="xs" minWidth="$20">
-                      <Box
-                        bg={FIXED_COLORS.background[0]}
-                        borderRadius="$full"
-                        p="$1"
-                        opacity={0.9}
-                      >
-                        <Ionicons
-                          name={
-                            Math.abs(diff) < 0.1
-                              ? "remove"
-                              : diff > 0
-                              ? "trending-up"
-                              : "trending-down"
-                          }
-                          size={10}
-                          color={getDifferenceColor(diff, key)}
-                        />
-                      </Box>
-
-                      <Text
-                        color={FIXED_COLORS.background[0]}
-                        fontSize="$xs"
-                        fontWeight="$semibold"
-                        textAlign="right"
-                        minWidth="$12"
-                      >
-                        {formatDifference(diff)}
-                      </Text>
-                    </HStack>
                   </HStack>
                 </HStack>
-              );
-            })
-            .filter(Boolean)}
+              </HStack>
+            );
+          })}
         </VStack>
 
-        {/* Resumo de Medidas */}
-        <HStack justifyContent="center" mt="$2">
-          <Text
-            color={FIXED_COLORS.background[0]}
-            fontSize="$xs"
-            textAlign="center"
-            opacity={0.8}
-          >
-            {measurementKeys.length} {t("history.overview.measurementsTracked")}
-          </Text>
-        </HStack>
+        {measurementKeys.length > 0 && (
+          <HStack justifyContent="center" mt="$2">
+            <Text
+              color={FIXED_COLORS.background[0]}
+              fontSize="$xs"
+              textAlign="center"
+              opacity={0.8}
+            >
+              {measurementKeys.length}{" "}
+              {t("history.overview.measurementsTracked")}
+            </Text>
+          </HStack>
+        )}
       </VStack>
     </LinearGradient>
   );

@@ -31,8 +31,21 @@ export interface WeightHistoryResponse {
 }
 
 export class UserService {
-  async getProfile(): Promise<User> {
-    const response = await apiService.get<User>("/clients/me/profile");
+  async getProfile(
+    params?: Record<string, string | number | boolean>,
+  ): Promise<User> {
+    const query =
+      params && Object.keys(params).length > 0
+        ? "?" +
+          new URLSearchParams(
+            Object.fromEntries(
+              Object.entries(params).map(([k, v]) => [k, String(v)]),
+            ),
+          ).toString()
+        : "";
+    const fullUrl = `/clients/me/profile${query}`;
+
+    const response = await apiService.get<User>(fullUrl);
 
     if (response.error) {
       throw new Error(response.error);
@@ -42,44 +55,82 @@ export class UserService {
       throw new Error("Resposta inválida do servidor");
     }
 
-    // Sempre salva os dados na AsyncStorage quando busca da API
+    let profileToSave = response.data;
     try {
-      await userStorage.setUserProfile(response.data);
-    } catch (error) {
-      console.error("Error saving user profile to storage:", error);
-      // Não interrompe o fluxo se falhar ao salvar no storage
+      const stored = await userStorage.getUserProfile();
+      const hasStoredMeasurements =
+        stored?.measurements && Object.keys(stored.measurements).length > 0;
+      const hasApiMeasurements =
+        response.data.measurements &&
+        Object.keys(response.data.measurements).length > 0;
+      if (hasStoredMeasurements && !hasApiMeasurements) {
+        profileToSave = {
+          ...response.data,
+          measurements: stored!.measurements,
+        };
+      }
+    } catch (e) {
+      // ignore
     }
 
-    return response.data;
+    try {
+      await userStorage.setUserProfile(profileToSave);
+    } catch (error) {
+      console.error("Error saving user profile to storage:", error);
+    }
+
+    return profileToSave;
   }
 
   async updateProfile(profileData: Partial<User>): Promise<User> {
     const response = await apiService.put<User>(
       "/clients/me/profile",
-      profileData
+      profileData,
     );
 
     if (response.error) {
       throw new Error(response.error);
     }
 
-    if (!response.data) {
-      throw new Error("Resposta inválida do servidor");
-    }
+    const updatedUser = response.data!;
+    const merged =
+      updatedUser.measurements &&
+      Object.keys(updatedUser.measurements).length > 0
+        ? updatedUser
+        : { ...updatedUser, measurements: profileData.measurements ?? {} };
 
-    // Sempre salva os dados atualizados na AsyncStorage
     try {
-      await userStorage.setUserProfile(response.data);
+      await userStorage.setUserProfile(merged);
     } catch (error) {
       console.error("Error saving updated user profile to storage:", error);
-      // Não interrompe o fluxo se falhar ao salvar no storage
     }
 
-    return response.data;
+    return merged;
+  }
+
+  async updateMeasurements(
+    clientId: string,
+    measurements: Record<string, number | undefined>,
+  ): Promise<void> {
+    const payload = Object.fromEntries(
+      Object.entries(measurements).filter(
+        (entry): entry is [string, number] =>
+          entry[1] != null && typeof entry[1] === "number",
+      ),
+    );
+
+    const response = await apiService.patch<{ measurements?: Record<string, number> }>(
+      `/clients/${clientId}/measurements`,
+      { measurements: payload },
+    );
+
+    if (response.error) {
+      throw new Error(response.error);
+    }
   }
 
   async getMeasurementsComparison(
-    period: "week" | "month" | "3months" | "6months" | "year" | "first" | "all"
+    period: "week" | "month" | "3months" | "6months" | "year" | "first" | "all",
   ): Promise<MeasurementComparison> {
     const userProfile = await userStorage.getUserProfile();
     const clientId = userProfile?.id;
@@ -122,7 +173,7 @@ export class UserService {
     try {
       const today = new Date();
       const todayLocal = `${today.getFullYear()}-${String(
-        today.getMonth() + 1
+        today.getMonth() + 1,
       ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
       await bodyDataService.addWeightEntry({
@@ -144,7 +195,7 @@ export class UserService {
 
   async getWeightHistory(
     clientId: string,
-    period: "weekly" | "monthly" | "yearly" = "yearly"
+    period: "weekly" | "monthly" | "yearly" = "yearly",
   ): Promise<WeightHistoryResponse> {
     const endpoint = `/clients/${clientId}/weight-history?period=${period}`;
 
@@ -176,7 +227,7 @@ export class UserService {
 
     const response = await apiService.uploadImage<User>(
       "/clients/me/image",
-      formData
+      formData,
     );
 
     if (response.error) {
