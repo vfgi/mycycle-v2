@@ -74,6 +74,7 @@ export const TrainingPlanCardContent: React.FC<
                 <ExerciseCard
                   key={exerciseIndex}
                   exercise={{
+                    id: exercise.id,
                     name: exercise.name,
                     muscle_group: exercise.muscle_group,
                     sets: exercise.sets,
@@ -87,7 +88,7 @@ export const TrainingPlanCardContent: React.FC<
                     order: exercise.order || exerciseIndex,
                   }}
                 />
-              )
+              ),
             )}
           </VStack>
         </VStack>

@@ -36,7 +36,7 @@ export const SelectedExerciseItem: React.FC<SelectedExerciseItemProps> = ({
   reps,
   weight,
 }) => {
-  const { t } = useTranslation();
+  const { t, translateExerciseName } = useTranslation();
 
   return (
     <HStack
@@ -58,7 +58,7 @@ export const SelectedExerciseItem: React.FC<SelectedExerciseItemProps> = ({
         >
           <Image
             source={{ uri: exercise.previewImage }}
-            alt={t(`exercises.${exercise.name}`)}
+            alt={translateExerciseName(exercise.name)}
             style={{
               width: "100%",
               height: "100%",
@@ -77,7 +77,7 @@ export const SelectedExerciseItem: React.FC<SelectedExerciseItemProps> = ({
           fontWeight="$semibold"
           numberOfLines={2}
         >
-          {t(`exercises.${exercise.name}`)}
+          {translateExerciseName(exercise.name)}
         </Text>
 
         {/* Inputs para séries, repetições e carga */}

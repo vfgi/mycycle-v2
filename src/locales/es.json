@@ -849,7 +849,14 @@
       "thursday": "Jueves",
       "friday": "Viernes",
       "saturday": "Sábado",
-      "sunday": "Domingo"
+      "sunday": "Domingo",
+      "Monday": "Lunes",
+      "Tuesday": "Martes",
+      "Wednesday": "Miércoles",
+      "Thursday": "Jueves",
+      "Friday": "Viernes",
+      "Saturday": "Sábado",
+      "Sunday": "Domingo"
     },
     "neverExecuted": "Nunca ejecutado",
     "noExercisesInWorkout": "Ningún ejercicio en este entrenamiento",

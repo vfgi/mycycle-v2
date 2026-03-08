@@ -26,7 +26,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
   showPlayButton = true,
 }) => {
   const shouldShowPlayButton = showPlayButton && onPlayPress;
-  const { t } = useTranslation();
+  const { t, translateExerciseName } = useTranslation();
   const { unitSystem } = useUnits();
   const weightUnit = unitSystem === "imperial" ? "lbs" : "kg";
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
@@ -58,7 +58,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
           numberOfLines={2}
           lineHeight="$lg"
         >
-          {t(`exercises.${exercise.name}`)}
+          {translateExerciseName(exercise.name)}
         </Text>
 
         {/* Imagem e informações lado a lado */}

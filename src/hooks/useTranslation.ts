@@ -10,9 +10,19 @@ export const useTranslation = () => {
   const getCurrentLanguage = () => {
     return i18n.language;
   };
-  
+
+  const translateExerciseName = (name: string) => {
+    const withPrefix = name.startsWith("exercises.") ? name : `exercises.${name}`;
+    const translatedWithPrefix = t(withPrefix);
+    if (translatedWithPrefix !== withPrefix) return translatedWithPrefix;
+    const translatedAsIs = t(name);
+    if (translatedAsIs !== name) return translatedAsIs;
+    return name;
+  };
+
   return {
     t,
+    translateExerciseName,
     changeLanguage,
     getCurrentLanguage,
     language: i18n.language,

@@ -40,7 +40,7 @@ export const ActiveExerciseCard: React.FC<ActiveExerciseCardProps> = ({
   onSaveWeight,
   onWeightChange,
 }) => {
-  const { t } = useTranslation();
+  const { t, translateExerciseName } = useTranslation();
   const { unitSystem } = useUnits();
   const weightUnit = unitSystem === "imperial" ? "lbs" : "kg";
 
@@ -126,7 +126,7 @@ export const ActiveExerciseCard: React.FC<ActiveExerciseCardProps> = ({
                   fontWeight="$bold"
                   numberOfLines={1}
                 >
-                  {t(`exercises.${exercise.name}`)}
+                  {translateExerciseName(exercise.name)}
                 </Text>
                 <Text color={FIXED_COLORS.text[400]} fontSize="$xs">
                   {exercise.muscle_group}

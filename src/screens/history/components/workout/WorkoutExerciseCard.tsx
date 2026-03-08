@@ -13,7 +13,7 @@ interface WorkoutExerciseCardProps {
 export const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
   exercise,
 }) => {
-  const { t } = useTranslation();
+  const { t, translateExerciseName } = useTranslation();
 
   const getMuscleColor = (muscle: string) => {
     const colorMap: Record<string, string> = {
@@ -47,7 +47,7 @@ export const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
               fontWeight="$semibold"
               numberOfLines={1}
             >
-              {t(`exercises.${exercise.name}`)}
+              {translateExerciseName(exercise.name)}
             </Text>
             <HStack alignItems="center" space="xs">
               <Text color={FIXED_COLORS.text[400]} fontSize="$xs">

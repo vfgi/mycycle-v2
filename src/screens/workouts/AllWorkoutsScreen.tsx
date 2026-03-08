@@ -28,14 +28,14 @@ export const AllWorkoutsScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [workoutToDelete, setWorkoutToDelete] = useState<WorkoutSession | null>(
-    null
+    null,
   );
   const [isDeleting, setIsDeleting] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       loadWorkouts();
-    }, [])
+    }, []),
   );
 
   const loadWorkouts = async () => {

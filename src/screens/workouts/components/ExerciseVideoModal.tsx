@@ -26,7 +26,7 @@ export const ExerciseVideoModal: React.FC<ExerciseVideoModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const { t } = useTranslation();
+  const { t, translateExerciseName } = useTranslation();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -45,7 +45,7 @@ export const ExerciseVideoModal: React.FC<ExerciseVideoModalProps> = ({
             flex={1}
             numberOfLines={2}
           >
-            {exercise && t(`exercises.${exercise.name}`)}
+            {exercise && translateExerciseName(exercise.name)}
           </Text>
           <ModalCloseButton>
             <Ionicons name="close" size={24} color={FIXED_COLORS.text[50]} />
@@ -58,7 +58,7 @@ export const ExerciseVideoModal: React.FC<ExerciseVideoModalProps> = ({
               {/* GIF do exercício */}
               <Image
                 source={{ uri: exercise.videoURL }}
-                alt={t(`exercises.${exercise.name}`)}
+                alt={translateExerciseName(exercise.name)}
                 style={{
                   width: "100%",
                   height: 300,

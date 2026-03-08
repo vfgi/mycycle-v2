@@ -40,7 +40,7 @@ export const WorkoutsList: React.FC<WorkoutsListProps> = ({
   const { t } = useTranslation();
   const navigation = useNavigation<NavigationProp>();
   const [expandedWorkouts, setExpandedWorkouts] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
 
   const toggleWorkoutExpanded = (workoutId: string) => {
@@ -78,7 +78,7 @@ export const WorkoutsList: React.FC<WorkoutsListProps> = ({
               text: t("workouts.viewActiveWorkout"),
               onPress: () => navigation.navigate("ActiveWorkout"),
             },
-          ]
+          ],
         );
         return;
       }
@@ -118,7 +118,7 @@ export const WorkoutsList: React.FC<WorkoutsListProps> = ({
           style: "destructive",
           onPress: () => onDeleteWorkout(workout),
         },
-      ]
+      ],
     );
   };
 

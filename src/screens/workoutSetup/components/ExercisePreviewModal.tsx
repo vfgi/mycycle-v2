@@ -26,7 +26,7 @@ export const ExercisePreviewModal: React.FC<ExercisePreviewModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const { t } = useTranslation();
+  const { translateExerciseName } = useTranslation();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -44,7 +44,7 @@ export const ExercisePreviewModal: React.FC<ExercisePreviewModalProps> = ({
             fontWeight="$semibold"
             flex={1}
           >
-            {exercise && t(`exercises.${exercise.name}`)}
+            {exercise && translateExerciseName(exercise.name)}
           </Text>
           <ModalCloseButton>
             <Ionicons name="close" size={24} color={FIXED_COLORS.text[50]} />
@@ -54,7 +54,7 @@ export const ExercisePreviewModal: React.FC<ExercisePreviewModalProps> = ({
           {exercise && (
             <Image
               source={{ uri: exercise.imageURL }}
-              alt={t(`exercises.${exercise.name}`)}
+              alt={translateExerciseName(exercise.name)}
               style={{
                 height: 400,
                 width: "100%",

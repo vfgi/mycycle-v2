@@ -52,7 +52,7 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
   onRemoveExercise,
   hideDaySelector = false,
 }) => {
-  const { t } = useTranslation();
+  const { t, translateExerciseName } = useTranslation();
   const [currentDay, setCurrentDay] = useState(selectedDays[0] || "");
   const [filteredCategory, setFilteredCategory] = useState<string | null>(null);
   const [availableExercises, setAvailableExercises] = useState<Exercise[]>([]);
@@ -122,10 +122,10 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
     const term = exerciseSearchTerm.trim().toLowerCase();
     if (!term) return availableExercises;
     return availableExercises.filter((ex) => {
-      const translatedName = t(`exercises.${ex.name}`);
+      const translatedName = translateExerciseName(ex.name);
       return translatedName.toLowerCase().includes(term);
     });
-  }, [availableExercises, exerciseSearchTerm, t]);
+  }, [availableExercises, exerciseSearchTerm, translateExerciseName]);
 
   const handleExerciseToggle = (exercise: Exercise) => {
     // Se estamos em modo de troca, substituir o exercício
@@ -437,7 +437,7 @@ export const Step2ExerciseSelection: React.FC<Step2ExerciseSelectionProps> = ({
                 <ExerciseCard
                   key={exercise.id}
                   id={exercise.id}
-                  title={t(`exercises.${exercise.name}`)}
+                  title={translateExerciseName(exercise.name)}
                   isSelected={isExerciseSelected(exercise)}
                   onPress={() => handleExerciseToggle(exercise)}
                   imageSource={{ uri: exercise.previewImage }}

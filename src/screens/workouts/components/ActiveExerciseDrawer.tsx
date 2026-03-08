@@ -37,7 +37,7 @@ export const ActiveExerciseDrawer: React.FC<ActiveExerciseDrawerProps> = ({
   currentSet,
   onSetComplete,
 }) => {
-  const { t } = useTranslation();
+  const { t, translateExerciseName } = useTranslation();
   const { unitSystem } = useUnits();
   const weightUnit = unitSystem === "imperial" ? "lbs" : "kg";
 
@@ -175,7 +175,7 @@ export const ActiveExerciseDrawer: React.FC<ActiveExerciseDrawerProps> = ({
                 fontWeight="$bold"
                 flex={1}
               >
-                {t(`exercises.${exercise.name}`)}
+                {translateExerciseName(exercise.name)}
               </Text>
             </HStack>
 
