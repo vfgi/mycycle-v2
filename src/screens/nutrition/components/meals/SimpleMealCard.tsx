@@ -12,6 +12,7 @@ import { FIXED_COLORS } from "../../../../theme/colors";
 import { useTranslation } from "../../../../hooks/useTranslation";
 import { useUnits } from "../../../../contexts/UnitsContext";
 import { Meal } from "./types";
+import { normalizeMealType } from "../../utils/mealPresentation";
 
 interface SimpleMealCardProps {
   meal: Meal;
@@ -37,7 +38,7 @@ export const SimpleMealCard: React.FC<SimpleMealCardProps> = ({
   const unit = getMacroUnit();
 
   const getMealTypeIcon = () => {
-    switch (meal.meal_type) {
+    switch (normalizeMealType(meal.meal_type)) {
       case "breakfast":
         return "sunny-outline";
       case "lunch":
@@ -52,8 +53,13 @@ export const SimpleMealCard: React.FC<SimpleMealCardProps> = ({
   };
 
   const getMealTypeLabel = () => {
-    return t(`nutrition.meals.types.${meal.meal_type}`);
+    const key = normalizeMealType(meal.meal_type);
+    return t(`nutrition.meals.types.${key}`);
   };
+
+  const typeAndTimeLabel = meal.time
+    ? `${getMealTypeLabel()} • ${meal.time}`
+    : getMealTypeLabel();
 
   return (
     <Pressable onPress={onPress}>
@@ -82,7 +88,7 @@ export const SimpleMealCard: React.FC<SimpleMealCardProps> = ({
                   fontSize="$xs"
                   fontWeight="$medium"
                 >
-                  {getMealTypeLabel()} • {meal.time}
+                  {typeAndTimeLabel}
                 </Text>
                 {!meal.active && (
                   <Box
@@ -110,7 +116,7 @@ export const SimpleMealCard: React.FC<SimpleMealCardProps> = ({
                 {meal.name}
               </Text>
 
-              {meal.description && (
+              {Boolean(meal.description) && (
                 <Text
                   color={FIXED_COLORS.text[300]}
                   fontSize="$sm"

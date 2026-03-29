@@ -174,20 +174,17 @@
         ],
         "ITSAppUsesNonExemptEncryption": false,
         "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to let you select a profile image.",
+        "NSCameraUsageDescription": "This app needs camera access to photograph your meals for nutritional analysis.",
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoadsForMedia": true,
           "NSAllowsArbitraryLoadsInWebContent": true
         },
         "NSLocalNotificationUsageDescription": "This app needs access to your local notifications to let you know when to remind you your medications and supplements.",
-        "UIBackgroundModes": [
-          "remote-notification"
-        ],
+        "UIBackgroundModes": ["remote-notification"],
         "CFBundleURLTypes": [
           {
             "CFBundleURLName": "facebook",
-            "CFBundleURLSchemes": [
-              "fb1506051177065150"
-            ]
+            "CFBundleURLSchemes": ["fb1506051177065150"]
           }
         ],
         "FacebookAppID": "1506051177065150",
@@ -225,10 +222,7 @@
               "host": "1506051177065150.app.link"
             }
           ],
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
+          "category": ["BROWSABLE", "DEFAULT"]
         }
       ]
     },
@@ -280,7 +274,8 @@
       "router": {},
       "eas": {
         "projectId": "6917d6d5-67c9-495f-8037-97588067242c"
-      }
+      },
+      "geminiApiKey": "AIzaSyCDtFLzKpldofZWrfLsghpo_3Ls5KGqb14"
     },
     "runtimeVersion": {
       "policy": "appVersion"

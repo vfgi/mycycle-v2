@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { Alert } from "react-native";
 import {
   VStack,
   Text,
@@ -13,27 +14,32 @@ import { FIXED_COLORS } from "../../../../theme/colors";
 import { useTranslation } from "../../../../hooks/useTranslation";
 import { MealCard } from "./MealCard";
 import { MealDetailsDrawer } from "./MealDetailsDrawer";
+import { AiMealAnalysisDrawer } from "./AiMealAnalysisDrawer";
 import { mealsService } from "../../../../services/mealsService";
 import { mealsHistoryService } from "../../../../services/mealsHistoryService";
 import { useToast } from "../../../../hooks/useToast";
 import { useAuth } from "../../../../contexts/AuthContext";
 import { Meal } from "./types";
-
-// Função para obter a imagem baseada no tipo de refeição
-const getMealImage = (mealType: string) => {
-  switch (mealType) {
-    case "breakfast":
-      return require("../../../../../assets/images/food/breakfast.jpg");
-    case "lunch":
-      return require("../../../../../assets/images/food/lunch.jpg");
-    case "dinner":
-      return require("../../../../../assets/images/food/dinner.jpg");
-    case "snack":
-      return require("../../../../../assets/images/food/snacks.jpg");
-    default:
-      return require("../../../../../assets/images/food/lunch.jpg");
-  }
-};
+import { captureMealPhotoWithCamera } from "../../utils/captureMealPhoto";
+import {
+  analyzeMealPhotoWithGemini,
+  type GeminiMealAnalysisResult,
+} from "../../../../services/geminiMealVisionService";
+import ENV from "../../../../config/environment";
+import {
+  buildNutritionDataFromGemini,
+  hasAiDetectedFood,
+} from "../../utils/buildNutritionDataFromGemini";
+import {
+  getMealImageForType,
+  normalizeMealType,
+  sortMealsByLocalTimeOfDay,
+} from "../../utils/mealPresentation";
+import {
+  getMealAiPhotoQuota,
+  incrementMealAiPhotoUsage,
+  AI_MEAL_PHOTO_DAILY_LIMIT,
+} from "../../../../services/mealAiPhotoUsageStorage";
 
 interface MealsListProps {
   onViewAll?: () => void;
@@ -52,11 +58,26 @@ export const MealsList: React.FC<MealsListProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isAnalyzingMealPhoto, setIsAnalyzingMealPhoto] = useState(false);
+  const [aiMealAnalysis, setAiMealAnalysis] =
+    useState<GeminiMealAnalysisResult | null>(null);
+  const [aiMealPhotoUri, setAiMealPhotoUri] = useState<string | null>(null);
+  const [isAiAnalysisDrawerOpen, setIsAiAnalysisDrawerOpen] = useState(false);
+  const [isSavingAiScan, setIsSavingAiScan] = useState(false);
+  const [aiPhotoRemaining, setAiPhotoRemaining] = useState(
+    AI_MEAL_PHOTO_DAILY_LIMIT,
+  );
+
+  const refreshAiPhotoQuota = React.useCallback(async () => {
+    const q = await getMealAiPhotoQuota();
+    setAiPhotoRemaining(q.remaining);
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
       loadMeals();
-    }, [])
+      void refreshAiPhotoQuota();
+    }, []),
   );
 
   const loadMeals = async () => {
@@ -79,11 +100,16 @@ export const MealsList: React.FC<MealsListProps> = ({
 
       const mealsWithDefaults = data.map((meal) => {
         const totals = mealsService.calculateMealTotals(meal);
+        const mealType = normalizeMealType(meal.meal_type);
 
-        // Verificar se foi consumida hoje baseada no last_consumed_at
         const isConsumedToday = meal.last_consumed_at
           ? meal.last_consumed_at.split("T")[0] === todayLocal
           : false;
+
+        const scheduled =
+          meal.scheduled_time ??
+          (meal as { time?: string }).time ??
+          "";
 
         return {
           ...meal,
@@ -94,12 +120,13 @@ export const MealsList: React.FC<MealsListProps> = ({
           carbs: totals.carbs,
           fat: totals.fat,
           fiber: totals.fiber,
-          meal_type: "lunch" as const,
-          time: "12:00",
-          image: getMealImage("lunch"),
+          meal_type: mealType,
+          time: scheduled,
+          scheduled_time: meal.scheduled_time,
+          image: getMealImageForType(mealType),
           ingredients: meal.ingredients.map((ingredient) => ({
             ...ingredient,
-            unit: "g", // Default unit
+            unit: "g",
           })),
         };
       });
@@ -111,7 +138,11 @@ export const MealsList: React.FC<MealsListProps> = ({
     }
   };
 
-  const mealsToShow = meals.filter((meal) => meal.active);
+  const mealsToShow = useMemo(
+    () =>
+      sortMealsByLocalTimeOfDay(meals.filter((meal) => meal.active)),
+    [meals]
+  );
 
   const handleMealPress = (meal: Meal) => {
     setSelectedMeal(meal);
@@ -200,6 +231,150 @@ export const MealsList: React.FC<MealsListProps> = ({
     setSelectedMeal(null);
   };
 
+  const handleCloseAiAnalysisDrawer = () => {
+    setIsAiAnalysisDrawerOpen(false);
+  };
+
+  useEffect(() => {
+    if (!isAiAnalysisDrawerOpen) {
+      const id = setTimeout(() => {
+        setAiMealAnalysis(null);
+        setAiMealPhotoUri(null);
+      }, 400);
+      return () => clearTimeout(id);
+    }
+  }, [isAiAnalysisDrawerOpen]);
+
+  const executePhotoMealWithAI = async () => {
+    const apiKey = ENV.GEMINI_API_KEY;
+    if (!apiKey) {
+      showError(t("nutrition.meals.geminiApiKeyMissing"));
+      return;
+    }
+
+    const quotaBefore = await getMealAiPhotoQuota();
+    if (quotaBefore.remaining <= 0) {
+      showError(t("nutrition.meals.aiPhotoNoUsesLeft"));
+      await refreshAiPhotoQuota();
+      return;
+    }
+
+    try {
+      const capture = await captureMealPhotoWithCamera();
+      if (capture.status === "permission_denied") {
+        showError(t("nutrition.meals.cameraPermissionDenied"));
+        return;
+      }
+      if (capture.status === "cancelled") {
+        return;
+      }
+
+      const quotaAfterCapture = await getMealAiPhotoQuota();
+      if (quotaAfterCapture.remaining <= 0) {
+        showError(t("nutrition.meals.aiPhotoNoUsesLeft"));
+        await refreshAiPhotoQuota();
+        return;
+      }
+
+      setIsAnalyzingMealPhoto(true);
+      const analysis = await analyzeMealPhotoWithGemini(
+        apiKey,
+        capture.photo.base64,
+        capture.photo.mimeType,
+      );
+      await incrementMealAiPhotoUsage();
+      await refreshAiPhotoQuota();
+      const previewUri = `data:${capture.photo.mimeType};base64,${capture.photo.base64}`;
+      setAiMealAnalysis(analysis);
+      setAiMealPhotoUri(previewUri);
+      setIsAiAnalysisDrawerOpen(true);
+    } catch (e) {
+      const message =
+        e instanceof Error ? e.message : t("nutrition.meals.geminiMealAnalysisError");
+      showError(message || t("nutrition.meals.geminiMealAnalysisError"));
+    } finally {
+      setIsAnalyzingMealPhoto(false);
+    }
+  };
+
+  const handlePhotoMealAIPress = () => {
+    void (async () => {
+      const q = await getMealAiPhotoQuota();
+      setAiPhotoRemaining(q.remaining);
+      if (q.remaining <= 0) {
+        Alert.alert(
+          t("nutrition.meals.aiPhotoIntroTitle"),
+          t("nutrition.meals.aiPhotoNoUsesLeft"),
+          [{ text: t("common.confirm"), style: "default" }],
+        );
+        return;
+      }
+      const message = `${t("nutrition.meals.aiPhotoIntroBody")}\n\n${t(
+        "nutrition.meals.aiPhotoQuotaLine",
+        {
+          remaining: q.remaining,
+          max: AI_MEAL_PHOTO_DAILY_LIMIT,
+        },
+      )}`;
+      Alert.alert(t("nutrition.meals.aiPhotoIntroTitle"), message, [
+        { text: t("common.cancel"), style: "cancel" },
+        {
+          text: t("common.continue"),
+          onPress: () => {
+            void executePhotoMealWithAI();
+          },
+        },
+      ]);
+    })();
+  };
+
+  const handleSaveAiScan = async () => {
+    if (!aiMealAnalysis) return;
+    if (!hasAiDetectedFood(aiMealAnalysis)) {
+      console.log(
+        "[MealPhotoAI] Nenhum alimento detectado — salvamento ignorado.",
+        JSON.stringify(aiMealAnalysis, null, 2)
+      );
+      showError(t("nutrition.meals.aiScanNoFoodDetected"));
+      return;
+    }
+    try {
+      setIsSavingAiScan(true);
+      const now = new Date();
+      const localISOString = new Date(
+        now.getTime() - now.getTimezoneOffset() * 60000
+      ).toISOString();
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const nutrition_data = buildNutritionDataFromGemini(aiMealAnalysis);
+      const mealName =
+        aiMealAnalysis.prato?.trim() ||
+        t("nutrition.meals.aiAnalysisTitle");
+      const scanReturn = await mealsHistoryService.saveScannedMealToHistory({
+        recorded_at: localISOString,
+        timezone,
+        nutrition_data,
+        meal_name: mealName,
+        notes: t("nutrition.meals.aiScanHistoryNote", { name: mealName }),
+      });
+      console.log(
+        "[MealPhotoAI] retorno meals/history/scan:",
+        JSON.stringify(scanReturn ?? null, null, 2)
+      );
+      showSuccess(t("nutrition.meals.aiScanSaveSuccess"));
+      handleCloseAiAnalysisDrawer();
+      await loadMeals();
+      if (onMealConsumptionChange) {
+        onMealConsumptionChange();
+      }
+    } catch (err) {
+      const msg =
+        err instanceof Error ? err.message : t("nutrition.meals.aiScanSaveError");
+      showError(msg || t("nutrition.meals.aiScanSaveError"));
+    } finally {
+      setIsSavingAiScan(false);
+    }
+  };
+
   return (
     <VStack space="md">
       <HStack justifyContent="space-between" alignItems="center">
@@ -211,13 +386,13 @@ export const MealsList: React.FC<MealsListProps> = ({
           {t("nutrition.meals.meals")}
         </Text>
 
-        <HStack space="md" alignItems="center">
-          {/* Create Meal Button */}
+        <HStack space="sm" alignItems="center" flexShrink={1} flexWrap="wrap">
           <Button
             onPress={() => navigation.navigate("CreateMeal" as never)}
             size="sm"
             bg={FIXED_COLORS.warning[500]}
             borderRadius="$md"
+            isDisabled={isAnalyzingMealPhoto}
           >
             <HStack alignItems="center" space="xs">
               <Ionicons
@@ -233,6 +408,53 @@ export const MealsList: React.FC<MealsListProps> = ({
                 {t("nutrition.meals.create")}
               </ButtonText>
             </HStack>
+          </Button>
+
+          <Button
+            onPress={handlePhotoMealAIPress}
+            size="sm"
+            bg={FIXED_COLORS.primary[600]}
+            borderRadius="$md"
+            isDisabled={isAnalyzingMealPhoto}
+            px="$3"
+            py="$2"
+          >
+            <VStack alignItems="center" space="xs">
+              <HStack alignItems="center" space="xs">
+                <Ionicons
+                  name="camera-outline"
+                  size={16}
+                  color={FIXED_COLORS.text[950]}
+                />
+                <Ionicons
+                  name="sparkles"
+                  size={14}
+                  color={FIXED_COLORS.text[950]}
+                />
+                <ButtonText
+                  color={FIXED_COLORS.text[950]}
+                  fontSize="$xs"
+                  fontWeight="$semibold"
+                  numberOfLines={1}
+                >
+                  {isAnalyzingMealPhoto
+                    ? t("nutrition.meals.analyzingMealPhoto")
+                    : t("nutrition.meals.photoMealAI")}
+                </ButtonText>
+              </HStack>
+              <Text
+                color={FIXED_COLORS.text[950]}
+                fontSize="$2xs"
+                fontWeight="$medium"
+                opacity={0.82}
+                textAlign="center"
+              >
+                {t("nutrition.meals.aiPhotoUsesBadge", {
+                  remaining: aiPhotoRemaining,
+                  max: AI_MEAL_PHOTO_DAILY_LIMIT,
+                })}
+              </Text>
+            </VStack>
           </Button>
 
           {onViewAll && (
@@ -290,6 +512,15 @@ export const MealsList: React.FC<MealsListProps> = ({
         meal={selectedMeal}
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
+      />
+
+      <AiMealAnalysisDrawer
+        analysis={aiMealAnalysis}
+        photoUri={aiMealPhotoUri}
+        isOpen={isAiAnalysisDrawerOpen}
+        onClose={handleCloseAiAnalysisDrawer}
+        onConfirmSave={handleSaveAiScan}
+        isSaving={isSavingAiScan}
       />
     </VStack>
   );

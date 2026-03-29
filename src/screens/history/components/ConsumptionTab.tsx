@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { VStack, Text, HStack, Box } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { FIXED_COLORS } from "../../../theme/colors";
@@ -37,22 +38,28 @@ export const ConsumptionTab: React.FC = () => {
   const [selectedMealHistory, setSelectedMealHistory] = useState<any>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  useEffect(() => {
-    loadGoals();
-  }, []);
-
-  useEffect(() => {
-    loadHistoryData();
-  }, [selectedDate, user?.id]);
-
-  const loadGoals = async () => {
+  const loadGoals = useCallback(async () => {
     try {
       const userGoals = await goalsService.getGoals();
       setGoals(userGoals);
     } catch (error) {
       console.error("Error loading goals:", error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    void loadGoals();
+  }, [loadGoals, user?.id]);
+
+  useFocusEffect(
+    useCallback(() => {
+      void loadGoals();
+    }, [loadGoals]),
+  );
+
+  useEffect(() => {
+    loadHistoryData();
+  }, [selectedDate, user?.id]);
 
   const loadHistoryData = async () => {
     try {
@@ -217,7 +224,7 @@ export const ConsumptionTab: React.FC = () => {
                     convertMacronutrient(selectedData.protein).value
                   }
                   goalValue={
-                    convertMacronutrient(goals?.targetProtein || 120).value
+                    convertMacronutrient(goals?.targetProtein ?? 0).value
                   }
                   unit={getMacroUnit()}
                   colors={[
@@ -237,7 +244,7 @@ export const ConsumptionTab: React.FC = () => {
                   title={t("history.consumption.carbs")}
                   currentValue={convertMacronutrient(selectedData.carbs).value}
                   goalValue={
-                    convertMacronutrient(goals?.targetCarbs || 180).value
+                    convertMacronutrient(goals?.targetCarbs ?? 0).value
                   }
                   unit={getMacroUnit()}
                   colors={[

@@ -26,13 +26,17 @@ export interface Ingredient {
   template?: IngredientTemplate;
 }
 
+export type MealType = "breakfast" | "lunch" | "dinner" | "snack";
+
 export interface Meal {
   id: string;
   name: string;
   description: string;
   is_active: boolean;
   ingredients: Ingredient[];
-  last_consumed_at?: string; // Data da última vez que foi consumida
+  meal_type?: MealType;
+  scheduled_time?: string;
+  last_consumed_at?: string;
 }
 
 export interface NutritionDay {
@@ -62,6 +66,7 @@ export interface MealsResponse {
 export interface CreateMealPayload {
   name: string;
   description?: string;
+  meal_type: MealType;
   ingredients: Ingredient[];
 }
 
@@ -93,6 +98,19 @@ class MealsService {
     } catch (error) {
       console.error("Error in getMeals:", error);
       return [];
+    }
+  }
+
+  async getMealsPlans(): Promise<unknown> {
+    try {
+      const response = await apiService.get<unknown>("/meals-plans");
+      if (response.error) {
+        return null;
+      }
+      return response.data ?? null;
+    } catch (error) {
+      console.error("Error in getMealsPlans:", error);
+      return null;
     }
   }
 

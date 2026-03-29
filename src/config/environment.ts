@@ -7,6 +7,7 @@ export interface EnvironmentConfig {
   IS_DEVELOPMENT: boolean;
   ENVIRONMENT: "development" | "production";
   ONESIGNAL_APP_ID: string;
+  GEMINI_API_KEY: string;
 }
 
 type Environment = "development" | "production";
@@ -61,6 +62,15 @@ const getEnvironmentConfig = (): EnvironmentConfig => {
     Constants.expoConfig?.extra?.oneSignalAppId ||
     "";
 
+  const geminiFromExtra = Constants.expoConfig?.extra?.geminiApiKey as
+    | string
+    | undefined;
+  const geminiApiKey =
+    (typeof process !== "undefined" &&
+      process.env?.EXPO_PUBLIC_GEMINI_API_KEY?.trim()) ||
+    (typeof geminiFromExtra === "string" ? geminiFromExtra.trim() : "") ||
+    "";
+
   return {
     API_BASE_URL: apiBaseUrl,
     API_TIMEOUT: apiTimeout,
@@ -68,6 +78,7 @@ const getEnvironmentConfig = (): EnvironmentConfig => {
     IS_DEVELOPMENT: environment === "development",
     ENVIRONMENT: environment,
     ONESIGNAL_APP_ID: oneSignalAppId,
+    GEMINI_API_KEY: typeof geminiApiKey === "string" ? geminiApiKey.trim() : "",
   };
 };
 

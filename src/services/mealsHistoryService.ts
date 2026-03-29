@@ -97,6 +97,14 @@ export interface MealHistoryRequest {
   notes?: string;
 }
 
+export interface MealScanHistoryRequest {
+  recorded_at: string;
+  timezone: string;
+  nutrition_data: NutritionData;
+  notes?: string;
+  meal_name?: string;
+}
+
 export interface RemoveMealHistoryRequest {
   meal_id: string;
   date: string;
@@ -127,6 +135,21 @@ class MealsHistoryService {
     if (response.error) {
       throw new Error(response.error);
     }
+  }
+
+  async saveScannedMealToHistory(
+    payload: MealScanHistoryRequest
+  ): Promise<unknown> {
+    const response = await apiService.post<unknown>(
+      "/meals/history/scan",
+      payload
+    );
+
+    if (response.error) {
+      throw new Error(response.error);
+    }
+
+    return response.data;
   }
 
   async removeMealFromHistory(

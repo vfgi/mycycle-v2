@@ -14,7 +14,8 @@ export interface Meal {
   name: string;
   description?: string;
   meal_type: "breakfast" | "snack" | "lunch" | "dinner";
-  time: string;
+  time?: string;
+  scheduled_time?: string;
   calories: number;
   protein: number;
   carbs: number;

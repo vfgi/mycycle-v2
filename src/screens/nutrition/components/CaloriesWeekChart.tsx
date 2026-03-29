@@ -4,7 +4,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { FIXED_COLORS } from "../../../theme/colors";
 import { useTranslation } from "../../../hooks/useTranslation";
 import { useUnits } from "../../../contexts/UnitsContext";
-import { mealsService, MealsResponse } from "../../../services/mealsService";
+import { mealsService } from "../../../services/mealsService";
+import { goalsService } from "../../../services/goalsService";
 
 interface DayData {
   day: string;
@@ -63,6 +64,7 @@ export const CaloriesWeekChart: React.FC<CaloriesWeekChartProps> = ({
 
       const response = await mealsService.getMealsWithNutrition(todayLocal);
       if (response) {
+        const profileGoals = await goalsService.getGoals();
         const weekData: DayData[] =
           response.nutrition_summary.calories.days.map((dayData) => ({
             day: getDayNameByAbbr(dayData.day),
@@ -81,10 +83,18 @@ export const CaloriesWeekChart: React.FC<CaloriesWeekChartProps> = ({
                 (d) => d.day === dayData.day
               )?.value || 0,
             goals: {
-              calories: response.nutrition_summary.calories.goal,
-              protein: response.nutrition_summary.protein.goal,
-              carbs: response.nutrition_summary.carbs.goal,
-              fat: response.nutrition_summary.fat.goal,
+              calories:
+                profileGoals?.targetCalories ??
+                response.nutrition_summary.calories.goal,
+              protein:
+                profileGoals?.targetProtein ??
+                response.nutrition_summary.protein.goal,
+              carbs:
+                profileGoals?.targetCarbs ??
+                response.nutrition_summary.carbs.goal,
+              fat:
+                profileGoals?.targetFat ??
+                response.nutrition_summary.fat.goal,
             },
           }));
 

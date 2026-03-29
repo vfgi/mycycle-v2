@@ -19,9 +19,13 @@ import { GoalCard } from "./GoalCard";
 import { GoalCardCompact } from "./GoalCardCompact";
 import { SectionTitle } from "./SectionTitle";
 import { ObjectiveSelector } from "./ObjectiveSelector";
+import { convertObjectiveForAPI } from "./convertObjectiveForApi";
+import { useAuth } from "../../contexts/AuthContext";
+import { userStorage } from "../../services/userStorage";
 
 export const GoalsScreen: React.FC = () => {
   const { t } = useTranslation();
+  const { updateUser, user: authUser } = useAuth();
   const {
     convertWeight,
     convertMacronutrient,
@@ -52,7 +56,18 @@ export const GoalsScreen: React.FC = () => {
 
   const loadGoals = async () => {
     try {
+      const storedProfile = await userStorage.getUserProfile();
+      console.log("[GoalsScreen] userProfile (AsyncStorage)", storedProfile);
+      console.log(
+        "[GoalsScreen] user.goals (perfil em storage)",
+        storedProfile?.goals
+      );
+      console.log("[GoalsScreen] user (AuthContext)", authUser);
+      console.log("[GoalsScreen] user.goals (AuthContext)", authUser?.goals);
+
       const goals = await goalsService.getGoals();
+      console.log("[GoalsScreen] goals após getGoals()", goals);
+
       if (goals) {
         setObjective(goals.objective);
 
@@ -95,21 +110,6 @@ export const GoalsScreen: React.FC = () => {
     } catch (error) {
       console.error("Error loading goals:", error);
     }
-  };
-
-  // Função para converter objective para o formato da API
-  const convertObjectiveForAPI = (
-    objective?: ObjectiveType
-  ): string | undefined => {
-    if (!objective) return undefined;
-
-    const objectiveMap: Record<ObjectiveType, string> = {
-      weightLoss: "weight_loss",
-      hypertrophy: "hypertrophy",
-      definition: "definition",
-    };
-
-    return objectiveMap[objective];
   };
 
   const handleSave = async () => {
@@ -158,11 +158,9 @@ export const GoalsScreen: React.FC = () => {
         objective: convertObjectiveForAPI(goals.objective),
       };
 
-      // Primeiro tenta salvar na API
-      await userService.updateProfile({ goals: goalsForAPI });
-
-      // Se API teve sucesso, então salva localmente
+      const updated = await userService.updateProfile({ goals: goalsForAPI });
       await goalsService.saveGoals(goals);
+      updateUser({ ...updated, goals });
 
       showSuccess(t("goals.goalsSaved"));
     } catch (error) {

@@ -106,7 +106,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         userProfile = await userService.getProfile();
       } catch (error) {
         console.error("Error fetching user profile after login:", error);
-        // Se falhar, usa os dados básicos da resposta de login
       }
 
       // Salvar dados do usuário
@@ -153,7 +152,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         userProfile = await userService.getProfile();
       } catch (error) {
         console.error("Error fetching user profile after signup:", error);
-        // Se falhar, usa os dados básicos da resposta de signup
       }
 
       // Salvar dados do usuário
@@ -236,7 +234,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       );
       console.log("💾 [AuthContext] New tokens saved to storage");
 
-      // Se houver dados do usuário, salvar também
       if (response.user) {
         await tokenStorage.setUser(response.user);
         console.log("👤 [AuthContext] User data updated");

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView } from "react-native";
 import { VStack } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
@@ -14,6 +14,8 @@ import {
 import { useAuth } from "../../contexts/AuthContext";
 import { useTranslation } from "../../hooks/useTranslation";
 import { getHomeSlides } from "./homeData";
+import { AssistantSetupCard } from "./components/AssistantSetupCard";
+import { AssistantSetupModal } from "./components/AssistantSetupModal";
 import { BottomTabParamList } from "../../navigation/BottomTabNavigator";
 import { RootStackParamList } from "../../navigation/AppNavigator";
 
@@ -28,6 +30,7 @@ export const HomeScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
 
   const slides = getHomeSlides();
+  const [assistantModalVisible, setAssistantModalVisible] = useState(false);
 
   const handleSlidePress = (slideId: string) => {
     switch (slideId) {
@@ -56,6 +59,7 @@ export const HomeScreen: React.FC = () => {
       >
         <VStack flex={1} space="lg">
           <StatsCard />
+          <AssistantSetupCard onPress={() => setAssistantModalVisible(true)} />
           <AdBanner
             size="BANNER"
             maxHeight={80}
@@ -82,6 +86,10 @@ export const HomeScreen: React.FC = () => {
           ))}
         </VStack>
       </ScrollView>
+      <AssistantSetupModal
+        visible={assistantModalVisible}
+        onCancel={() => setAssistantModalVisible(false)}
+      />
     </SafeContainer>
   );
 };

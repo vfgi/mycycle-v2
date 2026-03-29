@@ -5,11 +5,11 @@ import { FIXED_COLORS } from "../../../theme/colors";
 import { useTranslation } from "../../../hooks/useTranslation";
 
 const MEAL_TYPES = [
-  { key: "breakfast", icon: "sunny-outline", label: "Café da manhã" },
-  { key: "lunch", icon: "restaurant-outline", label: "Almoço" },
-  { key: "dinner", icon: "moon-outline", label: "Jantar" },
-  { key: "snack", icon: "cafe-outline", label: "Lanche" },
-];
+  { key: "breakfast", icon: "sunny-outline" },
+  { key: "lunch", icon: "restaurant-outline" },
+  { key: "dinner", icon: "moon-outline" },
+  { key: "snack", icon: "cafe-outline" },
+] as const;
 
 interface MealTypeSelectorProps {
   selectedType?: string;
@@ -70,7 +70,7 @@ export const MealTypeSelector: React.FC<MealTypeSelectorProps> = ({
                 fontSize="$sm"
                 fontWeight="$medium"
               >
-                {type.label}
+                {t(`nutrition.meals.types.${type.key}`)}
               </Text>
             </HStack>
           </Pressable>

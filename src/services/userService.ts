@@ -239,6 +239,21 @@ export class UserService {
 
     return fullProfile;
   }
+
+  async generateFullPlan(body: {
+    health_issues: string;
+    allergies: string;
+    language: string;
+    country: string;
+  }): Promise<void> {
+    const response = await apiService.post<void>(
+      "/ai/generate-full-plan",
+      body,
+    );
+    if (response.error) {
+      throw new Error(response.error);
+    }
+  }
 }
 
 export const userService = new UserService();

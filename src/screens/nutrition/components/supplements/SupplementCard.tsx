@@ -124,7 +124,7 @@ export const SupplementCard: React.FC<SupplementCardProps> = ({
                 Informações Nutricionais
               </Text>
               <HStack justifyContent="space-around">
-                {supplement.nutrients.protein && (
+                {supplement.nutrients.protein != null && (
                   <VStack alignItems="center" space="xs">
                     <Text color={FIXED_COLORS.text[300]} fontSize="$xs">
                       Proteína
@@ -138,7 +138,7 @@ export const SupplementCard: React.FC<SupplementCardProps> = ({
                     </Text>
                   </VStack>
                 )}
-                {supplement.nutrients.carbs && (
+                {supplement.nutrients.carbs != null && (
                   <VStack alignItems="center" space="xs">
                     <Text color={FIXED_COLORS.text[300]} fontSize="$xs">
                       Carboidratos
@@ -152,7 +152,7 @@ export const SupplementCard: React.FC<SupplementCardProps> = ({
                     </Text>
                   </VStack>
                 )}
-                {supplement.nutrients.fat && (
+                {supplement.nutrients.fat != null && (
                   <VStack alignItems="center" space="xs">
                     <Text color={FIXED_COLORS.text[300]} fontSize="$xs">
                       Gordura
@@ -166,7 +166,7 @@ export const SupplementCard: React.FC<SupplementCardProps> = ({
                     </Text>
                   </VStack>
                 )}
-                {supplement.nutrients.calories && (
+                {supplement.nutrients.calories != null && (
                   <VStack alignItems="center" space="xs">
                     <Text color={FIXED_COLORS.text[300]} fontSize="$xs">
                       Calorias

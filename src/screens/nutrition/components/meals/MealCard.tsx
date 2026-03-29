@@ -7,6 +7,7 @@ import { FIXED_COLORS } from "../../../../theme/colors";
 import { useTranslation } from "../../../../hooks/useTranslation";
 import { useUnits } from "../../../../contexts/UnitsContext";
 import { Meal } from "./types";
+import { normalizeMealType } from "../../utils/mealPresentation";
 
 interface MealCardProps {
   meal: Meal;
@@ -28,7 +29,7 @@ export const MealCard: React.FC<MealCardProps> = ({
   const unit = getMacroUnit();
 
   const getMealTypeIcon = () => {
-    switch (meal.meal_type) {
+    switch (normalizeMealType(meal.meal_type)) {
       case "breakfast":
         return "sunny-outline";
       case "lunch":
@@ -43,8 +44,13 @@ export const MealCard: React.FC<MealCardProps> = ({
   };
 
   const getMealTypeLabel = () => {
-    return t(`nutrition.meals.types.${meal.meal_type}`);
+    const key = normalizeMealType(meal.meal_type);
+    return t(`nutrition.meals.types.${key}`);
   };
+
+  const typeAndTimeLabel = meal.time
+    ? `${getMealTypeLabel()} • ${meal.time}`
+    : getMealTypeLabel();
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
@@ -121,7 +127,7 @@ export const MealCard: React.FC<MealCardProps> = ({
                 fontWeight="$medium"
                 opacity={0.8}
               >
-                {getMealTypeLabel()} • {meal.time}
+                {typeAndTimeLabel}
               </Text>
             </HStack>
 

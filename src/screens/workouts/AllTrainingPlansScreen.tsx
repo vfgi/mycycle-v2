@@ -57,15 +57,6 @@ export const AllTrainingPlansScreen: React.FC = () => {
   const handleExercisePlay = (exercise: TrainingExercise) => {};
 
   const handleDeletePlan = (plan: TrainingPlanResponse) => {
-    if (trainingPlans.length === 1) {
-      showError(
-        t("workouts.cannotDeleteLastPlan") +
-          ". " +
-          t("workouts.needAtLeastOnePlan")
-      );
-      return;
-    }
-
     setPlanToDelete(plan);
     setDeleteModalOpen(true);
   };

@@ -5,15 +5,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import {
-  VStack,
-  HStack,
-  Text,
-  Pressable,
-  Input,
-  InputField,
-  Box,
-} from "@gluestack-ui/themed";
+import { VStack, HStack, Text, Pressable, Box } from "@gluestack-ui/themed";
 import { TouchableWithoutFeedback, Keyboard } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -26,6 +18,11 @@ import { SimpleMealCard } from "./components/meals/SimpleMealCard";
 import { MealDetailsDrawer } from "./components/meals/MealDetailsDrawer";
 import { mealsService } from "../../services/mealsService";
 import { Meal } from "./components/meals/types";
+import {
+  getMealImageForType,
+  normalizeMealType,
+  sortMealsByLocalTimeOfDay,
+} from "./utils/mealPresentation";
 
 export const MealsManagementScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -40,31 +37,38 @@ export const MealsManagementScreen: React.FC = () => {
   const [maxCalories, setMaxCalories] = useState("");
   const [searchIngredients, setSearchIngredients] = useState("");
   const [filterStatus, setFilterStatus] = useState<"active" | "inactive">(
-    "active"
+    "active",
   );
 
   useFocusEffect(
     React.useCallback(() => {
       loadMeals();
-    }, [])
+    }, []),
   );
 
   const loadMeals = async () => {
     try {
       setIsLoading(true);
+
       // Usar data local ao invés de UTC
       const today = new Date();
       const todayLocal = `${today.getFullYear()}-${String(
-        today.getMonth() + 1
+        today.getMonth() + 1,
       ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
       const response = await mealsService.getMealsWithNutrition(todayLocal);
       const data = response?.meals || [];
       const mealsWithDefaults = data.map((meal) => {
         const totals = mealsService.calculateMealTotals(meal);
+        const mealType = normalizeMealType(meal.meal_type);
         const ingredientsWithUnit = meal.ingredients.map((ing) => ({
           ...ing,
           unit: "g" as const,
         }));
+
+        const scheduled =
+          meal.scheduled_time ??
+          (meal as { time?: string }).time ??
+          "";
 
         return {
           ...meal,
@@ -76,9 +80,10 @@ export const MealsManagementScreen: React.FC = () => {
           carbs: totals.carbs,
           fat: totals.fat,
           fiber: totals.fiber,
-          meal_type: "lunch" as const,
-          time: "12:00",
-          image: require("../../../assets/images/calculatorcalories.avif"),
+          meal_type: mealType,
+          time: scheduled,
+          scheduled_time: meal.scheduled_time,
+          image: getMealImageForType(mealType),
         };
       });
       setMeals(mealsWithDefaults);
@@ -92,7 +97,7 @@ export const MealsManagementScreen: React.FC = () => {
 
   // Filtrar refeições baseado no filtro, calorias máximas e ingredientes
   const filteredMeals = useMemo(() => {
-    return meals.filter((meal) => {
+    const filtered = meals.filter((meal) => {
       const matchesFilter =
         (filterStatus === "active" && meal.active) ||
         (filterStatus === "inactive" && !meal.active);
@@ -105,12 +110,13 @@ export const MealsManagementScreen: React.FC = () => {
         ? meal.ingredients.some((ingredient) =>
             ingredient.name
               .toLowerCase()
-              .includes(searchIngredients.toLowerCase())
+              .includes(searchIngredients.toLowerCase()),
           )
         : true;
 
       return matchesFilter && matchesCalories && matchesIngredients;
     });
+    return sortMealsByLocalTimeOfDay(filtered);
   }, [meals, filterStatus, maxCalories, searchIngredients]);
 
   const handleMealPress = (meal: Meal) => {
@@ -125,7 +131,7 @@ export const MealsManagementScreen: React.FC = () => {
 
       const updatedMeal = await mealsService.updateMealStatus(
         mealId,
-        !meal.active
+        !meal.active,
       );
 
       if (updatedMeal) {
@@ -137,13 +143,13 @@ export const MealsManagementScreen: React.FC = () => {
                   active: updatedMeal.is_active,
                   is_active: updatedMeal.is_active,
                 }
-              : m
-          )
+              : m,
+          ),
         );
         showSuccess(
           updatedMeal.is_active
             ? t("nutrition.meals.activatedSuccess")
-            : t("nutrition.meals.deactivatedSuccess")
+            : t("nutrition.meals.deactivatedSuccess"),
         );
       } else {
         showError(t("nutrition.meals.updateError"));
@@ -183,7 +189,7 @@ export const MealsManagementScreen: React.FC = () => {
             }
           },
         },
-      ]
+      ],
     );
   };
 
@@ -198,12 +204,12 @@ export const MealsManagementScreen: React.FC = () => {
 
   const activeMealsCount = useMemo(
     () => meals.filter((meal) => meal.active).length,
-    [meals]
+    [meals],
   );
 
   const inactiveMealsCount = useMemo(
     () => meals.filter((meal) => !meal.active).length,
-    [meals]
+    [meals],
   );
 
   const filterOptions = [

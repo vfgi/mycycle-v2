@@ -53,7 +53,7 @@ export const CreateMealScreen: React.FC = () => {
     resolver: zodResolver(mealSchema),
     defaultValues: {
       name: mealToEdit?.name || "",
-      meal_type: mealToEdit?.meal_type || undefined,
+      meal_type: mealToEdit?.meal_type || "lunch",
       description: mealToEdit?.description || "",
     },
   });
@@ -179,6 +179,7 @@ export const CreateMealScreen: React.FC = () => {
       const payload = {
         name: data.name,
         description: data.description || "",
+        meal_type: data.meal_type,
         ingredients,
       };
 

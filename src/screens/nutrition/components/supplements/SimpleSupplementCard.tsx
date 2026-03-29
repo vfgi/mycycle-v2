@@ -75,7 +75,7 @@ export const SimpleSupplementCard: React.FC<SimpleSupplementCardProps> = ({
                   fontWeight="$medium"
                 >
                   {t(`nutrition.supplements.categories.${supplement.category}`)}
-                  {supplement.brand && ` • ${supplement.brand}`}
+                  {Boolean(supplement.brand) ? ` • ${supplement.brand}` : ""}
                 </Text>
                 {!supplement.is_active && (
                   <Box
@@ -103,7 +103,7 @@ export const SimpleSupplementCard: React.FC<SimpleSupplementCardProps> = ({
                 {supplement.name}
               </Text>
 
-              {supplement.description && (
+              {Boolean(supplement.description) && (
                 <Text
                   color={FIXED_COLORS.text[300]}
                   fontSize="$sm"

@@ -102,7 +102,7 @@ export const SupplementDetailsDrawer: React.FC<
                   >
                     {supplement.name}
                   </Text>
-                  {supplement.brand && (
+                  {Boolean(supplement.brand) && (
                     <Text color="rgba(255, 255, 255, 0.8)" fontSize="$lg">
                       {supplement.brand}
                     </Text>
@@ -185,7 +185,7 @@ export const SupplementDetailsDrawer: React.FC<
               </Text>
 
               <VStack space="sm">
-                {supplement.nutrients.protein && (
+                {supplement.nutrients.protein != null && (
                   <HStack justifyContent="space-between" alignItems="center">
                     <Text color={FIXED_COLORS.text[300]} fontSize="$sm">
                       Proteína
@@ -200,7 +200,7 @@ export const SupplementDetailsDrawer: React.FC<
                   </HStack>
                 )}
 
-                {supplement.nutrients.carbs && (
+                {supplement.nutrients.carbs != null && (
                   <HStack justifyContent="space-between" alignItems="center">
                     <Text color={FIXED_COLORS.text[300]} fontSize="$sm">
                       Carboidratos
@@ -215,7 +215,7 @@ export const SupplementDetailsDrawer: React.FC<
                   </HStack>
                 )}
 
-                {supplement.nutrients.fat && (
+                {supplement.nutrients.fat != null && (
                   <HStack justifyContent="space-between" alignItems="center">
                     <Text color={FIXED_COLORS.text[300]} fontSize="$sm">
                       Gordura
@@ -230,7 +230,7 @@ export const SupplementDetailsDrawer: React.FC<
                   </HStack>
                 )}
 
-                {supplement.nutrients.calories && (
+                {supplement.nutrients.calories != null && (
                   <HStack justifyContent="space-between" alignItems="center">
                     <Text color={FIXED_COLORS.text[300]} fontSize="$sm">
                       Calorias
@@ -249,7 +249,7 @@ export const SupplementDetailsDrawer: React.FC<
           )}
 
           {/* Descrição */}
-          {supplement.description && (
+          {Boolean(supplement.description) && (
             <VStack space="md">
               <Text
                 color={FIXED_COLORS.text[50]}

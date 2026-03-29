@@ -15,22 +15,10 @@ import { FIXED_COLORS } from "../../../../theme/colors";
 import { useTranslation } from "../../../../hooks/useTranslation";
 import { useUnits } from "../../../../contexts/UnitsContext";
 import { Meal } from "./types";
-
-// Função para obter a imagem baseada no tipo de refeição
-const getMealImage = (mealType: string) => {
-  switch (mealType) {
-    case "breakfast":
-      return require("../../../../../assets/images/food/breakfast.jpg");
-    case "lunch":
-      return require("../../../../../assets/images/food/lunch.jpg");
-    case "dinner":
-      return require("../../../../../assets/images/food/dinner.jpg");
-    case "snack":
-      return require("../../../../../assets/images/food/snacks.jpg");
-    default:
-      return require("../../../../../assets/images/food/lunch.jpg");
-  }
-};
+import {
+  getMealImageForType,
+  normalizeMealType,
+} from "../../utils/mealPresentation";
 
 interface MealDetailsDrawerProps {
   meal: Meal | null;
@@ -60,7 +48,7 @@ export const MealDetailsDrawer: React.FC<MealDetailsDrawerProps> = ({
   const unit = getMacroUnit();
 
   const getMealTypeIcon = () => {
-    switch (meal.meal_type) {
+    switch (normalizeMealType(meal.meal_type)) {
       case "breakfast":
         return "sunny-outline";
       case "lunch":
@@ -75,8 +63,13 @@ export const MealDetailsDrawer: React.FC<MealDetailsDrawerProps> = ({
   };
 
   const getMealTypeLabel = () => {
-    return t(`nutrition.meals.types.${meal.meal_type}`);
+    const key = normalizeMealType(meal.meal_type);
+    return t(`nutrition.meals.types.${key}`);
   };
+
+  const typeAndTimeLabel = meal.time
+    ? `${getMealTypeLabel()} • ${meal.time}`
+    : getMealTypeLabel();
 
   const getDifficultyColor = () => {
     switch (meal.difficulty) {
@@ -102,7 +95,7 @@ export const MealDetailsDrawer: React.FC<MealDetailsDrawerProps> = ({
           {/* Header com imagem */}
           <Box borderRadius="$lg" overflow="hidden">
             <ImageBackground
-              source={getMealImage(meal.meal_type)}
+              source={getMealImageForType(meal.meal_type)}
               style={{
                 width: "100%",
                 height: 200,
@@ -134,7 +127,7 @@ export const MealDetailsDrawer: React.FC<MealDetailsDrawerProps> = ({
                     fontWeight="$medium"
                     opacity={0.9}
                   >
-                    {getMealTypeLabel()} • {meal.time}
+                    {typeAndTimeLabel}
                   </Text>
                 </HStack>
 
@@ -146,7 +139,7 @@ export const MealDetailsDrawer: React.FC<MealDetailsDrawerProps> = ({
                   {meal.name}
                 </Text>
 
-                {meal.description && (
+                {Boolean(meal.description) && (
                   <Text
                     color="rgba(255, 255, 255, 0.8)"
                     fontSize="$sm"
@@ -309,7 +302,7 @@ export const MealDetailsDrawer: React.FC<MealDetailsDrawerProps> = ({
                       >
                         {ingredient.name}
                       </Text>
-                      {ingredient.category && (
+                      {Boolean(ingredient.category) && (
                         <Text
                           color={FIXED_COLORS.text[400]}
                           fontSize="$xs"
