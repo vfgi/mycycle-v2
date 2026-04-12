@@ -89,6 +89,7 @@ export const HomeScreen: React.FC = () => {
       <AssistantSetupModal
         visible={assistantModalVisible}
         onCancel={() => setAssistantModalVisible(false)}
+        onFlowComplete={() => setAssistantModalVisible(false)}
       />
     </SafeContainer>
   );

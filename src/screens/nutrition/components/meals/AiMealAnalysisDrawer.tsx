@@ -14,13 +14,13 @@ import { CustomDrawer } from "../../../../components";
 import { FIXED_COLORS } from "../../../../theme/colors";
 import { useTranslation } from "../../../../hooks/useTranslation";
 import { useUnits } from "../../../../contexts/UnitsContext";
-import type { GeminiMealAnalysisResult } from "../../../../services/geminiMealVisionService";
+import type { MealPhotoAnalysisResult } from "../../../../types/mealPhotoAiAnalysis";
 import { hasAiDetectedFood } from "../../utils/buildNutritionDataFromGemini";
 
 const defaultMealImage = require("../../../../../assets/images/food/lunch.jpg");
 
 interface AiMealAnalysisDrawerProps {
-  analysis: GeminiMealAnalysisResult | null;
+  analysis: MealPhotoAnalysisResult | null;
   photoUri: string | null;
   isOpen: boolean;
   onClose: () => void;

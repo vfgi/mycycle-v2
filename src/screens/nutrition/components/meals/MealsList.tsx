@@ -21,11 +21,8 @@ import { useToast } from "../../../../hooks/useToast";
 import { useAuth } from "../../../../contexts/AuthContext";
 import { Meal } from "./types";
 import { captureMealPhotoWithCamera } from "../../utils/captureMealPhoto";
-import {
-  analyzeMealPhotoWithGemini,
-  type GeminiMealAnalysisResult,
-} from "../../../../services/geminiMealVisionService";
-import ENV from "../../../../config/environment";
+import { analyzeMealPhoto } from "../../../../services/aiMealPhotoService";
+import type { MealPhotoAnalysisResult } from "../../../../types/mealPhotoAiAnalysis";
 import {
   buildNutritionDataFromGemini,
   hasAiDetectedFood,
@@ -50,7 +47,7 @@ export const MealsList: React.FC<MealsListProps> = ({
   onViewAll,
   onMealConsumptionChange,
 }) => {
-  const { t } = useTranslation();
+  const { t, getCurrentLanguage } = useTranslation();
   const navigation = useNavigation();
   const { showSuccess, showError } = useToast();
   const { user } = useAuth();
@@ -60,7 +57,7 @@ export const MealsList: React.FC<MealsListProps> = ({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isAnalyzingMealPhoto, setIsAnalyzingMealPhoto] = useState(false);
   const [aiMealAnalysis, setAiMealAnalysis] =
-    useState<GeminiMealAnalysisResult | null>(null);
+    useState<MealPhotoAnalysisResult | null>(null);
   const [aiMealPhotoUri, setAiMealPhotoUri] = useState<string | null>(null);
   const [isAiAnalysisDrawerOpen, setIsAiAnalysisDrawerOpen] = useState(false);
   const [isSavingAiScan, setIsSavingAiScan] = useState(false);
@@ -246,12 +243,6 @@ export const MealsList: React.FC<MealsListProps> = ({
   }, [isAiAnalysisDrawerOpen]);
 
   const executePhotoMealWithAI = async () => {
-    const apiKey = ENV.GEMINI_API_KEY;
-    if (!apiKey) {
-      showError(t("nutrition.meals.geminiApiKeyMissing"));
-      return;
-    }
-
     const quotaBefore = await getMealAiPhotoQuota();
     if (quotaBefore.remaining <= 0) {
       showError(t("nutrition.meals.aiPhotoNoUsesLeft"));
@@ -277,21 +268,19 @@ export const MealsList: React.FC<MealsListProps> = ({
       }
 
       setIsAnalyzingMealPhoto(true);
-      const analysis = await analyzeMealPhotoWithGemini(
-        apiKey,
-        capture.photo.base64,
-        capture.photo.mimeType,
+      const analysis = await analyzeMealPhoto(
+        capture.photo,
+        getCurrentLanguage()
       );
       await incrementMealAiPhotoUsage();
       await refreshAiPhotoQuota();
-      const previewUri = `data:${capture.photo.mimeType};base64,${capture.photo.base64}`;
       setAiMealAnalysis(analysis);
-      setAiMealPhotoUri(previewUri);
+      setAiMealPhotoUri(capture.photo.uri);
       setIsAiAnalysisDrawerOpen(true);
     } catch (e) {
       const message =
-        e instanceof Error ? e.message : t("nutrition.meals.geminiMealAnalysisError");
-      showError(message || t("nutrition.meals.geminiMealAnalysisError"));
+        e instanceof Error ? e.message : t("nutrition.meals.mealPhotoAnalysisError");
+      showError(message || t("nutrition.meals.mealPhotoAnalysisError"));
     } finally {
       setIsAnalyzingMealPhoto(false);
     }

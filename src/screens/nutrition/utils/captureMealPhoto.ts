@@ -1,7 +1,7 @@
 import * as ImagePicker from "expo-image-picker";
 
 export type MealPhotoCapture = {
-  base64: string;
+  uri: string;
   mimeType: string;
 };
 
@@ -20,12 +20,12 @@ export async function captureMealPhotoWithCamera(): Promise<MealPhotoCaptureResu
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: false,
     quality: 0.75,
-    base64: true,
+    base64: false,
   });
 
   const asset = result.assets?.[0];
-  const base64 = asset?.base64;
-  if (result.canceled || !base64) {
+  const uri = asset?.uri;
+  if (result.canceled || !uri) {
     return { status: "cancelled" };
   }
 
@@ -37,7 +37,7 @@ export async function captureMealPhotoWithCamera(): Promise<MealPhotoCaptureResu
   return {
     status: "ok",
     photo: {
-      base64,
+      uri,
       mimeType,
     },
   };

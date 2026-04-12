@@ -1,8 +1,8 @@
-import type { GeminiMealAnalysisResult } from "../../../services/geminiMealVisionService";
+import type { MealPhotoAnalysisResult } from "../../../types/mealPhotoAiAnalysis";
 import type { NutritionData } from "../../../services/mealsHistoryService";
 
 export function hasAiDetectedFood(
-  analysis: GeminiMealAnalysisResult
+  analysis: MealPhotoAnalysisResult
 ): boolean {
   const ingredients = analysis.nutrition_data?.ingredients;
   if (
@@ -24,7 +24,7 @@ export function hasAiDetectedFood(
 }
 
 export function buildNutritionDataFromGemini(
-  analysis: GeminiMealAnalysisResult
+  analysis: MealPhotoAnalysisResult
 ): NutritionData {
   const nd = analysis.nutrition_data;
   const ingredients =

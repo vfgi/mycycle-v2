@@ -213,6 +213,84 @@ class ApiService {
     });
   }
 
+  async postMultipart<T>(
+    endpoint: string,
+    formData: FormData
+  ): Promise<ApiResponse<T>> {
+    try {
+      const url = `${this.baseURL}${endpoint}`;
+      const accessToken = await tokenStorage.getAccessToken();
+
+      const headers: Record<string, string> = {};
+
+      if (accessToken) {
+        headers.Authorization = `Bearer ${accessToken}`;
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+      }, this.timeout);
+
+      console.log("[api] postMultipart", {
+        url,
+        hasAuthorization: Boolean(accessToken),
+        headerKeys: Object.keys(headers),
+      });
+
+      const response = await fetch(url, {
+        method: "POST",
+        body: formData,
+        headers,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      let data = null;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        try {
+          data = await response.json();
+        } catch (e) {
+          // Empty
+        }
+      }
+
+      if (!response.ok) {
+        console.error("[API Error] Multipart POST failed", {
+          endpoint: url,
+          status: response.status,
+          statusText: response.statusText,
+          body: data,
+        });
+        console.log("[api] postMultipart error response", {
+          status: response.status,
+          contentType,
+          body: data,
+        });
+        if (response.status === 401) {
+          await tokenStorage.clearAll();
+          this.triggerUnauthorized();
+        }
+        return {
+          error: data?.message || data?.error || "Erro na requisição",
+          message: data?.message,
+        };
+      }
+
+      return { data };
+    } catch (error) {
+      console.error("[API Error] Multipart POST failed", {
+        error,
+        message: error instanceof Error ? error.message : String(error),
+      });
+      return {
+        error: error instanceof Error ? error.message : "Erro de conexão",
+      };
+    }
+  }
+
   async uploadImage<T>(
     endpoint: string,
     imageFormData: FormData

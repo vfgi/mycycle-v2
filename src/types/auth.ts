@@ -32,6 +32,18 @@ export interface User {
   measurements?: Measurements;
   goals?: Goals;
   followUp?: string[];
+  health_issues?: string;
+  allergies?: string;
+  activity_level?: string;
+  workout_type?: string | string[];
+  trained_before?: boolean;
+  training_duration?: string;
+  was_in_better_shape?: boolean;
+  body_self_description?: string;
+  sleep_hours?: number;
+  stress_level?: string;
+  work_type?: string;
+  country?: string;
 }
 
 export interface AuthResponse {

@@ -2,7 +2,7 @@
   "expo": {
     "name": "MyCycle",
     "slug": "MyCycle",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "mycycle",
@@ -21,7 +21,7 @@
       },
       "supportsTablet": false,
       "bundleIdentifier": "com.mycycle.trttracker",
-      "buildNumber": "14",
+      "buildNumber": "16",
       "infoPlist": {
         "SKAdNetworkItems": [
           {
@@ -180,11 +180,15 @@
           "NSAllowsArbitraryLoadsInWebContent": true
         },
         "NSLocalNotificationUsageDescription": "This app needs access to your local notifications to let you know when to remind you your medications and supplements.",
-        "UIBackgroundModes": ["remote-notification"],
+        "UIBackgroundModes": [
+          "remote-notification"
+        ],
         "CFBundleURLTypes": [
           {
             "CFBundleURLName": "facebook",
-            "CFBundleURLSchemes": ["fb1506051177065150"]
+            "CFBundleURLSchemes": [
+              "fb1506051177065150"
+            ]
           }
         ],
         "FacebookAppID": "1506051177065150",
@@ -193,7 +197,7 @@
       }
     },
     "android": {
-      "versionCode": 23,
+      "versionCode": 24,
       "package": "com.mycycle.app",
       "splash": {
         "image": "./assets/splash-icon.png",
@@ -222,7 +226,10 @@
               "host": "1506051177065150.app.link"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -274,8 +281,7 @@
       "router": {},
       "eas": {
         "projectId": "6917d6d5-67c9-495f-8037-97588067242c"
-      },
-      "geminiApiKey": "AIzaSyCDtFLzKpldofZWrfLsghpo_3Ls5KGqb14"
+      }
     },
     "runtimeVersion": {
       "policy": "appVersion"
